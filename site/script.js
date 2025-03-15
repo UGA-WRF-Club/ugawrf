@@ -9,11 +9,12 @@ for (key in products) {
 
 const slider = document.getElementById('timeSlider');
 const weatherImage = document.getElementById('weatherImage');
+const timeLabel = document.getElementById('timeLabel');
 function updateImage() {
     const run = document.getElementById('runSelector').value;
     const product = productSelector.value;
     const timestep = slider.value;
-
+    timeLabel.textContent = `Hour ${timestep}/24`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
 }
 slider.addEventListener('input', updateImage);

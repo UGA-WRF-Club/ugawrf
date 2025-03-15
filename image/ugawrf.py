@@ -1,5 +1,6 @@
 import os
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 from matplotlib import colors
 from netCDF4 import Dataset
 from wrf import getvar, to_np, latlon_coords, extract_times, ll_to_xy
@@ -7,7 +8,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
 from datetime import datetime
-from metpy.plots import ctables, SkewT
+from metpy.plots import ctables, SkewT, Hodograph
 import metpy.calc as mpcalc
 from metpy.units import units
 
@@ -35,7 +36,6 @@ wrf_file = Dataset(WRF_FILE)
 run_time = str(wrf_file.START_DATE).replace(":", "_")
 
 print(f"processing data for run {run_time}")
-
 
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(datetime)
@@ -113,8 +113,8 @@ for product, variable in PRODUCTS.items():
 graphic_time = datetime.now() - start_time
 print(f"graphics processed successfully - took {graphic_time}")
 
+# upper air plots
 skewt_plot_time = datetime.now()
-#skewt plot
 def plot_skewt(data, x_y, timestep, airport, output_path):
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     p1 = getvar(data,"pressure",timeidx=timestep)
@@ -127,27 +127,38 @@ def plot_skewt(data, x_y, timestep, airport, output_path):
     Td = Td1[:,x_y[0],x_y[1]] * units.degC
     u = u1[:,x_y[0],x_y[1]] * units('m/s')
     v = v1[:,x_y[0],x_y[1]] * units('m/s')
-    skew = SkewT()
+    fig = plt.figure(figsize=(7, 7))
+    gs = gridspec.GridSpec(3, 3)
+    skew = SkewT(fig, subplot=gs[:, :2])
     skew.plot(p, T, 'r')
     skew.plot(p, Td, 'g')
     skew.plot_barbs(p, u, v)
     skew.plot_dry_adiabats()
     skew.plot_moist_adiabats()
     skew.plot_mixing_lines()
-    skew.ax.set_xlim(-60, 40)
+    skew.ax.set_xlim(-50, 40)
+    skew.ax.set_ylim(1000, 100)
     skew.ax.set_xlabel('Temperature ($^\circ$C)')
     skew.ax.set_ylabel('Pressure (hPa)')
-    skew.ax.set_title(f"Skew-T for {airport} - Hour {timestep} - Valid: {forecast_time}")
+    skew.ax.set_title(f"Skew-T Log-P")
+    ax = fig.add_subplot(gs[0, 2])
+    h = Hodograph(ax, component_range=80.)
+    h.add_grid(increment=20)
+    h.plot(u, v)
+    ax.set_title('Hodograph')
+    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {timestep} - Valid: {forecast_time}")
     os.makedirs(output_path, exist_ok=True)
+    plt.tight_layout()
+    plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
 airports = {
-    "AHN": (33.95167820706025, -83.32489875559355),
-    "ATL": (33.6391621022899, -84.43061412634862),
-    "FFC": (33.358755552804176, -84.5711101702346),
-    "MCN": (32.70076950826015, -83.64790511895201),
-    "RMG": (34.35267229676656, -85.16328449820841),
-    "CSG": (32.51571975545047, -84.9392150850212)
+    "ahn": (33.95167820706025, -83.32489875559355),
+    "atl": (33.6391621022899, -84.43061412634862),
+    "ffc": (33.358755552804176, -84.5711101702346),
+    "mcn": (32.70076950826015, -83.64790511895201),
+    "rmg": (34.35267229676656, -85.16328449820841),
+    "csg": (32.51571975545047, -84.9392150850212)
 }
 for airport, coords in airports.items():
     try:

@@ -21,3 +21,8 @@ slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);
 document.getElementById('runSelector').addEventListener('change', updateImage);
 updateImage();
+
+document.getElementById('weatherImage').addEventListener('click', function() {
+    document.getElementById('timeSlider').focus();
+});
+

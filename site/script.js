@@ -1,11 +1,11 @@
-const products = ['temperature', "comp_reflectivity", 'wind', 'pressure', 'cape', 'cape_mu', 'helicity', 'total_precip', 'snowfall'];
+const products = {"temperature": "Temperature", "comp_reflectivity": "Composite Reflectivity", "wind": "Wind", "pressure": "Pressure", "cape": "CAPE", "cape_mu": "CAPE (Mixed Layer)", "helicity": "Helicity", "total_precip": "Total Precipitation", "snowfall": "Snowfall", "echo_tops": "Echo Tops"};
 const productSelector = document.getElementById('productSelector');
-products.forEach(product => {
+for (const key in products) {
     const option = document.createElement('option');
-    option.value = product;
-    option.textContent = product;
+    option.value = key;
+    option.textContent = products[key];
     productSelector.appendChild(option);
-});
+}
 
 const slider = document.getElementById('timeSlider');
 const weatherImage = document.getElementById('weatherImage');

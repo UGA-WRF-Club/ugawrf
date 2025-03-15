@@ -22,7 +22,8 @@ PRODUCTS = {
     "cape_mu": "AFWA_CAPE_MU",
     "helicity": "UP_HELI_MAX",
     "total_precip": "AFWA_TOTPRECIP",
-    "snowfall": "SNOWNC"
+    "snowfall": "SNOWNC",
+    "echo_tops": "ECHOTOP",
 }
 
 
@@ -59,12 +60,16 @@ def plot_variable(data, timestep, output_path):
         ax.set_title(f"Accumulated Snowfall - Hour {timestep} - Valid: {forecast_time}")
         label = f"Accumulated Snowfall"
     elif data.name == 'AFWA_MSLP':
-        data_copy = data.copy(e)
+        data_copy = data.copy()
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm)
         ax.set_title(f"Mean Sea Level Pressure (mb) - Hour {timestep} - Valid: {forecast_time}")
         label = f"MSLP (mb)"
+    elif data.name == 'ECHOTOP':
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='cividis_r', vmin=0, vmax=50000)
+        ax.set_title(f"Echo Tops (m) - Hour {timestep} - Valid: {forecast_time}")
+        label = f"Echo Tops (m)"
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep} - Valid: {forecast_time}")

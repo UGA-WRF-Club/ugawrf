@@ -3,6 +3,11 @@
 <head>
     <title>UGA-WRF Viewer</title>
 </head>
+<style>
+    .skewtContainer > img:active {
+  width: 600px;
+}
+</style>
 <body>
     <div style = "text-align:center">
     <h1>UGA-WRF Viewer</h1>
@@ -19,8 +24,19 @@
     <label for="timeSlider">Timestep:</label>
     <input type="range" id="timeSlider" min="0" max="24" value="0"/>
     <label id="timeLabel">0</label>
+    <br>
+    <h2>Skew-T Plots</h2>
+    <p>Press and hold to enlarge.</p>
+    <div class="skewtContainer">
+    <img id="ahn" src="" alt="AHN" width="300"/>
+    <img id="atl" src="" alt="ATL" width="300"/>
+    <img id="ffc" src="" alt="FFC" width="300"/>
+    <img id="mcn" src="" alt="MCN" width="300"/>
+    <img id="rmg" src="" alt="RMG" width="300"/>
+    <img id="csg" src="" alt="CSG" width="300"/>
     </div>
     <h3>Demo page. This is not operational.</h3>
     <script src="script.js"></script>
+    </div>
 </body>
 </html>

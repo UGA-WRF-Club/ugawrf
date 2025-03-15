@@ -7,7 +7,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
 from datetime import datetime
-from metpy.plots import ctables, skewt
+from metpy.plots import ctables, SkewT
 import metpy.calc as mpcalc
 from metpy.units import units
 
@@ -35,6 +35,7 @@ wrf_file = Dataset(WRF_FILE)
 run_time = str(wrf_file.START_DATE).replace(":", "_")
 
 print(f"processing data for run {run_time}")
+
 
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(datetime)
@@ -111,6 +112,54 @@ for product, variable in PRODUCTS.items():
         print(f"error processing {product}: {e}! last timestep: {t}")
 graphic_time = datetime.now() - start_time
 print(f"graphics processed successfully - took {graphic_time}")
+
+skewt_plot_time = datetime.now()
+#skewt plot
+def plot_skewt(data, x_y, timestep, airport, output_path):
+    forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
+    p1 = getvar(data,"pressure",timeidx=timestep)
+    T1 = getvar(data,"tc",timeidx=timestep)
+    Td1 = getvar(data,"td",timeidx=timestep)
+    u1 = getvar(data,"ua",timeidx=timestep)
+    v1 = getvar(data,"va",timeidx=timestep)
+    p = p1[:,x_y[0],x_y[1]] * units.hPa
+    T = T1[:,x_y[0],x_y[1]] * units.degC
+    Td = Td1[:,x_y[0],x_y[1]] * units.degC
+    u = u1[:,x_y[0],x_y[1]] * units('m/s')
+    v = v1[:,x_y[0],x_y[1]] * units('m/s')
+    skew = SkewT()
+    skew.plot(p, T, 'r')
+    skew.plot(p, Td, 'g')
+    skew.plot_barbs(p, u, v)
+    skew.plot_dry_adiabats()
+    skew.plot_moist_adiabats()
+    skew.plot_mixing_lines()
+    skew.ax.set_xlim(-60, 40)
+    skew.ax.set_xlabel('Temperature ($^\circ$C)')
+    skew.ax.set_ylabel('Pressure (hPa)')
+    skew.ax.set_title(f"Skew-T for {airport} - Hour {timestep} - Valid: {forecast_time}")
+    os.makedirs(output_path, exist_ok=True)
+    plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
+    plt.close()
+airports = {
+    "AHN": (33.95167820706025, -83.32489875559355),
+    "ATL": (33.6391621022899, -84.43061412634862),
+    "FFC": (33.358755552804176, -84.5711101702346),
+    "MCN": (32.70076950826015, -83.64790511895201),
+    "RMG": (34.35267229676656, -85.16328449820841),
+    "CSG": (32.51571975545047, -84.9392150850212)
+}
+for airport, coords in airports.items():
+    try:
+        skewt_time = datetime.now()
+        x_y = ll_to_xy(wrf_file, coords[0], coords[1])
+        output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
+        for t in range(0, 25):
+            plot_skewt(wrf_file, x_y, t, airport, output_path)
+        print(f"processed {airport} skewt in {datetime.now() - skewt_time}")
+    except Exception as e:
+        print(f"error processing {airport} skewt: {e}! last timestep: {t}")
+print(f"skewt processed successfully - took {datetime.now() - skewt_plot_time}")
 
 process_time = datetime.now() - start_time
 print(f"data processed successfully, this is run {run_time} - took {process_time}")

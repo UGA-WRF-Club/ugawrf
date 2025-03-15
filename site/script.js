@@ -10,12 +10,24 @@ for (key in products) {
 const slider = document.getElementById('timeSlider');
 const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
+const ahn = document.getElementById('ahn');
+const atl = document.getElementById('atl');
+const ffc = document.getElementById('ffc');
+const mcn = document.getElementById('mcn');
+const rmg = document.getElementById('rmg');
+const csg = document.getElementById('csg');
 function updateImage() {
     const run = document.getElementById('runSelector').value;
     const product = productSelector.value;
     const timestep = slider.value;
     timeLabel.textContent = `Hour ${timestep}/24`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
+    ahn.src = `runs/${run}/skewt/ahn/hour_${timestep}.png`;
+    atl.src = `runs/${run}/skewt/atl/hour_${timestep}.png`;
+    ffc.src = `runs/${run}/skewt/ffc/hour_${timestep}.png`;
+    mcn.src = `runs/${run}/skewt/mcn/hour_${timestep}.png`;
+    rmg.src = `runs/${run}/skewt/rmg/hour_${timestep}.png`;
+    csg.src = `runs/${run}/skewt/csg/hour_${timestep}.png`;
 }
 slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);

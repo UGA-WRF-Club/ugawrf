@@ -38,7 +38,7 @@ forecast_times = [convert_time(t) for t in extract_times(wrf_file, timeidx=None)
 
 def plot_variable(data, timestep, output_path):
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(8, 6))
     ax = plt.axes(projection=ccrs.PlateCarree())
     lats, lons = latlon_coords(data)
     if data.name == 'T2':

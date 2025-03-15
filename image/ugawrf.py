@@ -36,38 +36,43 @@ def convert_time(nc_time):
 forecast_times = [convert_time(t) for t in extract_times(wrf_file, timeidx=None)]
 
 def plot_variable(data, timestep, output_path):
+    forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     plt.figure(figsize=(10, 8))
     ax = plt.axes(projection=ccrs.PlateCarree())
     lats, lons = latlon_coords(data)
     if data.name == 'T2':
         data_copy = data.copy()
         data_copy = (data_copy - 273.15) * 9/5 + 32
-        label = f"{data.description} (°F)"
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmin=10, vmax=100)
+        ax.set_title(f"2 Meter Temperature (°F) - Hour {timestep} - Valid: {forecast_time}")
+        label = f"2M Temp (°F)"
     elif data.name == 'REFD_COM':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='plasma', vmin=0, vmax=85)
+        ax.set_title(f"Composite Reflectivity (dBZ) - Hour {timestep} - Valid: {forecast_time}")
         label = f"Composite Reflectivity (dBZ)"
     elif data.name == 'AFWA_TOTPRECIP':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='magma_r', vmin=0, vmax=100)
+        ax.set_title(f"Total Precipitation (mm) - Hour {timestep} - Valid: {forecast_time}")
         label = f"Total Precipitation (mm)"
     elif data.name == 'SNOWNC':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='BuPu')
+        ax.set_title(f"Accumulated Snowfall - Hour {timestep} - Valid: {forecast_time}")
         label = f"Accumulated Snowfall"
     elif data.name == 'AFWA_MSLP':
         data_copy = data.copy()
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm)
+        ax.set_title(f"Mean Sea Level Pressure (mb) - Hour {timestep} - Valid: {forecast_time}")
         label = f"MSLP (mb)"
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='coolwarm')
+        ax.set_title(f"{data.description} - Hour {timestep} - Valid: {forecast_time}")
         label = f"{data.description}"
     plt.colorbar(contour, ax=ax, orientation='horizontal', pad=0.05, label=label)
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
-    forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
-    ax.set_title(f"{data.description} hour {timestep} - Valid: {forecast_time}")
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))

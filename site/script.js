@@ -22,12 +22,12 @@ function updateImage() {
     const timestep = slider.value;
     timeLabel.textContent = `Hour ${timestep}/24`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
-    ahn.src = `runs/${run}/skewt/ahn/hour_${timestep}.png`;
-    atl.src = `runs/${run}/skewt/atl/hour_${timestep}.png`;
-    ffc.src = `runs/${run}/skewt/ffc/hour_${timestep}.png`;
-    mcn.src = `runs/${run}/skewt/mcn/hour_${timestep}.png`;
-    rmg.src = `runs/${run}/skewt/rmg/hour_${timestep}.png`;
-    csg.src = `runs/${run}/skewt/csg/hour_${timestep}.png`;
+    ahn.src = `runs/${run}/skewt/AHN/hour_${timestep}.png`;
+    atl.src = `runs/${run}/skewt/ATL/hour_${timestep}.png`;
+    ffc.src = `runs/${run}/skewt/FFC/hour_${timestep}.png`;
+    mcn.src = `runs/${run}/skewt/MCN/hour_${timestep}.png`;
+    rmg.src = `runs/${run}/skewt/RMG/hour_${timestep}.png`;
+    csg.src = `runs/${run}/skewt/CSG/hour_${timestep}.png`;
 }
 slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);

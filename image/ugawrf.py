@@ -59,7 +59,7 @@ def plot_variable(data, timestep, output_path):
         ax.set_title(f"Accumulated Snowfall - Hour {timestep} - Valid: {forecast_time}")
         label = f"Accumulated Snowfall"
     elif data.name == 'AFWA_MSLP':
-        data_copy = data.copy()
+        data_copy = data.copy(e)
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm)
@@ -78,13 +78,16 @@ def plot_variable(data, timestep, output_path):
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
 for product, variable in PRODUCTS.items():
-    product_time = datetime.now()
-    output_path = os.path.join(BASE_OUTPUT, run_time, product)
-    for t in range(0, 25):
-        data = getvar(wrf_file, variable, timeidx=t)
-        plot_variable(data, t, output_path)
-    product_end_time = datetime.now()
-    print(f"processed {product} in {product_end_time - product_time}")
+    try:
+        product_time = datetime.now()
+        output_path = os.path.join(BASE_OUTPUT, run_time, product)
+        for t in range(0, 25):
+            data = getvar(wrf_file, variable, timeidx=t)
+            plot_variable(data, t, output_path)
+        product_end_time = datetime.now()
+        print(f"processed {product} in {product_end_time - product_time}")
+    except Exception as e:
+        print(f"error processing {product}: {e}! last timestep: {t}")
 
 end_time = datetime.now()
 process_time = end_time - start_time

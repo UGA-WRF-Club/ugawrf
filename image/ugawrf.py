@@ -1,5 +1,6 @@
 import os
 import matplotlib.pyplot as plt
+from matplotlib import colors
 from netCDF4 import Dataset
 from wrf import getvar, to_np, latlon_coords, extract_times
 import cartopy.crs as ccrs
@@ -52,10 +53,15 @@ def plot_variable(data, timestep, output_path):
     elif data.name == 'SNOWNC':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='BuPu')
         label = f"Accumulated Snowfall"
+    elif data.name == 'AFWA_MSLP':
+        data_copy = data.copy()
+        data_copy = data_copy / 100
+        divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm)
+        label = f"MSLP (mb)"
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='coolwarm')
         label = f"{data.description}"
-
     plt.colorbar(contour, ax=ax, orientation='horizontal', pad=0.05, label=label)
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)

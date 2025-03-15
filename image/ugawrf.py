@@ -2,12 +2,12 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib import colors
 from netCDF4 import Dataset
-from wrf import getvar, to_np, latlon_coords, extract_times
+from wrf import getvar, to_np, latlon_coords, extract_times, ll_to_xy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
 from datetime import datetime
-from metpy.plots import ctables
+from metpy.plots import ctables, skewt
 import metpy.calc as mpcalc
 from metpy.units import units
 
@@ -39,7 +39,6 @@ print(f"processing data for run {run_time}")
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(datetime)
 forecast_times = [convert_time(t) for t in extract_times(wrf_file, timeidx=None)]
-
 def plot_variable(data, timestep, output_path):
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     plt.figure(figsize=(8, 6))
@@ -110,6 +109,8 @@ for product, variable in PRODUCTS.items():
         print(f"processed {product} in {datetime.now() - product_time}")
     except Exception as e:
         print(f"error processing {product}: {e}! last timestep: {t}")
+graphic_time = datetime.now() - start_time
+print(f"graphics processed successfully - took {graphic_time}")
 
 process_time = datetime.now() - start_time
 print(f"data processed successfully, this is run {run_time} - took {process_time}")

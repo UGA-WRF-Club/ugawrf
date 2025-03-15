@@ -7,6 +7,8 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
 from datetime import datetime
+from metpy.plots import colortables
+from metpy.plots import ctables
 
 print("ugawrf data processing script")
 start_time = datetime.now()
@@ -48,7 +50,8 @@ def plot_variable(data, timestep, output_path):
         ax.set_title(f"2 Meter Temperature (°F) - Hour {timestep} - Valid: {forecast_time}")
         label = f"2M Temp (°F)"
     elif data.name == 'REFD_COM':
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='plasma', vmin=0, vmax=85)
+        refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap=refl_cmap, vmin=2, vmax=70)
         ax.set_title(f"Composite Reflectivity (dBZ) - Hour {timestep} - Valid: {forecast_time}")
         label = f"Composite Reflectivity (dBZ)"
     elif data.name == 'AFWA_TOTPRECIP':

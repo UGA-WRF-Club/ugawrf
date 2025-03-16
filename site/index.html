@@ -39,6 +39,7 @@
     <p>Use timestep slider above. Press and hold to enlarge, drag to lock</p>
     <div class="skewtContainer">
     <img id="sahn" src="" alt="Upper Air Plot for AHN" width="300"/>
+    <img id="scni" src="" alt="Upper Air Plot for CNI" width="300"/>
     <img id="satl" src="" alt="Upper Air Plot for ATL" width="300"/>
     <img id="sffc" src="" alt="Upper Air Plot for FFC" width="300"/>
     <img id="smcn" src="" alt="Upper Air Plot for MCN" width="300"/>
@@ -49,6 +50,7 @@
     <label for="textSelector">Select Airport</label>
     <select id="textSelector">
         <option value="ahn">AHN</option>
+        <option value="cni">CNI</option>
         <option value="atl">ATL</option>
         <option value="ffc">FFC</option>
         <option value="mcn">MCN</option>
@@ -56,9 +58,10 @@
         <option value="csg">CSG</option>
     </select>
     <div class="textContainer">
-        <div id="textForecast"></div>
+        <div id="textForecast">Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run.</div>
     </div>
     <h3>Demo page. This is not operational.</h3>
+    <p>This project is open source and be found <a href="https://github.com/luceboxed/ugawrf">here.</a></p>
     <script src="script.js"></script>
     </div>
 </body>

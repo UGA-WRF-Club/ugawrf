@@ -12,6 +12,7 @@ const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
 const textForecast = document.getElementById('textForecast');
 const sahn = document.getElementById('sahn');
+const scni = document.getElementById('scni');
 const satl = document.getElementById('satl');
 const sffc = document.getElementById('sffc');
 const smcn = document.getElementById('smcn');
@@ -24,6 +25,7 @@ function updateImage() {
     timeLabel.textContent = `Hour ${timestep}/24`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
     sahn.src = `runs/${run}/skewt/ahn/hour_${timestep}.png`;
+    scni.src = `runs/${run}/skewt/cni/hour_${timestep}.png`;
     satl.src = `runs/${run}/skewt/atl/hour_${timestep}.png`;
     sffc.src = `runs/${run}/skewt/ffc/hour_${timestep}.png`;
     smcn.src = `runs/${run}/skewt/mcn/hour_${timestep}.png`;

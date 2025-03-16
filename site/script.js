@@ -60,6 +60,9 @@ const pauseButton = document.getElementById("pauseButton")
 const speedSelector = document.getElementById("speedSelector")
 
 function startLoop() {
+    if (timestep == hours) {
+        timestep = 0
+    }
     loopInterval = setInterval(advanceLoop, speedSelector.value)
     playButton.disabled = true;
     pauseButton.disabled = false;

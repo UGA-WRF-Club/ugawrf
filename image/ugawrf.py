@@ -7,7 +7,7 @@ from wrf import getvar, to_np, latlon_coords, extract_times, ll_to_xy
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 from metpy.plots import ctables, SkewT, Hodograph
 import metpy.calc as mpcalc
 from metpy.units import units
@@ -85,7 +85,7 @@ for airport, coords in airports.items():
         with open(os.path.join(output_path, "forecast.txt"), 'w') as f:
             for line in text_data:
                 f.write(f"{line}\n")
-        print(f"processed {airport} text data - took {datetime.now() - text_time}")
+        print(f"processed {airport} text data in {datetime.now() - text_time}")
     except Exception as e:
         print(f"error processing {airport} text: {e}!")
 print(f'texts processed successfuly - took {datetime.now() - text_start_time}')
@@ -148,6 +148,7 @@ def plot_variable(data, timestep, output_path):
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
+    ax.annotate(f"{(forecast_times[timestep] - timedelta(hours=4))} EST", xy=(0.75, 1), xycoords='axes fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
@@ -200,6 +201,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path):
     os.makedirs(output_path, exist_ok=True)
     plt.tight_layout()
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
+    plt.annotate(f"{(forecast_times[timestep] - timedelta(hours=4))} EST", xy=(0.75, 0.95), xycoords='figure fraction', fontsize=8, color='black')
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
 for airport, coords in airports.items():

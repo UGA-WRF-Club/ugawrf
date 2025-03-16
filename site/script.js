@@ -7,7 +7,9 @@ for (key in products) {
     productSelector.appendChild(option);
 }
 
+const hours = 24
 const slider = document.getElementById('timeSlider');
+var timestep = Number(slider.value)
 const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
 const textForecast = document.getElementById('textForecast');
@@ -21,8 +23,8 @@ const scsg = document.getElementById('scsg');
 function updateImage() {
     const run = document.getElementById('runSelector').value;
     const product = productSelector.value;
-    const timestep = slider.value;
-    timeLabel.textContent = `Hour ${timestep}/24`;
+    timestep = Number(slider.value);
+    timeLabel.textContent = `Hour ${timestep}/${hours}`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
     sahn.src = `runs/${run}/skewt/ahn/hour_${timestep}.png`;
     scni.src = `runs/${run}/skewt/cni/hour_${timestep}.png`;
@@ -50,5 +52,36 @@ updateTextForecast();
 
 document.getElementById('weatherImage').addEventListener('click', function() {
     document.getElementById('timeSlider').focus();
+
 });
+
+const playButton = document.getElementById("playButton")
+const pauseButton = document.getElementById("pauseButton")
+const speedSelector = document.getElementById("speedSelector")
+
+function startLoop() {
+    loopInterval = setInterval(advanceLoop, speedSelector.value)
+    playButton.disabled = true;
+    pauseButton.disabled = false;
+    speedSelector.disabled = true;
+}
+
+function endLoop() {
+    clearInterval(loopInterval)
+    playButton.disabled = false;
+    pauseButton.disabled = true;
+    speedSelector.disabled = false;
+}
+
+function advanceLoop() {
+    timestep += 1;
+    if (timestep == hours) {
+        setTimeout(function() {timestep = 0}, 500)
+    }
+    slider.value = timestep
+    updateImage();
+}
+
+playButton.addEventListener('click', startLoop)
+pauseButton.addEventListener('click', endLoop)
 

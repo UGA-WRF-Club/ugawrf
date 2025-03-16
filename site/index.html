@@ -35,6 +35,15 @@
     <input type="range" id="timeSlider" min="0" max="24" value="0"/>
     <label id="timeLabel">0</label>
     <br>
+    <button type="button" id="playButton">Play</button>
+    <button type="button" disabled id="pauseButton">Pause</button>
+    <abbr><label for="speedSelector">Frame Interval:</label></abbr>
+    <select id="speedSelector">
+        <option value="1000">1sec</option>
+        <option value="500">0.5sec</option>
+        <option value="200">0.2sec</option>
+    </select>
+    <br>
     <h2>Upper Air Plots</h2>
     <p>Use timestep slider above. Press and hold to enlarge, drag to lock</p>
     <div class="skewtContainer">

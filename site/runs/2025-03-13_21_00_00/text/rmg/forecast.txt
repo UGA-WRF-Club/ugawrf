@@ -1,0 +1,27 @@
+UGA-WRF Run 2025-03-13_21_00_00 - Text Forecast for RMG
+Forecast Start Time: 2025-03-13 21:00 UTC
+UTC (Fcst) Hr | Temp | Dewp | Wind | Pressure
+22 UTC (01) | 73.7 F | 53.0 F | 6.6 mph | 1011.3 mb
+23 UTC (02) | 71.9 F | 52.8 F | 6.2 mph | 1011.7 mb
+00 UTC (03) | 69.3 F | 50.1 F | 5.5 mph | 1011.5 mb
+01 UTC (04) | 66.7 F | 49.5 F | 4.7 mph | 1011.8 mb
+02 UTC (05) | 65.2 F | 49.4 F | 3.6 mph | 1012.7 mb
+03 UTC (06) | 63.7 F | 51.7 F | 6.3 mph | 1013.4 mb
+04 UTC (07) | 63.2 F | 51.7 F | 5.2 mph | 1013.8 mb
+05 UTC (08) | 60.7 F | 52.1 F | 4.6 mph | 1013.5 mb
+06 UTC (09) | 59.1 F | 52.7 F | 4.8 mph | 1013.3 mb
+07 UTC (10) | 58.6 F | 53.2 F | 3.4 mph | 1013.1 mb
+08 UTC (11) | 56.5 F | 53.6 F | 5.2 mph | 1013.5 mb
+09 UTC (12) | 56.3 F | 53.8 F | 5.1 mph | 1013.5 mb
+10 UTC (13) | 56.2 F | 54.2 F | 5.8 mph | 1013.4 mb
+11 UTC (14) | 55.8 F | 54.1 F | 2.8 mph | 1013.6 mb
+12 UTC (15) | 55.4 F | 53.4 F | 2.7 mph | 1014.3 mb
+13 UTC (16) | 58.4 F | 55.0 F | 2.5 mph | 1014.7 mb
+14 UTC (17) | 59.9 F | 57.4 F | 4.0 mph | 1014.8 mb
+15 UTC (18) | 60.0 F | 59.3 F | 5.0 mph | 1015.0 mb
+16 UTC (19) | 66.5 F | 61.3 F | 4.7 mph | 1015.1 mb
+17 UTC (20) | 71.2 F | 61.5 F | 11.8 mph | 1013.5 mb
+18 UTC (21) | 75.0 F | 59.0 F | 12.8 mph | 1011.7 mb
+19 UTC (22) | 77.3 F | 56.5 F | 14.2 mph | 1011.2 mb
+20 UTC (23) | 79.1 F | 52.0 F | 15.5 mph | 1010.9 mb
+21 UTC (24) | 79.2 F | 50.5 F | 15.3 mph | 1010.3 mb

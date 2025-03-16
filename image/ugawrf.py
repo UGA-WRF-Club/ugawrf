@@ -12,8 +12,18 @@ from metpy.plots import ctables, SkewT, Hodograph
 import metpy.calc as mpcalc
 from metpy.units import units
 
-print("ugawrf data processing script")
+print("UGA-WRF Data Processing Program")
 start_time = datetime.now()
+
+airports = {
+    "ahn": (33.95167820706025, -83.32489875559355),
+    "atl": (33.6391621022899, -84.43061412634862),
+    "ffc": (33.358755552804176, -84.5711101702346),
+    "mcn": (32.70076950826015, -83.64790511895201),
+    "rmg": (34.35267229676656, -85.16328449820841),
+    "csg": (32.51571975545047, -84.9392150850212)
+} # locations to plot skewts, text products
+hours = 24 # set to however many hours this wrf runs out to
 
 BASE_OUTPUT = "D:/ugawrf/site/runs"
 WRF_FILE = "D:/ugawrf/image/wrfout_d01_2025-03-13_21_00_00"
@@ -29,7 +39,7 @@ PRODUCTS = {
     "total_precip": "AFWA_TOTPRECIP",
     "snowfall": "SNOWNC",
     "echo_tops": "ECHOTOP",
-}
+} # these are the products for the map only to output
 
 
 wrf_file = Dataset(WRF_FILE)
@@ -40,6 +50,46 @@ print(f"processing data for run {run_time}")
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(datetime)
 forecast_times = [convert_time(t) for t in extract_times(wrf_file, timeidx=None)]
+# processing starts here
+
+# text data
+def get_text_data(wrf_file, airport, coords):
+    forecast_time = forecast_times[0].strftime("%Y-%m-%d %H:%M UTC")
+    x, y = ll_to_xy(wrf_file, coords[0], coords[1])
+    output_lines = []
+    output_lines.append(f"UGA-WRF Run {run_time} - Text Forecast for {airport.upper()}")
+    output_lines.append(f"Forecast Start Time: {forecast_time}")
+    output_lines.append(f"UTC (Fcst) Hr | Temp | Dewp | Wind | Pressure")
+    for t in range(1, hours + 1):
+        t_data = getvar(wrf_file, "T2", timeidx=t)[y, x].values
+        q_data = getvar(wrf_file, "Q2", timeidx=t)[y, x].values
+        wspd_data = getvar(wrf_file, "WSPD10MAX", timeidx=t)[y, x].values
+        pressure_data = getvar(wrf_file, "AFWA_MSLP", timeidx=t)[y, x].values
+        t_f = (t_data - 273.15) * 9/5 + 32
+        e = mpcalc.vapor_pressure(pressure_data / 100 * units.mbar, q_data)
+        td = (mpcalc.dewpoint(e).to(units.degF)).magnitude
+        wspd = to_np(wspd_data) * 2.23694
+        pressure_mb = to_np(pressure_data) / 100
+
+        output_lines.append(f"{forecast_times[t].strftime('%H UTC')} ({str(t).zfill(2)}) | {t_f:.1f} F | {td:.1f} F | {wspd:.1f} mph | {pressure_mb:.1f} mb")
+    return output_lines
+
+text_start_time = datetime.now()
+for airport, coords in airports.items():
+    try:
+        text_time = datetime.now()
+        text_data = get_text_data(wrf_file, airport, coords)
+        output_path = os.path.join(BASE_OUTPUT, run_time, "text", airport)
+        os.makedirs(output_path, exist_ok=True)
+        with open(os.path.join(output_path, "forecast.txt"), 'w') as f:
+            for line in text_data:
+                f.write(f"{line}\n")
+        print(f"processed {airport} text data - took {datetime.now() - text_time}")
+    except Exception as e:
+        print(f"error processing {airport} text: {e}!")
+print(f'texts processed successfuly - took {datetime.now() - text_start_time}')
+
+map_time = datetime.now()
 def plot_variable(data, timestep, output_path):
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     plt.figure(figsize=(8, 6))
@@ -104,14 +154,13 @@ for product, variable in PRODUCTS.items():
     try:
         product_time = datetime.now()
         output_path = os.path.join(BASE_OUTPUT, run_time, product)
-        for t in range(0, 25):
+        for t in range(0, hours + 1):
             data = getvar(wrf_file, variable, timeidx=t)
             plot_variable(data, t, output_path)
         print(f"processed {product} in {datetime.now() - product_time}")
     except Exception as e:
         print(f"error processing {product}: {e}! last timestep: {t}")
-graphic_time = datetime.now() - start_time
-print(f"graphics processed successfully - took {graphic_time}")
+print(f"graphics processed successfully - took {datetime.now() - map_time}")
 
 # upper air plots
 skewt_plot_time = datetime.now()
@@ -152,20 +201,12 @@ def plot_skewt(data, x_y, timestep, airport, output_path):
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
-airports = {
-    "ahn": (33.95167820706025, -83.32489875559355),
-    "atl": (33.6391621022899, -84.43061412634862),
-    "ffc": (33.358755552804176, -84.5711101702346),
-    "mcn": (32.70076950826015, -83.64790511895201),
-    "rmg": (34.35267229676656, -85.16328449820841),
-    "csg": (32.51571975545047, -84.9392150850212)
-}
 for airport, coords in airports.items():
     try:
         skewt_time = datetime.now()
         x_y = ll_to_xy(wrf_file, coords[0], coords[1])
         output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
-        for t in range(0, 25):
+        for t in range(0, hours + 1):
             plot_skewt(wrf_file, x_y, t, airport, output_path)
         print(f"processed {airport} skewt in {datetime.now() - skewt_time}")
     except Exception as e:

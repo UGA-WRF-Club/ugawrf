@@ -10,29 +10,41 @@ for (key in products) {
 const slider = document.getElementById('timeSlider');
 const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
-const ahn = document.getElementById('ahn');
-const atl = document.getElementById('atl');
-const ffc = document.getElementById('ffc');
-const mcn = document.getElementById('mcn');
-const rmg = document.getElementById('rmg');
-const csg = document.getElementById('csg');
+const textForecast = document.getElementById('textForecast');
+const sahn = document.getElementById('sahn');
+const satl = document.getElementById('satl');
+const sffc = document.getElementById('sffc');
+const smcn = document.getElementById('smcn');
+const srmg = document.getElementById('srmg');
+const scsg = document.getElementById('scsg');
 function updateImage() {
     const run = document.getElementById('runSelector').value;
     const product = productSelector.value;
     const timestep = slider.value;
     timeLabel.textContent = `Hour ${timestep}/24`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
-    ahn.src = `runs/${run}/skewt/AHN/hour_${timestep}.png`;
-    atl.src = `runs/${run}/skewt/ATL/hour_${timestep}.png`;
-    ffc.src = `runs/${run}/skewt/FFC/hour_${timestep}.png`;
-    mcn.src = `runs/${run}/skewt/MCN/hour_${timestep}.png`;
-    rmg.src = `runs/${run}/skewt/RMG/hour_${timestep}.png`;
-    csg.src = `runs/${run}/skewt/CSG/hour_${timestep}.png`;
+    sahn.src = `runs/${run}/skewt/AHN/hour_${timestep}.png`;
+    satl.src = `runs/${run}/skewt/ATL/hour_${timestep}.png`;
+    sffc.src = `runs/${run}/skewt/FFC/hour_${timestep}.png`;
+    smcn.src = `runs/${run}/skewt/MCN/hour_${timestep}.png`;
+    srmg.src = `runs/${run}/skewt/RMG/hour_${timestep}.png`;
+    scsg.src = `runs/${run}/skewt/CSG/hour_${timestep}.png`;
+}
+function updateTextForecast() {
+    const textSelector = document.getElementById('textSelector').value;
+    const run = document.getElementById('runSelector').value;
+    fetch(`runs/${run}/text/${textSelector}/forecast.txt`)
+    .then(response => response.text())
+    .then((data) => {
+        textForecast.textContent = data
+      })
 }
 slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);
 document.getElementById('runSelector').addEventListener('change', updateImage);
+document.getElementById('textSelector').addEventListener('change', updateTextForecast)
 updateImage();
+updateTextForecast();
 
 document.getElementById('weatherImage').addEventListener('click', function() {
     document.getElementById('timeSlider').focus();

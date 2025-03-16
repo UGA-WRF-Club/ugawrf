@@ -23,12 +23,12 @@ function updateImage() {
     const timestep = slider.value;
     timeLabel.textContent = `Hour ${timestep}/24`;
     weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
-    sahn.src = `runs/${run}/skewt/AHN/hour_${timestep}.png`;
-    satl.src = `runs/${run}/skewt/ATL/hour_${timestep}.png`;
-    sffc.src = `runs/${run}/skewt/FFC/hour_${timestep}.png`;
-    smcn.src = `runs/${run}/skewt/MCN/hour_${timestep}.png`;
-    srmg.src = `runs/${run}/skewt/RMG/hour_${timestep}.png`;
-    scsg.src = `runs/${run}/skewt/CSG/hour_${timestep}.png`;
+    sahn.src = `runs/${run}/skewt/ahn/hour_${timestep}.png`;
+    satl.src = `runs/${run}/skewt/atl/hour_${timestep}.png`;
+    sffc.src = `runs/${run}/skewt/ffc/hour_${timestep}.png`;
+    smcn.src = `runs/${run}/skewt/mcn/hour_${timestep}.png`;
+    srmg.src = `runs/${run}/skewt/rmg/hour_${timestep}.png`;
+    scsg.src = `runs/${run}/skewt/csg/hour_${timestep}.png`;
 }
 function updateTextForecast() {
     const textSelector = document.getElementById('textSelector').value;

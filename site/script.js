@@ -54,7 +54,7 @@ document.getElementById('weatherImage').addEventListener('click', function() {
     document.getElementById('timeSlider').focus();
 
 });
-document.getElementByClass('textForecast').addEventListener('click', function() {
+document.getElementById('textForecast').addEventListener('click', function() {
     document.getElementById('textSelector').focus();
 
 });

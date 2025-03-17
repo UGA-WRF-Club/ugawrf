@@ -189,6 +189,11 @@ def plot_skewt(data, x_y, timestep, airport, output_path):
     skew.plot_dry_adiabats()
     skew.plot_moist_adiabats()
     skew.plot_mixing_lines()
+    skew.ax.axvline(0, color='k', ls='--')
+    lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
+    skew.plot(lcl_pressure, lcl_temperature, 'ko', markerfacecolor='black')
+    prof = mpcalc.parcel_profile(p, T[0], Td[0]) - 273.15 * units.degK
+    skew.plot(p, prof, 'k', linewidth=2)
     skew.ax.set_xlim(-50, 40)
     skew.ax.set_ylim(1000, 100)
     skew.ax.set_xlabel('Temperature ($^\circ$C)')
@@ -207,15 +212,12 @@ def plot_skewt(data, x_y, timestep, airport, output_path):
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
 for airport, coords in airports.items():
-    try:
-        skewt_time = datetime.now()
-        x_y = ll_to_xy(wrf_file, coords[0], coords[1])
-        output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
-        for t in range(0, hours + 1):
-            plot_skewt(wrf_file, x_y, t, airport, output_path)
-        print(f"processed {airport} skewt in {datetime.now() - skewt_time}")
-    except Exception as e:
-        print(f"error processing {airport} skewt: {e}! last timestep: {t}")
+    skewt_time = datetime.now()
+    x_y = ll_to_xy(wrf_file, coords[0], coords[1])
+    output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
+    for t in range(0, hours + 1):
+        plot_skewt(wrf_file, x_y, t, airport, output_path)
+    print(f"processed {airport} skewt in {datetime.now() - skewt_time}")
 print(f"skewt processed successfully - took {datetime.now() - skewt_plot_time}")
 
 process_time = datetime.now() - start_time

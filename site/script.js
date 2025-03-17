@@ -83,7 +83,7 @@ function endLoop() {
 function advanceLoop() {
     timestep += 1;
     if (timestep == hours) {
-        setTimeout(function() {timestep = 0}, 500)
+        setTimeout(function() {timestep = 0}, speedSelector.value * 2)
     }
     slider.value = timestep
     updateImage();

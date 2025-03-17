@@ -7,6 +7,9 @@
     .skewtContainer > img:active {
     width: 600px;
 }
+    .skewtimg{
+        border: 1px solid black;
+}
     .textContainer {
     width: 400px;
     margin-left: auto;
@@ -16,7 +19,7 @@
     white-space: pre-line;
     font-size: 75%;
     overflow: auto;
-    }
+}
 </style>
 <body>
     <div style = "text-align:center">
@@ -46,15 +49,15 @@
     </select>
     <br>
     <h2>Upper Air Plots</h2>
-    <p>Use timestep slider above. Press and hold to enlarge.</p>
+    <p>Use timestep slider above. Click and hold to enlarge.</p>
     <div class="skewtContainer">
-    <img id="sahn" src="" alt="Upper Air Plot for AHN" width="300"/>
-    <img id="scni" src="" alt="Upper Air Plot for CNI" width="300"/>
-    <img id="satl" src="" alt="Upper Air Plot for ATL" width="300"/>
-    <img id="sffc" src="" alt="Upper Air Plot for FFC" width="300"/>
-    <img id="smcn" src="" alt="Upper Air Plot for MCN" width="300"/>
-    <img id="srmg" src="" alt="Upper Air Plot for RMG" width="300"/>
-    <img id="scsg" src="" alt="Upper Air Plot for CSG" width="300"/>
+    <img class="skewtimg" id="sahn" src="" alt="Upper Air Plot for AHN" width="300"/>
+    <img class="skewtimg" id="scni" src="" alt="Upper Air Plot for CNI" width="300"/>
+    <img class="skewtimg" id="satl" src="" alt="Upper Air Plot for ATL" width="300"/>
+    <img class="skewtimg" id="sffc" src="" alt="Upper Air Plot for FFC" width="300"/>
+    <img class="skewtimg" id="smcn" src="" alt="Upper Air Plot for MCN" width="300"/>
+    <img class="skewtimg" id="srmg" src="" alt="Upper Air Plot for RMG" width="300"/>
+    <img class="skewtimg" id="scsg" src="" alt="Upper Air Plot for CSG" width="300"/>
     </div>
     <h2>Text Data</h2>
     <label for="textSelector">Select Airport</label>

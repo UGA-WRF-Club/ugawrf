@@ -1,4 +1,4 @@
-const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "comp_reflectivity": "Composite Reflectivity", "wind": "10m Wind", "pressure": "MSLP", "cape": "CAPE", "cape_mu": "CAPE (Most Unstable)", "helicity": "Helicity", "total_precip": "Total Precipitation", "snowfall": "Snowfall", "echo_tops": "Echo Tops"};
+const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "comp_reflectivity": "Composite Reflectivity", "wind": "10m Wind", "pressure": "MSLP", "cape": "CAPE", "cape_mu": "CAPE (Most Unstable)", "cin": "CIN", "cin_mu": "CIN (Most Unstable)", "helicity": "Helicity", "total_precip": "Total Precipitation", "snowfall": "Snowfall", "echo_tops": "Echo Tops"};
 const productSelector = document.getElementById('productSelector');
 for (key in products) {
     const option = document.createElement('option');

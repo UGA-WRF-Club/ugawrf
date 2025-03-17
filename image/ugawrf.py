@@ -36,6 +36,8 @@ PRODUCTS = {
     "pressure": "AFWA_MSLP",
     "cape": "AFWA_CAPE",
     "cape_mu": "AFWA_CAPE_MU",
+    "cin": "AFWA_CIN",
+    "cin_mu": "AFWA_CIN_MU",
     "helicity": "UP_HELI_MAX",
     "total_precip": "AFWA_TOTPRECIP",
     "snowfall": "SNOWNC",

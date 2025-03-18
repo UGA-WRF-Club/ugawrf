@@ -21,6 +21,7 @@ start_time = datetime.now()
 
 # whenever you add a new product, it will automatically make a new folder at BASE_OUTPUT/(runname)/(product).
 # whenever you add a new airport, it will automatically make new folders at BASE_OUTPUT/(runname)/skewt/(airport) and BASE_OUTPUT/(runname)/text/(airport).
+# BASE_OUTPUT is whatever you pass in arg2. If you pass nothing, it defaults to (parent folder)/site/runs
 # you should not have to manually add new folders.
 airports = {
     "ahn": (33.95167820706025, -83.32489875559355),
@@ -30,7 +31,7 @@ airports = {
     "mcn": (32.70076950826015, -83.64790511895201),
     "rmg": (34.35267229676656, -85.16328449820841),
     "csg": (32.51571975545047, -84.9392150850212)
-} # locations to plot skewts, text products. meant for airports, you could put any location in domain here
+} # locations to plot skewts, text products, meteograms. meant for airports, you could put any location in domain here
 # format is "folder_name": (lat, lon)
 
 PRODUCTS = {

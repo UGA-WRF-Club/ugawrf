@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib import colors
@@ -48,8 +50,21 @@ PRODUCTS = {
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
 
-BASE_OUTPUT = "D:/ugawrf/site/runs" # should be passed in thru command line later
-WRF_FILE = "D:/ugawrf/image/wrfout_d01_2025-03-13_21_00_00" # needs to be edited for webserver later
+# Specify your output in the commandline. Arg1 is where you plan to store your runs, arg2 is your wrfout.
+# If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output
+# and (current folder)/wrfout_d01_2025-03-13_21_00_00 (the demo run) for your inputs.
+# An example input: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" "D:\ugawrf_fork\ugawrf\run"
+try:
+    WRF_FILE = sys.argv[1]
+except:
+    root_dir = Path(__file__).resolve().parent
+    WRF_FILE = root_dir / "wrfout_d01_2025-03-13_21_00_00"
+try:
+    BASE_OUTPUT = sys.argv[2]
+except:
+    root_dir = Path(__file__).resolve().parent.parent
+    BASE_OUTPUT = root_dir / "site" / "runs"
+
 
 hours = 24 # set to however many hours this wrf runs out to. setting it above will cause the script to break (out of bounds)
 # technically you can set it below the WRF but why would you do that unless you want it to run slightly faster, you already have the data in your wrfout
@@ -59,7 +74,9 @@ hours = 24 # set to however many hours this wrf runs out to. setting it above wi
 wrf_file = Dataset(WRF_FILE)
 run_time = str(wrf_file.START_DATE).replace(":", "_")
 
-print(f"processing data for run {run_time}")
+print(f"wrfout: {WRF_FILE}")
+print(f'image output: {BASE_OUTPUT}')
+print(f"let's go! processing data for run {run_time}")
 
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(datetime)

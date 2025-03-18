@@ -50,7 +50,7 @@ PRODUCTS = {
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
 
-# Specify your output in the commandline. Arg1 is where you plan to store your runs, arg2 is your wrfout.
+# Specify your wrfout and output folder in the commandline. Arg1 is your wrfout, arg2 is where you plan to store the products created.
 # If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output
 # and (current folder)/wrfout_d01_2025-03-13_21_00_00 (the demo run) for your inputs.
 # An example input: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" "D:\ugawrf_fork\ugawrf\run"

@@ -7,7 +7,7 @@ import numpy as np
 import datetime as dt
 
 # processing modules - located in the same folder as (module).py
-import point
+import textgen
 import weathermaps
 import skewt
 
@@ -87,7 +87,7 @@ text_start_time = dt.datetime.now()
 for airport, coords in airports.items():
     try:
         text_time = dt.datetime.now()
-        text_data = point.get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time)
+        text_data = textgen.get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time)
         output_path = os.path.join(BASE_OUTPUT, run_time, "text", airport)
         os.makedirs(output_path, exist_ok=True)
         with open(os.path.join(output_path, "forecast.txt"), 'w') as f:

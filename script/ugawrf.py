@@ -7,10 +7,10 @@ import numpy as np
 import datetime as dt
 
 # processing modules - located in the same folder as (module).py
-#import textgen
+import textgen
 import weathermaps
 import meteogram
-#import skewt
+import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()

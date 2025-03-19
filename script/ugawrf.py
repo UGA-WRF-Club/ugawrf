@@ -28,9 +28,14 @@ airports = {
     "ffc": (33.358755552804176, -84.5711101702346),
     "mcn": (32.70076950826015, -83.64790511895201),
     "rmg": (34.35267229676656, -85.16328449820841),
-    "csg": (32.51571975545047, -84.9392150850212)
+    "csg": (32.51571975545047, -84.9392150850212),
+    "bmx": (33.17895986702925, -86.7823825539515),
+    "ohx": (36.24707362357824, -86.56312930475052),
+    "gsp": (34.883261598428625, -82.22035185765819)
 } # locations to plot skewts, text products, meteograms. meant for airports, you could put any location in domain here
 # format is "folder_name": (lat, lon)
+# !!! IMPORTANT !!! our current skewt plot function is considerably intensive, taking about ~50 seconds per airport to finish (on my hardware).
+# this will scale up quick, so try not to add too many airports right now
 
 PRODUCTS = {
     "temperature": "T2",
@@ -38,10 +43,6 @@ PRODUCTS = {
     "wind": "WSPD10MAX",
     "comp_reflectivity": "REFD_COM",
     "pressure": "AFWA_MSLP",
-    "cape": "AFWA_CAPE",
-    "cape_mu": "AFWA_CAPE_MU",
-    "cin": "AFWA_CIN",
-    "cin_mu": "AFWA_CIN_MU",
     "helicity": "UP_HELI_MAX",
     "total_precip": "AFWA_TOTPRECIP",
     "snowfall": "SNOWNC",

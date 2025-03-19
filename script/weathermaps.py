@@ -22,6 +22,7 @@ def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_fil
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmin=-5, vmax=105)
         ax.set_title(f"2 Meter Temperature (°F) - Hour {timestep} - Valid: {forecast_time}")
         label = f"2M Temp (°F)"
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'Q2':
         # this was such a PITA you have no clue
         sfc_pressure = getvar(wrf_file, 'PSFC', timeidx=timestep)
@@ -31,15 +32,18 @@ def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_fil
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(td), cmap='BrBG', vmin=10, vmax=90)
         ax.set_title(f"2 Meter Dewpoint (°F) - Hour {timestep} - Valid: {forecast_time}")
         label = f"2M Dewpoint (°F)"
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'WSPD10MAX':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='YlOrRd', vmin=0, vmax=50)
         ax.set_title(f"10 Meter Wind Speed (m/s) - Hour {timestep} - Valid: {forecast_time}")
         label = f"10M Wind Speed (m/s)"
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'REFD_COM':
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap=refl_cmap, vmin=2, vmax=70)
         ax.set_title(f"Composite Reflectivity (dbZ) - Hour {timestep} - Valid: {forecast_time}")
         label = f"Composite Reflectivity (dbZ)"
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'AFWA_TOTPRECIP':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='magma_r', vmin=0, vmax=100)
         ax.set_title(f"Total Precipitation (mm) - Hour {timestep} - Valid: {forecast_time}")
@@ -72,3 +76,11 @@ def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_fil
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
+
+def plot_wind_barbs(ax, wrf_file, timestep, lons, lats):
+    u10 = getvar(wrf_file, "U10", timeidx=timestep)
+    v10 = getvar(wrf_file, "V10", timeidx=timestep)
+
+    # Downsample for clarity (e.g., every 10th point)
+    stride = 50
+    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), to_np(u10[::stride, ::stride]), to_np(v10[::stride, ::stride]), length=5,color='black', pivot='middle',barb_increments={'half': 2.5, 'full': 5, 'flag': 25})

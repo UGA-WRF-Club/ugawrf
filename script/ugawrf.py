@@ -7,9 +7,10 @@ import numpy as np
 import datetime as dt
 
 # processing modules - located in the same folder as (module).py
-import textgen
+#import textgen
 import weathermaps
-import skewt
+import meteogram
+#import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()
@@ -113,16 +114,32 @@ for product, variable in PRODUCTS.items():
         print(f"error processing {product}: {e}! last timestep: {t}")
 print(f"graphics processed successfully - took {dt.datetime.now() - map_time}")
 
+# meteograms
+meteogram_plot_time = dt.datetime.now()
+
+for airport, coords in airports.items():
+    try:
+        meteogram_time = dt.datetime.now()
+        output_path = os.path.join(BASE_OUTPUT, run_time, "meteogram", airport)
+        meteogram.plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, hours, run_time)
+        print(f"processed {airport} meteogram in {dt.datetime.now() - meteogram_time}")
+    except Exception as e:
+        print(f"error processing {airport} meteogram: {e}!")
+print(f"meteograms processed successfully - took {dt.datetime.now() - meteogram_plot_time}")
+
 # upper air plots
 skewt_plot_time = dt.datetime.now()
 
 for airport, coords in airports.items():
-    skewt_time = dt.datetime.now()
-    x_y = ll_to_xy(wrf_file, coords[0], coords[1])
-    output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
-    for t in range(0, hours + 1):
-        skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, run_time)
-    print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
+    try:
+        skewt_time = dt.datetime.now()
+        x_y = ll_to_xy(wrf_file, coords[0], coords[1])
+        output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
+        for t in range(0, hours + 1):
+            skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, run_time)
+        print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
+    except Exception as e:
+        print(f"error processing {airport} upper air plot: {e}!")
 print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
 
 process_time = dt.datetime.now() - start_time

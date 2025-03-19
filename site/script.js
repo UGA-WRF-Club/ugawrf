@@ -12,6 +12,7 @@ const slider = document.getElementById('timeSlider');
 var timestep = Number(slider.value)
 const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
+const meteogram = document.getElementById('meteogram')
 const textForecast = document.getElementById('textForecast');
 const sahn = document.getElementById('sahn');
 const scni = document.getElementById('scni');
@@ -42,6 +43,7 @@ function updateTextForecast() {
     .then((data) => {
         textForecast.textContent = data
       })
+    meteogram.src = `runs/${run}/meteogram/${textSelector}/meteogram.png`
 }
 slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);
@@ -55,6 +57,10 @@ document.getElementById('weatherImage').addEventListener('click', function() {
 
 });
 document.getElementById('textForecast').addEventListener('click', function() {
+    document.getElementById('textSelector').focus();
+
+});
+document.getElementById('meteogram').addEventListener('click', function() {
     document.getElementById('textSelector').focus();
 
 });

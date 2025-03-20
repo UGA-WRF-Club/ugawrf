@@ -80,7 +80,7 @@ def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_fil
 def plot_wind_barbs(ax, wrf_file, timestep, lons, lats):
     u10 = getvar(wrf_file, "U10", timeidx=timestep)
     v10 = getvar(wrf_file, "V10", timeidx=timestep)
-
+    
     # Downsample for clarity (e.g., every 10th point)
     stride = 50
-    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), to_np(u10[::stride, ::stride]), to_np(v10[::stride, ::stride]), length=5,color='black', pivot='middle',barb_increments={'half': 2.5, 'full': 5, 'flag': 25})
+    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), to_np(u10[::stride, ::stride]), to_np(v10[::stride, ::stride]), length=6,color='black', pivot='middle', barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222})

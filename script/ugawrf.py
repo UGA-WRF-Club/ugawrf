@@ -7,6 +7,7 @@ import numpy as np
 import datetime as dt
 
 # processing modules - located in the same folder as (module).py
+# if you want to skip generating a certain product, just comment out the module
 import textgen
 import weathermaps
 import meteogram

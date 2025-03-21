@@ -72,6 +72,7 @@ async function updateTextForecast() {
 slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);
 document.getElementById('runSelector').addEventListener('change', updateImage);
+document.getElementById('runSelector').addEventListener('change', updateTextForecast);
 document.getElementById('textSelector').addEventListener('change', updateTextForecast)
 updateImage();
 updateTextForecast();

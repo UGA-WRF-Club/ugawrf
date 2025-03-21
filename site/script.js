@@ -1,14 +1,29 @@
-const outputs = "runs/"
+
+async function loadDirectories() {
+    const response = await fetch('https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/');
+    const data = await response.json();
+    const directories = data.prefixes || []; // Get folder prefixes
+
+    const dropdown = document.getElementById('runSelector');
+    dropdown.innerHTML = ''; // Clear existing options
+    directories.reverse();
+    directories.forEach(dir => {
+        let folderName = dir.replace('outputs/', '').replace(/\/$/, ''); // Remove trailing slash
+        if (folderName) { // Ensure it's not an empty string
+            let option = document.createElement('option');
+            option.value = folderName;
+            option.textContent = folderName;
+            dropdown.appendChild(option);
+        }
+    updateImage();
+    updateTextForecast();
+    });
+}
+
+const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/"
 
 const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "comp_reflectivity": "Composite Reflectivity", "wind": "10m Wind", "pressure": "MSLP", "helicity": "Helicity", "total_precip": "Total Precipitation", "snowfall": "Snowfall", "echo_tops": "Echo Tops"};
 const productSelector = document.getElementById('productSelector');
-
-for (key in products) {
-    const option = document.createElement('option');
-    option.value = key;
-    option.textContent = products[key];
-    productSelector.appendChild(option);
-}
 
 const hours = 24
 const slider = document.getElementById('timeSlider');
@@ -32,7 +47,7 @@ function updateImage() {
     const product = productSelector.value;
     timestep = Number(slider.value);
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
-    weatherImage.src = `${run}/${product}/hour_${timestep}.png`;
+    weatherImage.src = outputs + `${run}/${product}/hour_${timestep}.png`;
     sahn.src = outputs + `${run}/skewt/ahn/hour_${timestep}.png`;
     scni.src = outputs + `${run}/skewt/cni/hour_${timestep}.png`;
     satl.src = outputs + `${run}/skewt/atl/hour_${timestep}.png`;
@@ -44,10 +59,10 @@ function updateImage() {
     sohx.src = outputs + `${run}/skewt/ohx/hour_${timestep}.png`;
     sgsp.src = outputs + `${run}/skewt/gsp/hour_${timestep}.png`;
 }
-function updateTextForecast() {
-    const textSelector = document.getElementById('textSelector').value;
-    const run = document.getElementById('runSelector').value;
-    fetch(`${run}/text/${textSelector}/forecast.txt`)
+async function updateTextForecast() {
+    const textSelector = await document.getElementById('textSelector').value;
+    const run = await document.getElementById('runSelector').value;
+    fetch(outputs + `${run}/text/${textSelector}/forecast.txt`)
     .then(response => response.text())
     .then((data) => {
         textForecast.textContent = data
@@ -107,3 +122,15 @@ function advanceLoop() {
 playButton.addEventListener('click', startLoop)
 pauseButton.addEventListener('click', endLoop)
 
+loadDirectories();
+window.onload = function() {
+    for (let key in products) {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = products[key];
+        productSelector.appendChild(option);
+    }
+    timestep = Number(slider.value);
+    updateImage()
+    updateTextForecast()
+};

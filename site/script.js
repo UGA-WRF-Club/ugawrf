@@ -1,5 +1,8 @@
+const outputs = "runs/"
+
 const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "comp_reflectivity": "Composite Reflectivity", "wind": "10m Wind", "pressure": "MSLP", "helicity": "Helicity", "total_precip": "Total Precipitation", "snowfall": "Snowfall", "echo_tops": "Echo Tops"};
 const productSelector = document.getElementById('productSelector');
+
 for (key in products) {
     const option = document.createElement('option');
     option.value = key;
@@ -29,27 +32,27 @@ function updateImage() {
     const product = productSelector.value;
     timestep = Number(slider.value);
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
-    weatherImage.src = `runs/${run}/${product}/hour_${timestep}.png`;
-    sahn.src = `runs/${run}/skewt/ahn/hour_${timestep}.png`;
-    scni.src = `runs/${run}/skewt/cni/hour_${timestep}.png`;
-    satl.src = `runs/${run}/skewt/atl/hour_${timestep}.png`;
-    smcn.src = `runs/${run}/skewt/mcn/hour_${timestep}.png`;
-    srmg.src = `runs/${run}/skewt/rmg/hour_${timestep}.png`;
-    scsg.src = `runs/${run}/skewt/csg/hour_${timestep}.png`;
-    sffc.src = `runs/${run}/skewt/ffc/hour_${timestep}.png`;
-    seet.src = `runs/${run}/skewt/bmx/hour_${timestep}.png`;
-    sohx.src = `runs/${run}/skewt/ohx/hour_${timestep}.png`;
-    sgsp.src = `runs/${run}/skewt/gsp/hour_${timestep}.png`;
+    weatherImage.src = `${run}/${product}/hour_${timestep}.png`;
+    sahn.src = outputs + `${run}/skewt/ahn/hour_${timestep}.png`;
+    scni.src = outputs + `${run}/skewt/cni/hour_${timestep}.png`;
+    satl.src = outputs + `${run}/skewt/atl/hour_${timestep}.png`;
+    smcn.src = outputs + `${run}/skewt/mcn/hour_${timestep}.png`;
+    srmg.src = outputs + `${run}/skewt/rmg/hour_${timestep}.png`;
+    scsg.src = outputs + `${run}/skewt/csg/hour_${timestep}.png`;
+    sffc.src = outputs + `${run}/skewt/ffc/hour_${timestep}.png`;
+    seet.src = outputs + `${run}/skewt/bmx/hour_${timestep}.png`;
+    sohx.src = outputs + `${run}/skewt/ohx/hour_${timestep}.png`;
+    sgsp.src = outputs + `${run}/skewt/gsp/hour_${timestep}.png`;
 }
 function updateTextForecast() {
     const textSelector = document.getElementById('textSelector').value;
     const run = document.getElementById('runSelector').value;
-    fetch(`runs/${run}/text/${textSelector}/forecast.txt`)
+    fetch(`${run}/text/${textSelector}/forecast.txt`)
     .then(response => response.text())
     .then((data) => {
         textForecast.textContent = data
       })
-    meteogram.src = `runs/${run}/meteogram/${textSelector}/meteogram.png`
+    meteogram.src = outputs + `${run}/meteogram/${textSelector}/meteogram.png`
 }
 slider.addEventListener('input', updateImage);
 productSelector.addEventListener('change', updateImage);

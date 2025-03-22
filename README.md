@@ -1,4 +1,4 @@
 # ugawrf
-non-operational, currently using demo images
+semi-operational, data may be delayed, missing, demos, and/or incorrect
  
-[https://uga-wrf-club.github.io/ugawrf/](https://uga-wrf-club.github.io/ugawrf/)
+staging: [https://uga-wrf-club.github.io/ugawrf/](https://uga-wrf-club.github.io/ugawrf/)

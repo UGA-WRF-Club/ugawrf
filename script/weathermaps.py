@@ -11,7 +11,7 @@ from metpy.plots import ctables
 import cartopy.feature as cfeature
 from matplotlib import colors
 
-def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_file):
+def plot_variable(data, timestep, output_path, forecast_times, airports, run_time, wrf_file):
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     plt.figure(figsize=(8, 6))
     ax = plt.axes(projection=ccrs.PlateCarree())
@@ -71,6 +71,7 @@ def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_fil
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
+    plt.tight_layout()
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=4))} EST", xy=(0.75, 1), xycoords='axes fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
@@ -80,7 +81,5 @@ def plot_variable(data, timestep, output_path, forecast_times, run_time, wrf_fil
 def plot_wind_barbs(ax, wrf_file, timestep, lons, lats):
     u10 = getvar(wrf_file, "U10", timeidx=timestep)
     v10 = getvar(wrf_file, "V10", timeidx=timestep)
-    
-    # Downsample for clarity (e.g., every 10th point)
     stride = 50
     ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), to_np(u10[::stride, ::stride]), to_np(v10[::stride, ::stride]), length=6,color='black', pivot='middle', barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222})

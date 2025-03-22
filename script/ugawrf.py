@@ -33,7 +33,7 @@ airports = {
     "bmx": (33.17895986702925, -86.7823825539515),
     "ohx": (36.24707362357824, -86.56312930475052),
     "gsp": (34.883261598428625, -82.22035185765819)
-} # locations to plot skewts, text products, meteograms. meant for airports, you could put any location in domain here
+} # locations to plot numbers on map, skewts, text products, meteograms. meant for airports, you could put any location in domain here
 # format is "folder_name": (lat, lon)
 # !!! IMPORTANT !!! our current skewt plot function is considerably intensive, taking about ~50 seconds per airport to finish (on my hardware).
 # this will scale up quick, so try not to add too many airports right now
@@ -110,7 +110,7 @@ for product, variable in PRODUCTS.items():
         output_path = os.path.join(BASE_OUTPUT, run_time, product)
         for t in range(0, hours + 1):
             data = getvar(wrf_file, variable, timeidx=t)
-            weathermaps.plot_variable(data, t, output_path, forecast_times, run_time, wrf_file)
+            weathermaps.plot_variable(data, t, output_path, forecast_times, airports, run_time, wrf_file)
         print(f"processed {product} in {dt.datetime.now() - product_time}")
     except Exception as e:
         print(f"error processing {product}: {e}! last timestep: {t}")

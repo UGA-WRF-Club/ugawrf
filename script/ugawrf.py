@@ -12,7 +12,7 @@ import json
 import textgen
 import weathermaps
 import meteogram
-import skewt
+#import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()
@@ -46,6 +46,7 @@ PRODUCTS = {
     "comp_reflectivity": "REFD_COM",
     "pressure": "AFWA_MSLP",
     "helicity": "UP_HELI_MAX",
+    "1hr_precip": "AFWA_TOTPRECIP",
     "total_precip": "AFWA_TOTPRECIP",
     "snowfall": "SNOWNC",
     "echo_tops": "ECHOTOP",
@@ -118,8 +119,7 @@ for product, variable in PRODUCTS.items():
         product_time = dt.datetime.now()
         output_path = os.path.join(BASE_OUTPUT, run_time, product)
         for t in range(0, hours + 1):
-            data = getvar(wrf_file, variable, timeidx=t)
-            weathermaps.plot_variable(data, t, output_path, forecast_times, airports, run_time, wrf_file)
+            weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, run_time, wrf_file)
         print(f"processed {product} in {dt.datetime.now() - product_time}")
     except Exception as e:
         print(f"error processing {product}: {e}! last timestep: {t}")

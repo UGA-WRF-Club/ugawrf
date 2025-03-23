@@ -20,7 +20,7 @@ async function loadDirectories() {
 
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/"
 
-const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "wind": "10m Max Wind", "pressure": "MSLP", "comp_reflectivity": "Composite Reflectivity", "total_precip": "Total Precipitation", "1hr_precip": "1-Hour Precipitation", "helicity": "Helicity", "snowfall": "Total Snowfall", "1hr_snowfall": "1-Hour Snowfall", "cloudcover": "Cloud Cover", "echo_tops": "Echo Tops"};
+const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "wind": "10m Max Wind", "pressure": "MSLP", "comp_reflectivity": "Composite Reflectivity", "total_precip": "Total Precipitation", "1hr_precip": "1-Hour Precipitation", "helicity": "Helicity", "cloudcover": "Cloud Cover", "echo_tops": "Echo Tops", "snowfall": "Total Snowfall", "1hr_snowfall": "1-Hour Snowfall", };
 const productSelector = document.getElementById('productSelector');
 
 const hours = 24

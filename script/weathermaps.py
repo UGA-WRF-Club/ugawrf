@@ -1,6 +1,6 @@
 # This module plots our maps.
 
-from wrf import getvar, to_np, latlon_coords, smooth2d
+from wrf import getvar, to_np, latlon_coords, smooth2d, ll_to_xy
 import matplotlib.pyplot as plt
 from metpy.units import units
 import os
@@ -93,10 +93,12 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             helicity_sum += to_np(helicity)
         reflectivity = getvar(wrf_file, "REFD_COM", timeidx=timestep)
         refl_cmap = ctables.registry.get_colortable("NWSReflectivity")
-        plt.contourf(to_np(lons), to_np(lats), to_np(reflectivity), cmap=refl_cmap, vmin=2, vmax=70, alpha=0.1)
-        contour = plt.contourf(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'])
+        plt.contourf(to_np(lons), to_np(lats), to_np(reflectivity), cmap=refl_cmap, vmin=2, vmax=70, alpha=0.4)
+        contour = plt.contourf(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], alpha=0.6)
+        plt.contour(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], linestyles='dashed')
         ax.set_title(f"Helicity Tracks + Composite Reflectivity - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Helicity m^2/s^2'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'cloudcover':
         cloud_total = np.mean(to_np(data_copy), axis=0)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(cloud_total), cmap="Greys", levels=np.linspace(0, 1, 11))
@@ -112,7 +114,14 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     # counties are very intensive to process, so im leaving them off for now
     #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
-    plt.tight_layout()
+    try:
+        for airport, coords in airports.items():
+                lat, lon = coords
+                idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
+                value = to_np(data_copy)[idx_y, idx_x]
+                ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='left', va='bottom')
+    except:
+        pass
     maxmin = ""
     max_value = to_np(data_copy).max()
     min_value = to_np(data_copy).min()
@@ -120,6 +129,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         maxmin += f"Max: {max_value:.2f}"
         if min_value != 0:
             maxmin += f"\nMin: {min_value:.2f}"
+    plt.tight_layout()
     ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')
     ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=4))} EST", xy=(0.25, 1), xycoords='axes fraction', fontsize=8, color='black')

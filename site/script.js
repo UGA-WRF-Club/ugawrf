@@ -28,7 +28,7 @@ async function loadDirectories() {
         if (folderName) {
             let option = document.createElement('option');
             option.value = folderName;
-            option.textContent = folderName;
+            option.textContent = folderName.replaceAll("-", '/').replace("_", " ").replaceAll("_", ":");
             runSelector.appendChild(option);
         }
     });

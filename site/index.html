@@ -34,6 +34,37 @@
   display: grid;
   grid-template-columns: auto auto;
 }
+.dropbtn {
+  background-color: #537cba;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
 </style>
 <body>
     <div style = "text-align:center">
@@ -43,9 +74,39 @@
     </select>
     <p>(YYYY-MM-DD HH:MM:SS UTC)</p>
     <h2>Weather Maps</h2>
-    <label for="productSelector">Select Product:</label>
-    <select id="productSelector">
-    </select>
+    <label for="dropdown">Select Product:</label>
+    <div class="dropdown">
+        <button class="dropbtn">Surface</button>
+        <div class="dropdown-content">
+            <a id="temperature" href="#">2m Temperature</a>
+            <a id="dewp" href="#">2m Dewpoint</a>
+            <a id="wind" href="#">10m Wind Gust</a>
+            <a id="pressure" href="#">MSLP</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Precip</button>
+        <div class="dropdown-content">
+            <a id="comp_reflectivity"href="#">Composite Reflectivity</a>
+            <a id="total_precip" href="#">Total Precipitation</a>
+            <a id="1hr_precip" href="#">1-Hour Precipitation</a>
+            <a id="helicity" href="#">Helicity Tracks</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Upper Air</button>
+        <div class="dropdown-content">
+            <a id="cloudcover" href="#">Cloud Cover</a>
+            <a id="echo_tops" href="#">Echo Tops</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Winter</button>
+        <div class="dropdown-content">
+            <a id="snowfall" href="#">Total Snow Accumulation</a>
+            <a id="1hr_snowfall" href="#">1-Hour Snow Accumulation</a>
+        </div>
+    </div>
     <br>
     <img id="weatherImage" src="" alt="Model Image" width="600"/>
     <br>
@@ -72,7 +133,7 @@
     <img loading="lazy" class="skewtimg" id="srmg" src="#" alt="Upper Air Plot for RMG" width="300"/>
     <img loading="lazy" class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="300"/>
     <img loading="lazy" class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="300"/>
-    <img loading="lazy" class="skewtimg" id="seet" src="#" alt="Upper Air Plot for EET" width="300"/>
+    <img loading="lazy" class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for EET" width="300"/>
     <img loading="lazy" class="skewtimg" id="sohx" src="#" alt="Upper Air Plot for OHX" width="300"/>
     <img loading="lazy" class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="300"/>
     </div>

@@ -86,8 +86,8 @@ forecast_times = [convert_time(t) for t in times]
 hours = len(times) -1
 
 run_metadata = {
-    "init_time": str(forecast_times[0]),  # Start time of the model run
-    "forecast_hours": hours  # Total forecast length in hours
+    "init_time": str(forecast_times[0]),
+    "forecast_hours": hours
 }
 json_output_path = os.path.join(BASE_OUTPUT, run_time, "metadata.json")
 os.makedirs(os.path.dirname(json_output_path), exist_ok=True)

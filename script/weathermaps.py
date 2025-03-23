@@ -1,6 +1,6 @@
 # This module plots our maps.
 
-from wrf import getvar, to_np, latlon_coords, smooth2d, ll_to_xy
+from wrf import getvar, to_np, latlon_coords, smooth2d, ll_to_xy, interplevel
 import matplotlib.pyplot as plt
 from metpy.units import units
 import os
@@ -12,9 +12,12 @@ import cartopy.feature as cfeature
 from matplotlib import colors
 import numpy as np
 
-def plot_variable(product, variable, timestep, output_path, forecast_times, airports, run_time, wrf_file):
+def plot_variable(product, variable, timestep, output_path, forecast_times, airports, run_time, wrf_file, level=None):
     data = getvar(wrf_file, variable, timeidx=timestep)
     data_copy = data.copy()
+    if level:
+        pressure = getvar(wrf_file, "P", timeidx=timestep)
+        data_copy = to_np(interplevel(data, pressure, level))
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     plt.figure(figsize=(8, 6))
     ax = plt.axes(projection=ccrs.PlateCarree())
@@ -37,10 +40,20 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'wind':
+        u10 = getvar(wrf_file, "U10", timeidx=timestep)
+        v10 = getvar(wrf_file, "V10", timeidx=timestep)
+        wind_speed = np.sqrt(u10**2 + v10**2) * 2.23694
+        wind_speed = to_np(wind_speed)
+        contour = plt.contourf(to_np(lons), to_np(lats), wind_speed, cmap='YlOrRd', vmin=0, vmax=85)
+        ax.set_title(f"10m Wind Speed (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = "Wind Speed (mph)"
+        data_copy = wind_speed
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
+    elif product == 'wind_gust':
         data_copy = data_copy * 2.23694
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', vmin=0, vmax=80)
-        ax.set_title(f"10m Wind Max Speed (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
-        label = f"Wind Max Speed (mph)"
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', vmin=0, vmax=100)
+        ax.set_title(f"10m Wind Gust (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f"Wind Max (mph)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'comp_reflectivity':
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
@@ -82,6 +95,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plt.contour(to_np(lons), to_np(lats), to_np(smooth_slp), colors="black", transform=ccrs.PlateCarree())
         ax.set_title(f"MSLP (mb) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"MSLP (mb)"
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'echo_tops':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='cividis_r', vmin=0, vmax=50000)
         ax.set_title(f"Echo Tops (m) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
@@ -113,7 +127,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     # counties are very intensive to process, so im leaving them off for now
-    #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
+    ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     try:
         for airport, coords in airports.items():
                 lat, lon = coords
@@ -137,8 +151,18 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()
 
-def plot_wind_barbs(ax, wrf_file, timestep, lons, lats):
-    u10 = getvar(wrf_file, "U10", timeidx=timestep)
-    v10 = getvar(wrf_file, "V10", timeidx=timestep)
+def plot_wind_barbs(ax, wrf_file, timestep, lons, lats, pressure_level=None):
+    if pressure_level:
+        u = getvar(wrf_file, "U", timeidx=timestep)
+        v = getvar(wrf_file, "V", timeidx=timestep)
+        pressure = getvar(wrf_file, "P", timeidx=timestep) / 100 
+        u_interp = interplevel(u, pressure, pressure_level)
+        v_interp = interplevel(v, pressure, pressure_level)
+    else:
+        u_interp = getvar(wrf_file, "U10", timeidx=timestep)
+        v_interp = getvar(wrf_file, "V10", timeidx=timestep)
     stride = 50
-    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), to_np(u10[::stride, ::stride]), to_np(v10[::stride, ::stride]), length=6,color='black', pivot='middle', barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222})
+    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), 
+             to_np(u_interp[::stride, ::stride]), to_np(v_interp[::stride, ::stride]),
+             length=6, color='black', pivot='middle', 
+             barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222})

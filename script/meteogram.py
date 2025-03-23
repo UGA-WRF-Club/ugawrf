@@ -15,21 +15,17 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     v_wind = [to_np(getvar(wrf_file, "V10", timeidx=t)[y, x]) for t in hours]
     temperatures = []
     dewpoints = []
-    wind_speeds = []
     pressures = []
     for t in hours:
         t_data = getvar(wrf_file, "T2", timeidx=t)[y, x].values
         q_data = getvar(wrf_file, "Q2", timeidx=t)[y, x].values
-        wspd_data = getvar(wrf_file, "WSPD10MAX", timeidx=t)[y, x].values
         pressure_data = getvar(wrf_file, "AFWA_MSLP", timeidx=t)[y, x].values
         t_f = (t_data - 273.15) * 9/5 + 32
         td = mpcalc.dewpoint(mpcalc.vapor_pressure(getvar(wrf_file, 'PSFC', timeidx=t) / 100 * units.mbar, q_data))
         td_f = to_np(td)[y, x].magnitude * 9/5 + 32
-        wspd = to_np(wspd_data) * 2.23694
         pressure_mb = to_np(pressure_data) / 100
         temperatures.append(t_f)
         dewpoints.append(td_f)
-        wind_speeds.append(wspd)
         pressures.append(pressure_mb)
     fig, ax1 = plt.subplots(figsize=(10, 6))
     ax1.plot(hours, temperatures, color='red', label='Temperature (°F)')

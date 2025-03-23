@@ -1,4 +1,5 @@
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/";
+//const outputs = "runs/"
 const hours = 24;
 let timestep = 0;
 let product = "temperature";
@@ -22,7 +23,6 @@ async function loadDirectories() {
     const response = await fetch('https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/');
     const data = await response.json();
     const directories = data.prefixes || [];
-    runSelector.innerHTML = '';
     directories.reverse().forEach(dir => {
         const folderName = dir.replace('outputs/', '').replace(/\/$/, '');
         if (folderName) {

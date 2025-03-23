@@ -42,7 +42,8 @@ airports = {
 PRODUCTS = {
     "temperature": "T2",
     "dewp": "Q2",
-    "wind": "WSPD10MAX",
+    "wind": "U10",
+    "wind_gust": "WSPD10MAX",
     "comp_reflectivity": "REFD_COM",
     "pressure": "AFWA_MSLP",
     "helicity": "UP_HELI_MAX",
@@ -120,8 +121,11 @@ for product, variable in PRODUCTS.items():
     try:
         product_time = dt.datetime.now()
         output_path = os.path.join(BASE_OUTPUT, run_time, product)
+        level = None
+        if "_" in product and "mb" in product:
+            level = int(product.split("_")[-1].replace("mb", ""))
         for t in range(0, hours + 1):
-            weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, run_time, wrf_file)
+            weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, run_time, wrf_file, level)
         print(f"processed {product} in {dt.datetime.now() - product_time}")
     except Exception as e:
         print(f"error processing {product}: {e}! last timestep: {t}")

@@ -80,7 +80,8 @@
         <div class="dropdown-content">
             <a id="temperature" href="#">2m Temperature</a>
             <a id="dewp" href="#">2m Dewpoint</a>
-            <a id="wind" href="#">10m Wind Gust</a>
+            <a id="wind" href="#">10m Wind Speed</a>
+            <a id="wind_gust" href="#">10m Wind Gust</a>
             <a id="pressure" href="#">MSLP</a>
         </div>
     </div>
@@ -90,11 +91,16 @@
             <a id="comp_reflectivity"href="#">Composite Reflectivity</a>
             <a id="total_precip" href="#">Total Precipitation</a>
             <a id="1hr_precip" href="#">1-Hour Precipitation</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Severe</button>
+        <div class="dropdown-content">
             <a id="helicity" href="#">Helicity Tracks</a>
         </div>
     </div>
     <div class="dropdown">
-        <button class="dropbtn">Upper Air</button>
+        <button class="dropbtn">Aloft - Moisture</button>
         <div class="dropdown-content">
             <a id="cloudcover" href="#">Cloud Cover</a>
             <a id="echo_tops" href="#">Echo Tops</a>
@@ -165,6 +171,7 @@
     <br>
     <p>Product Changelog:</p>
     <ul class="textContainer">
+        <li>Wind, wind gusts - Before the 25/03/23 21z run, the "wind gusts" product was not available and "winds" actually plotted wind gusts.</li>
         <li>Helicity Tracks, 1-Hour Snowfall, Cloud Cover, values plotted at airports - Only available after the 25/03/23 06z run</li>
         <li>1-Hour Precip - Only available after the 25/03/23 03z run</li>
     </ul>

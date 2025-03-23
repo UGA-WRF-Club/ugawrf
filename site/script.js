@@ -5,7 +5,6 @@ async function loadDirectories() {
     const directories = data.prefixes || []; // Get folder prefixes
 
     const dropdown = document.getElementById('runSelector');
-    dropdown.innerHTML = ''; // Clear existing options
     directories.reverse();
     directories.forEach(dir => {
         let folderName = dir.replace('outputs/', '').replace(/\/$/, ''); // Remove trailing slash
@@ -21,6 +20,7 @@ async function loadDirectories() {
 }
 
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/"
+// const outputs = "runs/"
 
 const products = {"temperature": "2m Temperature", "dewp": "2m Dewpoint", "comp_reflectivity": "Composite Reflectivity", "wind": "10m Wind", "pressure": "MSLP", "helicity": "Helicity", "total_precip": "Total Precipitation", "snowfall": "Snowfall", "echo_tops": "Echo Tops"};
 const productSelector = document.getElementById('productSelector');

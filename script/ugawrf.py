@@ -66,10 +66,6 @@ except:
     root_dir = Path(__file__).resolve().parent.parent
     BASE_OUTPUT = root_dir / "site" / "runs"
 
-
-hours = 24 # set to however many hours this wrf runs out to. setting it above will cause the script to break (out of bounds)
-# technically you can set it below the WRF but why would you do that unless you want it to run slightly faster, you already have the data in your wrfout
-
 # --- END CONFIG --- #
 
 wrf_file = Dataset(WRF_FILE)
@@ -79,9 +75,11 @@ print(f"wrfout: {WRF_FILE}")
 print(f'image output: {BASE_OUTPUT}')
 print(f"let's go! processing data for run {run_time}")
 
+times = extract_times(wrf_file, timeidx=None)
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(dt.datetime)
-forecast_times = [convert_time(t) for t in extract_times(wrf_file, timeidx=None)]
+forecast_times = [convert_time(t) for t in times]
+hours = len(times) -1
 
 # processing starts here
 

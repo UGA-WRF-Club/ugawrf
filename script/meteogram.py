@@ -40,8 +40,12 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     ax2 = ax1.twinx()
     ax2.plot(hours, pressures, color='blue', label='Pressure (mb)')
     ax2.set_ylabel('Pressure (mb)')
-    fig.legend(loc="lower right")
-    plt.title(f"UGA-WRF Meteogram for {airport.upper()} starting at {forecast_times[1]} UTC")
+    lines_ax1, labels_ax1 = ax1.get_legend_handles_labels()
+    lines_ax2, labels_ax2 = ax2.get_legend_handles_labels()
+    all_lines = lines_ax1 + lines_ax2
+    all_labels = labels_ax1 + labels_ax2
+    ax1.legend(all_lines, all_labels, loc="upper left")
+    plt.title(f"UGA-WRF Meteogram for {airport.upper()} starting at {forecast_times[1]} UTC - Init: {forecast_times[0]}")
     plt.grid(True)
     plt.tight_layout()
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')

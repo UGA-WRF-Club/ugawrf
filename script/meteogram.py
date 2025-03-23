@@ -1,3 +1,5 @@
+# This module generates our meteograms.
+
 import matplotlib.pyplot as plt
 from wrf import getvar, ll_to_xy, to_np
 import numpy as np

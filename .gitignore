@@ -2,3 +2,4 @@ wrfout*
 __pycache__
 *.png
 *.txt
+*.json

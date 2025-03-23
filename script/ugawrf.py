@@ -5,6 +5,7 @@ from netCDF4 import Dataset
 from wrf import getvar, extract_times, ll_to_xy
 import numpy as np
 import datetime as dt
+import json
 
 # processing modules - located in the same folder as (module).py
 # if you want to skip generating a certain product, just comment out the module
@@ -80,6 +81,16 @@ def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(dt.datetime)
 forecast_times = [convert_time(t) for t in times]
 hours = len(times) -1
+
+run_metadata = {
+    "init_time": str(forecast_times[0]),  # Start time of the model run
+    "forecast_hours": hours  # Total forecast length in hours
+}
+json_output_path = os.path.join(BASE_OUTPUT, run_time, "metadata.json")
+os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
+with open(json_output_path, "w") as json_file:
+    json.dump(run_metadata, json_file, indent=4)
+print(f"Metadata JSON saved: {json_output_path}")
 
 # processing starts here
 

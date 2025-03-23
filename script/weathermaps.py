@@ -20,7 +20,7 @@ def plot_variable(data, timestep, output_path, forecast_times, airports, run_tim
     if data.name == 'T2':
         data_copy = (data_copy - 273.15) * 9/5 + 32
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmin=-5, vmax=105)
-        ax.set_title(f"2 Meter Temperature (°F) - Hour {timestep} - Valid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"2m Temperature (°F) - Hour {timestep} - Valid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'Q2':
@@ -31,13 +31,13 @@ def plot_variable(data, timestep, output_path, forecast_times, airports, run_tim
         td = to_np(td) * 9/5 + 32
         data_copy = to_np(td)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(td), cmap='BrBG', vmin=10, vmax=90)
-        ax.set_title(f"2 Meter Dewpoint (°F) - Hour {timestep} - Valid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"2m Dewpoint (°F) - Hour {timestep} - Valid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'WSPD10MAX':
         data_copy = data_copy * 2.23694
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', vmin=0, vmax=80)
-        ax.set_title(f"10 Meter Wind Max Speed (mph) - Hour {timestep} - Valid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"10m Wind Max Speed (mph) - Hour {timestep} - Valid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Wind Max Speed (mph)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif data.name == 'REFD_COM':

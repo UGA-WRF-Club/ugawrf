@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 from netCDF4 import Dataset
-from wrf import getvar, extract_times, ll_to_xy
+from wrf import extract_times, ll_to_xy
 import numpy as np
 import datetime as dt
 import json
@@ -12,7 +12,7 @@ import json
 import textgen
 import weathermaps
 import meteogram
-#import skewt
+import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()
@@ -48,7 +48,9 @@ PRODUCTS = {
     "helicity": "UP_HELI_MAX",
     "1hr_precip": "AFWA_TOTPRECIP",
     "total_precip": "AFWA_TOTPRECIP",
+    "1hr_snowfall": "SNOWNC",
     "snowfall": "SNOWNC",
+    "cloudcover": "CLDFRA",
     "echo_tops": "ECHOTOP",
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"

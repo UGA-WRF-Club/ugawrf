@@ -10,6 +10,7 @@ import cartopy.crs as ccrs
 from metpy.plots import ctables, USCOUNTIES
 import cartopy.feature as cfeature
 from matplotlib import colors
+import numpy as np
 
 def plot_variable(product, variable, timestep, output_path, forecast_times, airports, run_time, wrf_file):
     data = getvar(wrf_file, variable, timeidx=timestep)
@@ -58,13 +59,21 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         precip_1hr = (rain_now - rain_prev) / 25.4
         data_copy = precip_1hr.copy()
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), 20, cmap="magma_r", vmin=0, vmax=5)
-        ax.set_title(f"1-Hour Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"1 Hour Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':
         data_copy = data_copy / 25.4
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BuPu', vmin=0, vmax=10)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', vmin=0, vmax=9)
         ax.set_title(f"Total Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Accumulated Snowfall (in)"
+    elif product == '1hr_snowfall':
+        snow_now = getvar(wrf_file, "SNOWNC", timeidx=timestep)
+        snow_prev = getvar(wrf_file, "SNOWNC", timeidx=timestep - 1) if timestep > 0 else snow_now * 0
+        snow_1hr = (snow_now - snow_prev) / 25.4
+        data_copy = snow_1hr.copy()
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', vmin=0, vmax=3)
+        ax.set_title(f"1 Hour Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'1 Hour Accumulated Snowfall'
     elif product == 'pressure':
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
@@ -86,8 +95,13 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         refl_cmap = ctables.registry.get_colortable("NWSReflectivity")
         plt.contourf(to_np(lons), to_np(lats), to_np(reflectivity), cmap=refl_cmap, vmin=2, vmax=70, alpha=0.1)
         contour = plt.contourf(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'])
-        ax.set_title(f"Helicity Tracks + Composite Reflectivity\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"Helicity Tracks + Composite Reflectivity - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Helicity m^2/s^2'
+    elif product == 'cloudcover':
+        cloud_total = np.mean(to_np(data_copy), axis=0)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(cloud_total), cmap="Greys", levels=np.linspace(0, 1, 11))
+        ax.set_title(f"Cloud Cover - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Cloud Fraction (0-1)'
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
@@ -108,7 +122,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             maxmin += f"\nMin: {min_value:.2f}"
     ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')
-    ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=4))} EST", xy=(0.5, 1), xycoords='axes fraction', fontsize=8, color='black')
+    ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=4))} EST", xy=(0.25, 1), xycoords='axes fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()

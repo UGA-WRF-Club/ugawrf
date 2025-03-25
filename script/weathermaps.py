@@ -197,7 +197,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     plt.tight_layout()
     ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')
-    ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=4))} EST", xy=(0.25, 1), xycoords='axes fraction', fontsize=8, color='black')
+    ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=5))} EST", xy=(0.25, 1), xycoords='axes fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"))
     plt.close()

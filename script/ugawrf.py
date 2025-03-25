@@ -53,6 +53,8 @@ PRODUCTS = {
     "snowfall": "SNOWNC",
     "cloudcover": "CLDFRA",
     "echo_tops": "ECHOTOP",
+
+    # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
     "temp_850mb": "tc",
     "temp_700mb": "tc",
     "temp_500mb": "tc",

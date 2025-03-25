@@ -61,7 +61,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'comp_reflectivity':
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap=refl_cmap, vmin=2, vmax=70)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), 15, cmap=refl_cmap, vmin=2, vmax=70)
         ax.set_title(f"Composite Reflectivity (dbZ) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Composite Reflectivity (dbZ)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)

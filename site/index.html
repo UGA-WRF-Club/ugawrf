@@ -5,67 +5,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<style>
-    body {
-  font-family: "Funnel Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-}
-
-    .skewtContainer > img:active {
-    width: 600px;
-}
-    .skewtimg{
-        border: 1px solid black;
-}
-    .textContainer {
-    width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid black;
-    text-align: left;
-    white-space: pre-line;
-    font-size: 75%;
-    overflow: auto;
-}
-.point-container {
-  display: grid;
-  grid-template-columns: auto auto;
-}
-.dropbtn {
-  background-color: #537cba;
-  color: white;
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-}
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {background-color: #ddd;}
-
-.dropdown:hover .dropdown-content {display: block;}
-
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
-</style>
 <body>
     <div style = "text-align:center">
     <h1>UGA-WRF Viewer</h1>
@@ -193,10 +134,10 @@
     <br>
     <p>Product Changelog:</p>
     <ul class="textContainer">
-        <li>Upper air plots - Only available after the 25/03/25 03z run. Additionally, text displaying EST before this run was actually in EDT.</li>
-        <li>Wind, wind gusts - Before the 25/03/23 21z run, the "wind gusts" product was not available and "winds" actually plotted wind gusts.</li>
-        <li>Helicity Tracks, 1-Hour Snowfall, Cloud Cover, values plotted at airports - Only available after the 25/03/23 06z run</li>
-        <li>1-Hour Precip - Only available after the 25/03/23 03z run</li>
+        <li>Upper air plots, improved MSLP contours - Only available after the 2025/03/25 03z run. Additionally, text displaying EST before this run are actually in EDT.</li>
+        <li>Wind, wind gusts - Before the 2025/03/23 21z run, the "wind gusts" product was not available and "winds" actually plotted wind gusts.</li>
+        <li>Helicity Tracks, 1-Hour Snowfall, Cloud Cover, values plotted at airports - Only available after the 2025/03/23 06z run</li>
+        <li>1-Hour Precip - Only available after the 2025/03/23 03z run</li>
     </ul>
     <script src="script.js"></script>
     </div>

@@ -42,10 +42,10 @@ airports = {
 PRODUCTS = {
     "temperature": "T2",
     "dewp": "Q2",
+    "pressure": "AFWA_MSLP",
     "wind": "U10",
     "wind_gust": "WSPD10MAX",
     "comp_reflectivity": "REFD_COM",
-    "pressure": "AFWA_MSLP",
     "helicity": "UP_HELI_MAX",
     "1hr_precip": "AFWA_TOTPRECIP",
     "total_precip": "AFWA_TOTPRECIP",

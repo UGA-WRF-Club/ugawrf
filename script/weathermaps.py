@@ -46,14 +46,16 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         v10 = getvar(wrf_file, "V10", timeidx=timestep)
         wind_speed = np.sqrt(u10**2 + v10**2) * 2.23694
         wind_speed = to_np(wind_speed)
-        contour = plt.contourf(to_np(lons), to_np(lats), wind_speed, cmap='plasma', vmin=0, vmax=85)
+        divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=30, vmax=90)
+        contour = plt.contourf(to_np(lons), to_np(lats), wind_speed, cmap='YlOrRd', norm=divnorm)
         ax.set_title(f"10m Wind Speed (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = "Wind Speed (mph)"
         data_copy = wind_speed
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'wind_gust':
         data_copy = data_copy * 2.23694
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', vmin=0, vmax=100)
+        divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=50, vmax=110)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm)
         ax.set_title(f"10m Wind Gust (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Wind Max (mph)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -96,7 +98,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm)
         smooth_slp = smooth2d(data_copy, 8, cenweight=6)
-        plt.contour(to_np(lons), to_np(lats), to_np(smooth_slp), colors="black", transform=ccrs.PlateCarree())
+        plt.contour(to_np(lons), to_np(lats), to_np(smooth_slp), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(960, 1060, 4))
         ax.set_title(f"MSLP (mb) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"MSLP (mb)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)

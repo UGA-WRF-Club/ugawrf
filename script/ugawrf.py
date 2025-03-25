@@ -9,10 +9,10 @@ import json
 
 # processing modules - located in the same folder as (module).py
 # if you want to skip generating a certain product, just comment out the module
-import textgen
+#import textgen
 import weathermaps
-import meteogram
-import skewt
+#import meteogram
+#import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()
@@ -53,6 +53,18 @@ PRODUCTS = {
     "snowfall": "SNOWNC",
     "cloudcover": "CLDFRA",
     "echo_tops": "ECHOTOP",
+    "temp_850mb": "tc",
+    "temp_700mb": "tc",
+    "temp_500mb": "tc",
+    "temp_300mb": "tc",
+    "td_850mb": "td",
+    "td_700mb": "td",
+    "td_500mb": "td",
+    "td_300mb": "td",
+    "wind_850mb": "ua",
+    "wind_700mb": "ua",
+    "wind_500mb": "ua",
+    "wind_300mb": "ua",
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
 

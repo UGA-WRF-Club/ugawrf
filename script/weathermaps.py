@@ -16,7 +16,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     data = getvar(wrf_file, variable, timeidx=timestep)
     data_copy = data.copy()
     if level:
-        pressure = getvar(wrf_file, "P", timeidx=timestep)
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
         data_copy = to_np(interplevel(data, pressure, level))
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     plt.figure(figsize=(8, 6))
@@ -30,12 +30,14 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'dewp':
         # this was such a PITA you have no clue
-        sfc_pressure = getvar(wrf_file, 'PSFC', timeidx=timestep)
-        e = mpcalc.vapor_pressure(sfc_pressure / 100 * units.mbar, data)
-        td = mpcalc.dewpoint(e)
-        td = to_np(td) * 9/5 + 32
+        sfc_pressure = getvar(wrf_file, 'PSFC', timeidx=timestep) / 100 * units.mbar
+        q2 = getvar(wrf_file, 'Q2', timeidx=timestep)
+        q2 = np.where(q2 < 0, 1e-6, q2)
+        t2 = getvar(wrf_file, 'T2', timeidx=timestep)
+        td = mpcalc.dewpoint_from_specific_humidity(sfc_pressure, t2, q2)
         data_copy = to_np(td)
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(td), cmap='BrBG', vmin=10, vmax=90)
+        data_copy = data_copy.magnitude * 9/5 + 32
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=10, vmax=90)
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -44,7 +46,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         v10 = getvar(wrf_file, "V10", timeidx=timestep)
         wind_speed = np.sqrt(u10**2 + v10**2) * 2.23694
         wind_speed = to_np(wind_speed)
-        contour = plt.contourf(to_np(lons), to_np(lats), wind_speed, cmap='YlOrRd', vmin=0, vmax=85)
+        contour = plt.contourf(to_np(lons), to_np(lats), wind_speed, cmap='plasma', vmin=0, vmax=85)
         ax.set_title(f"10m Wind Speed (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = "Wind Speed (mph)"
         data_copy = wind_speed
@@ -76,7 +78,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':
         data_copy = data_copy / 25.4
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', vmin=0, vmax=9)
+        divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=1, vmax=10)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', norm=divnorm)
         ax.set_title(f"Total Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Accumulated Snowfall (in)"
     elif product == '1hr_snowfall':
@@ -84,7 +87,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         snow_prev = getvar(wrf_file, "SNOWNC", timeidx=timestep - 1) if timestep > 0 else snow_now * 0
         snow_1hr = (snow_now - snow_prev) / 25.4
         data_copy = snow_1hr.copy()
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', vmin=0, vmax=3)
+        divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=0.3, vmax=3)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', norm=divnorm)
         ax.set_title(f"1 Hour Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'1 Hour Accumulated Snowfall'
     elif product == 'pressure':
@@ -118,8 +122,53 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(cloud_total), cmap="Greys", levels=np.linspace(0, 1, 11))
         ax.set_title(f"Cloud Cover - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Cloud Fraction (0-1)'
+    elif product.startswith("temp") and level != None:
+        cmax, cmin = None, None
+        if level == 850:
+            cmax, cmin = 40, -20
+        elif level == 700:
+            cmax, cmin = 20, -30
+        elif level == 500:
+            cmax, cmin = 0, -50
+        elif level == 300:
+            cmax, cmin = -20, -70
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmax=cmax, vmin=cmin)
+        ax.set_title(f"{level}mb Temp (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Temp (°C)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product.startswith("td") and level != None:
+        cmax, cmin = None, None
+        if level == 850:
+            cmax, cmin = 30, -20
+        elif level == 700:
+            cmax, cmin = 10, -30
+        elif level == 500:
+            cmax, cmin = -10, -50
+        elif level == 300:
+            cmax, cmin = -30, -70
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmax=cmax, vmin=cmin)
+        ax.set_title(f"{level}mb Dew Point (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Dew Point (°C)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product.startswith("wind") and level != None:
+        va = interplevel(getvar(wrf_file, "va", timeidx=timestep), pressure, level)
+        ws = np.sqrt(to_np(data_copy)**2 + to_np(va)**2) * 1.94384  # Convert m/s to knots
+        data_copy = ws
+        cmax = None
+        if level == 850:
+            cmax = 50
+        elif level == 700:
+            cmax = 60
+        elif level == 500:
+            cmax = 80
+        elif level == 300:
+            cmax = 120
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(ws), cmap="plasma", vmax=cmax)
+        ax.set_title(f"{level}mb Wind Speed (kt) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Wind Speed (kt)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     else:
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), cmap='coolwarm')
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"{data.description}"
     plt.colorbar(contour, ax=ax, orientation='horizontal', pad=0.05, label=label)
@@ -127,7 +176,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     # counties are very intensive to process, so im leaving them off for now
-    ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
+    #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     try:
         for airport, coords in airports.items():
                 lat, lon = coords
@@ -153,9 +202,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
 
 def plot_wind_barbs(ax, wrf_file, timestep, lons, lats, pressure_level=None):
     if pressure_level:
-        u = getvar(wrf_file, "U", timeidx=timestep)
-        v = getvar(wrf_file, "V", timeidx=timestep)
-        pressure = getvar(wrf_file, "P", timeidx=timestep) / 100 
+        u = getvar(wrf_file, "ua", timeidx=timestep)
+        v = getvar(wrf_file, "va", timeidx=timestep)
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
         u_interp = interplevel(u, pressure, pressure_level)
         v_interp = interplevel(v, pressure, pressure_level)
     else:

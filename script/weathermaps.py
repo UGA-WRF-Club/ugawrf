@@ -127,13 +127,13 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     elif product.startswith("temp") and level != None:
         cmax, cmin = None, None
         if level == 850:
-            cmax, cmin = 40, -20
+            cmax, cmin = 50, -20
         elif level == 700:
-            cmax, cmin = 20, -30
+            cmax, cmin = 30, -30
         elif level == 500:
-            cmax, cmin = 0, -50
+            cmax, cmin = 10, -50
         elif level == 300:
-            cmax, cmin = -20, -70
+            cmax, cmin = -30, -70
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmax=cmax, vmin=cmin)
         ax.set_title(f"{level}mb Temp (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temp (°C)'

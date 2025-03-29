@@ -125,12 +125,14 @@ function toggleSecondaryDisplay() {
                 multiSubchooser.appendChild(option)
             }
         }
+        secondaryImage.addEventListener('click', () => slider.focus());
         updateSecondaryDisplay()
     }
     if (multiEnabler.checked == false) {
         secondaryImage.setAttribute('style', 'display: none;')
         multiSelector.disabled = true
         multiSubchooser.disabled = true
+        secondaryImage.removeEventListener('click', () => slider.focus());
     }
 }
 

@@ -77,7 +77,11 @@
         </div>
     </div>
     <br>
+    <div class="multi-container" id="multiContainer">
     <img id="weatherImage" src="" alt="Model Image" width="600"/>
+    <img id="secondaryImage" src="" alt="Secondary Image" width="600" height="450" style="display: none;">
+    </div>
+    <br>
     <br>
     <label for="timeSlider">Timestep:</label>
     <input type="range" id="timeSlider" min="0" max="24" value="0"/>
@@ -92,6 +96,15 @@
         <option value="200">0.2sec</option>
     </select>
     <br>
+    <label for="multiEnabler">Secondary Display</label>
+    <input type="checkbox" id="multiEnabler">
+    <label for="multiSelector">Type:</label>
+    <select id="multiSelector" disabled>
+        <option value="map">Secondary Map</option>
+        <option value="skewt">SkewT</option>
+    </select>
+    <select id="multiSubchooser" disabled>
+    </select>
     <h2>Upper Air Plots</h2>
     <p>Use timestep slider above. Click and hold to enlarge.</p>
     <div class="skewtContainer">
@@ -128,18 +141,19 @@
         <div id="textForecast">Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally or looking at the staging website unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
     </div>
     </div>
-    <h3>Disclaimer: Semi-operational.</h3>
-    <b><p>Data on this page may be delayed, incorrect, demos, and/or missing. Products may change without notice.</p></b>
-    <p>This project is open source and be found <a href="https://github.com/UGA-WRF-Club/ugawrf">here.</a></p>
-    <br>
     <p>Product Changelog:</p>
     <ul class="textContainer">
+        <li>Aloft temp colormap adjustments - Before the 2025/03/26 06z run, temperatures aloft were plotted on a poor colormap. This was adjusted in this run.</li>
         <li>Upper air maps, improved MSLP contours, reflectivity colormap improvements - Only available after the 2025/03/25 03z run. Additionally, text displaying EST before this run is actually in EDT.</li>
         <li>Wind, wind gusts - Before the 2025/03/23 21z run, the "wind gusts" product was not available and "winds" actually plotted wind gusts.</li>
         <li>Helicity Tracks, 1-Hour Snowfall, Cloud Cover, values plotted at airports - Only available after the 2025/03/23 06z run</li>
         <li>1-Hour Precip - Only available after the 2025/03/23 03z run</li>
     </ul>
-    <script src="script.js"></script>
+    <h3>Disclaimer: Semi-operational.</h3>
+    <b><p>Data on this page may be delayed, incorrect, demos, and/or missing. Products may change without notice.</p></b>
+    <p>As of now, runs are stored for 30 days before being deleted.</p>
+    <p>This project is open source and be found <a href="https://github.com/UGA-WRF-Club/ugawrf">here.</a></p>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>

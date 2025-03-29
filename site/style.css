@@ -24,6 +24,11 @@ body {
   .point-container {
     display: grid;
     grid-template-columns: auto auto;
+    margin: auto;
+  }
+  .multi-container {
+    display: inline-block;
+    margin: auto;
   }
   .dropbtn {
     background-color: #537cba;

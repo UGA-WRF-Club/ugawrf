@@ -52,10 +52,18 @@ const stationElements = Object.fromEntries(
     stationIds.map(id => [id, document.getElementById(id)])
 );
 
-async function loadDirectories() {
-    const response = await fetch('https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/');
-    const data = await response.json();
-    const directories = data.prefixes || [];
+async function loadDirectories(pageToken = '') {
+    const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/';
+    let directories = [];
+    while (true) {
+        const response = await fetch(pageToken ? `${baseUrl}&pageToken=${pageToken}` : baseUrl);
+        const data = await response.json();
+        
+        directories = directories.concat(data.prefixes || []);
+        
+        if (!data.nextPageToken) break;
+        pageToken = data.nextPageToken;
+    }
     directories.reverse().forEach(dir => {
         const folderName = dir.replace('outputs/', '').replace(/\/$/, '');
         if (folderName) {

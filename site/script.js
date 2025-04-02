@@ -11,6 +11,7 @@ const products = {
     "total_precip": "Total Precipitation",
     "1hr_snowfall": "1-Hour Snowfall",
     "snowfall": "Snowfall",
+    "4panel_cloudcover": "4-Panel Cloud Cover",
     "cloudcover": "Cloud Cover",
     "echo_tops": "Echo Tops",
     "temp_850mb": "Temperature (850mb)",

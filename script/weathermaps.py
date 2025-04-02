@@ -177,7 +177,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
-    # counties are very intensive to process, so im leaving them off for now
+    # counties are very intensive to process, so unless we're doing operational runs, you should leave it off
     #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     try:
         for airport, coords in airports.items():

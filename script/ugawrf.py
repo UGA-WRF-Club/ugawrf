@@ -11,6 +11,7 @@ import json
 # if you want to skip generating a certain product, just comment out the module
 import textgen
 import weathermaps
+import special
 import meteogram
 import skewt
 
@@ -144,6 +145,18 @@ for product, variable in PRODUCTS.items():
     except Exception as e:
         print(f"error processing {product}: {e}! last timestep: {t}")
 print(f"graphics processed successfully - took {dt.datetime.now() - map_time}")
+
+# special plots
+special_plot_time = dt.datetime.now()
+try:
+    output_path = os.path.join(BASE_OUTPUT, run_time, "4panel_cloudcover")
+    os.makedirs(output_path, exist_ok=True)
+    for t in range(0, hours + 1):
+        special.generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file)
+    print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
+except Exception as e:
+    print(f"error processing special plots: {e}!")
+print(f"special plots processed successfully - took {dt.datetime.now() - special_plot_time}")
 
 # meteograms
 meteogram_plot_time = dt.datetime.now()

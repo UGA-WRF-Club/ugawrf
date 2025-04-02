@@ -4,4 +4,4 @@ A weather model with a focus on Northern Georgia.
 
 Semi-operational, data may be delayed, missing, demonstrations, and/or incorrect.
 
-[https://uga-wrf-club.github.io/ugawrf/](https://uga-wrf-club.github.io/ugawrf/)
+[https://wrf.weatherdawgs.net](https://uga-wrf-club.github.io/ugawrf/)

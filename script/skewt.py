@@ -17,12 +17,12 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
     Td1 = getvar(data,"td",timeidx=timestep)
     u1 = getvar(data,"ua",timeidx=timestep)
     v1 = getvar(data,"va",timeidx=timestep)
-    p = p1[:,x_y[0],x_y[1]] * units.hPa
-    T = T1[:,x_y[0],x_y[1]] * units.degC
-    Td = Td1[:,x_y[0],x_y[1]] * units.degC
-    u = u1[:,x_y[0],x_y[1]] * units('m/s')
-    v = v1[:,x_y[0],x_y[1]] * units('m/s')
-    fig = plt.figure(figsize=(8, 8))
+    p = p1[:, x_y[0], x_y[1]] * units.hPa
+    T = T1[:, x_y[0], x_y[1]] * units.degC
+    Td = Td1[:, x_y[0], x_y[1]] * units.degC
+    u = u1[:,x_y[0],x_y[1]] * units.knots
+    v = v1[:,x_y[0],x_y[1]] * units.knots
+    fig = plt.figure(figsize=(10, 8))
     gs = gridspec.GridSpec(3, 3)
     skew = SkewT(fig, subplot=gs[:, :2])
     skew.plot(p, T, 'r')
@@ -34,7 +34,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
     skew.ax.axvline(0, color='k', ls='--')
     lcl_pressure, lcl_temperature = mpcalc.lcl(p[0], T[0], Td[0])
     skew.plot(lcl_pressure, lcl_temperature, 'ko', markerfacecolor='black')
-    prof = mpcalc.parcel_profile(p, T[0], Td[0]) - 273.15 * units.degK
+    prof = (mpcalc.parcel_profile(p, T[0], Td[0])).metpy.convert_units('degC')
     skew.plot(p, prof, 'k', linewidth=2)
     skew.ax.set_xlim(-50, 40)
     skew.ax.set_ylim(1000, 100)

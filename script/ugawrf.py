@@ -42,7 +42,7 @@ airports = {
 
 PRODUCTS = {
     "temperature": "T2",
-    "dewp": "Q2",
+    "dewp": "td2",
     "pressure": "AFWA_MSLP",
     "wind": "U10",
     "wind_gust": "WSPD10MAX",

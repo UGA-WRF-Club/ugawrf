@@ -29,14 +29,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'dewp':
-        # this was such a PITA you have no clue
-        sfc_pressure = getvar(wrf_file, 'PSFC', timeidx=timestep) / 100 * units.mbar
-        q2 = getvar(wrf_file, 'Q2', timeidx=timestep)
-        q2 = np.where(q2 < 0, 1e-6, q2)
-        t2 = getvar(wrf_file, 'T2', timeidx=timestep)
-        td = mpcalc.dewpoint_from_specific_humidity(sfc_pressure, t2, q2)
-        data_copy = to_np(td)
-        data_copy = data_copy.magnitude * 9/5 + 32
+        data_copy = data_copy * 9/5 + 32
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=10, vmax=90)
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"

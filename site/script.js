@@ -193,3 +193,4 @@ window.onload = function () {
     multiSelector.disabled = true
     multiSubchooser.disabled = true
 };
+updateTextForecast();

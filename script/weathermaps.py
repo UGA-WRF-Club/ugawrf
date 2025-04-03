@@ -125,7 +125,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         high_cloud_frac = to_np(data_copy[2]) * 100
         total_cloud_frac = low_cloud_frac + mid_cloud_frac + high_cloud_frac
         data_copy = total_cloud_frac
-        contour = plt.pcolormesh(to_np(lons), to_np(lats), total_cloud_frac, cmap="Blues", norm=plt.Normalize(0, 100), transform=ccrs.PlateCarree())
+        contour = plt.pcolormesh(to_np(lons), to_np(lats), total_cloud_frac, cmap="Blues_r", norm=plt.Normalize(0, 100), transform=ccrs.PlateCarree())
         ax.set_title(f"Cloud Cover - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Cloud Fraction (%)'
     elif product.startswith("temp") and level != None:

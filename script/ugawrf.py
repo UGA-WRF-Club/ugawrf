@@ -9,11 +9,11 @@ import json
 
 # processing modules - located in the same folder as (module).py
 # if you want to skip generating a certain product, just comment out the module
-import textgen
-import weathermaps
+#import textgen
+#import weathermaps
 import special
-import meteogram
-import skewt
+#import meteogram
+#import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()
@@ -41,6 +41,7 @@ airports = {
 # this will scale up quick, so try not to add too many airports right now
 
 PRODUCTS = {
+    "cloudcover": "cloudfrac",
     "temperature": "T2",
     "dewp": "Q2",
     "pressure": "AFWA_MSLP",
@@ -52,7 +53,7 @@ PRODUCTS = {
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_snowfall": "SNOWNC",
     "snowfall": "SNOWNC",
-    "cloudcover": "cloudfrac",
+    
     "echo_tops": "ECHOTOP",
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!

@@ -9,11 +9,11 @@ import json
 
 # processing modules - located in the same folder as (module).py
 # if you want to skip generating a certain product, just comment out the module
-#import textgen
-#import weathermaps
+import textgen
+import weathermaps
 import special
-#import meteogram
-#import skewt
+import meteogram
+import skewt
 
 print("UGA-WRF Data Processing Program")
 start_time = dt.datetime.now()

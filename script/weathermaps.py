@@ -120,10 +120,14 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Helicity m^2/s^2'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'cloudcover':
-        cloud_total = np.mean(to_np(data_copy), axis=0)
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(cloud_total), cmap="Greys", levels=np.linspace(0, 1, 11))
+        low_cloud_frac = to_np(data_copy[0]) * 100 
+        mid_cloud_frac = to_np(data_copy[1]) * 100
+        high_cloud_frac = to_np(data_copy[2]) * 100
+        total_cloud_frac = low_cloud_frac + mid_cloud_frac + high_cloud_frac
+        data_copy = total_cloud_frac
+        contour = plt.pcolormesh(to_np(lons), to_np(lats), total_cloud_frac, cmap="Blues", norm=plt.Normalize(0, 100), transform=ccrs.PlateCarree())
         ax.set_title(f"Cloud Cover - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
-        label = f'Cloud Fraction (0-1)'
+        label = f'Cloud Fraction (%)'
     elif product.startswith("temp") and level != None:
         cmax, cmin = None, None
         if level == 850:
@@ -179,14 +183,15 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     # counties are very intensive to process, so unless we're doing operational runs, you should leave it off
     #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
-    try:
-        for airport, coords in airports.items():
-                lat, lon = coords
-                idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
-                value = to_np(data_copy)[idx_y, idx_x]
-                ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='left', va='bottom')
-    except:
-        pass
+    if product != ("cloudcover"):
+        try:
+            for airport, coords in airports.items():
+                    lat, lon = coords
+                    idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
+                    value = to_np(data_copy)[idx_y, idx_x]
+                    ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='left', va='bottom')
+        except:
+            pass
     maxmin = ""
     max_value = to_np(data_copy).max()
     min_value = to_np(data_copy).min()

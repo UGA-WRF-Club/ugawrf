@@ -15,7 +15,6 @@ def generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file):
     total_cloud_frac = low_cloud_frac + mid_cloud_frac + high_cloud_frac
     lats, lons = latlon_coords(cloud_fracs)
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
-    plt.subplots_adjust
     cloud_data = [total_cloud_frac, low_cloud_frac, mid_cloud_frac, high_cloud_frac]
     titles = ["Total Cloud Cover (%)", "Low (%)", "Mid (%)", "High (%)"]
     for ax, data, title in zip(axes.flat, cloud_data, titles):

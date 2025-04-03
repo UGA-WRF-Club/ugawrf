@@ -52,7 +52,7 @@ PRODUCTS = {
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_snowfall": "SNOWNC",
     "snowfall": "SNOWNC",
-    "cloudcover": "CLDFRA",
+    "cloudcover": "cloudfrac",
     "echo_tops": "ECHOTOP",
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
@@ -70,6 +70,7 @@ PRODUCTS = {
     "wind_300mb": "ua",
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
+# if you're plotting upper air, appending _(level)mb to the end of your folder name interps your pressure level to (level)
 
 # Specify your wrfout and output folder in the commandline. Arg1 is your wrfout, arg2 is where you plan to store the products created.
 # If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output

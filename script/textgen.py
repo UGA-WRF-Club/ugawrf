@@ -6,7 +6,7 @@ import metpy.calc as mpcalc
 import numpy as np
 
 def get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time):
-    forecast_time = forecast_times[0].strftime("%Y-%m-%d %H:%M UTC")
+    forecast_time = forecast_times[1].strftime("%Y-%m-%d %H:%M UTC")
     x, y = ll_to_xy(wrf_file, coords[0], coords[1])
     output_lines = []
     output_lines.append(f"UGA-WRF - Init: {forecast_times[0]} - Text Forecast for {airport.upper()}")
@@ -25,6 +25,5 @@ def get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time):
         td = (mpcalc.dewpoint(e).to(units.degF)).magnitude
         wspd = to_np(wspd_data)
         pressure_mb = to_np(pressure_data) / 100
-
         output_lines.append(f"{forecast_times[t].strftime('%H UTC')} ({str(t).zfill(2)}) | {t_f:.1f} F | {td:.1f} F | {wspd:.1f} mph | {pressure_mb:.1f} mb")
     return output_lines

@@ -41,7 +41,6 @@ airports = {
 # this will scale up quick, so try not to add too many airports right now
 
 PRODUCTS = {
-    "cloudcover": "cloudfrac",
     "temperature": "T2",
     "dewp": "Q2",
     "pressure": "AFWA_MSLP",
@@ -53,7 +52,7 @@ PRODUCTS = {
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_snowfall": "SNOWNC",
     "snowfall": "SNOWNC",
-    
+    "cloudcover": "cloudfrac",
     "echo_tops": "ECHOTOP",
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
@@ -69,6 +68,9 @@ PRODUCTS = {
     "wind_700mb": "ua",
     "wind_500mb": "ua",
     "wind_300mb": "ua",
+    "heights_700mb": "z",
+    "heights_500mb": "z",
+    
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
 # if you're plotting upper air, appending _(level)mb to the end of your folder name interps your pressure level to (level)

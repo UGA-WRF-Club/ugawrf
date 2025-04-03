@@ -173,6 +173,18 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"{level}mb Wind Speed (kt) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Wind Speed (kt)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product.startswith("height") and level != None:
+        cmax, cmin = None, None
+        data_copy = data_copy / 10
+        if level == 700:
+            cmax, cmin = 350, 250
+        elif level == 500:
+            cmax, cmin = 600, 500
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm', vmax=cmax, vmin=cmin)
+        plt.contour(to_np(lons), to_np(lats), to_np(data_copy), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(100, 1000, 10))
+        ax.set_title(f"{level}mb Height (dam) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Height (dam)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
@@ -192,13 +204,14 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
                     ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='left', va='bottom')
         except:
             pass
-    maxmin = ""
-    max_value = to_np(data_copy).max()
-    min_value = to_np(data_copy).min()
-    if max_value != 0:
-        maxmin += f"Max: {max_value:.2f}"
-        if min_value != 0:
-            maxmin += f"\nMin: {min_value:.2f}"
+    if product != ("cloudcover"):
+        maxmin = ""
+        max_value = to_np(data_copy).max()
+        min_value = to_np(data_copy).min()
+        if max_value != 0:
+            maxmin += f"Max: {max_value:.2f}"
+            if min_value != 0:
+                maxmin += f"\nMin: {min_value:.2f}"
     plt.tight_layout()
     ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')

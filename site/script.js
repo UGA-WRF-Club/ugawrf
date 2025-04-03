@@ -25,7 +25,9 @@ const products = {
     "wind_850mb": "Wind (850mb)",
     "wind_700mb": "Wind (700mb)",
     "wind_500mb": "Wind (500mb)",
-    "wind_300mb": "Wind (300mb)"
+    "wind_300mb": "Wind (300mb)",
+    "heights_700mb": "Heights (700mb)",
+    "heights_500mb": "Heights (500mb)",
 };
 
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/";

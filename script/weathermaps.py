@@ -162,13 +162,13 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = ws
         cmax = None
         if level == 850:
-            cmax = 50
+            cmax = 75
         elif level == 700:
-            cmax = 60
+            cmax = 85
         elif level == 500:
-            cmax = 80
+            cmax = 105
         elif level == 300:
-            cmax = 120
+            cmax = 145
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(ws), cmap="plasma", vmax=cmax)
         ax.set_title(f"{level}mb Wind Speed (kt) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Wind Speed (kt)'

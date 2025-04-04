@@ -115,6 +115,7 @@ async function updateTextForecast() {
 }
 function toggleSecondaryDisplay() {
     if (multiEnabler.checked == true) {
+        weatherImage.style.width = "700px"
         secondaryImage.setAttribute('style', 'display:')
         multiSelector.disabled = false
         multiSubchooser.disabled = false
@@ -140,6 +141,7 @@ function toggleSecondaryDisplay() {
         updateSecondaryDisplay()
     }
     if (multiEnabler.checked == false) {
+        weatherImage.style.width = "1000px"
         secondaryImage.setAttribute('style', 'display: none;')
         multiSelector.disabled = true
         multiSubchooser.disabled = true

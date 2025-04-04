@@ -141,7 +141,7 @@ function toggleSecondaryDisplay() {
         updateSecondaryDisplay()
     }
     if (multiEnabler.checked == false) {
-        weatherImage.style.width = "1000px"
+        weatherImage.style.width = "900px"
         secondaryImage.setAttribute('style', 'display: none;')
         multiSelector.disabled = true
         multiSubchooser.disabled = true

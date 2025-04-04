@@ -85,8 +85,18 @@
         </div>
     </div>
     <br>
+    <label for="multiEnabler">Secondary Display</label>
+    <input type="checkbox" id="multiEnabler">
+    <label for="multiSelector">Type:</label>
+    <select id="multiSelector" disabled>
+        <option value="map">Secondary Map</option>
+        <option value="skewt">SkewT</option>
+    </select>
+    <select id="multiSubchooser" disabled>
+    </select>
+    <br>
     <div class="multi-container" id="multiContainer">
-    <img id="weatherImage" src="" alt="Model Image" width="1000"/>
+    <img id="weatherImage" src="" alt="Model Image" width="900"/>
     <img id="secondaryImage" src="" alt="Secondary Image" width="700" style="display: none;">
     </div>
     <br>
@@ -102,16 +112,6 @@
         <option value="1000">1sec</option>
         <option value="500">0.5sec</option>
         <option value="200">0.2sec</option>
-    </select>
-    <br>
-    <label for="multiEnabler">Secondary Display</label>
-    <input type="checkbox" id="multiEnabler">
-    <label for="multiSelector">Type:</label>
-    <select id="multiSelector" disabled>
-        <option value="map">Secondary Map</option>
-        <option value="skewt">SkewT</option>
-    </select>
-    <select id="multiSubchooser" disabled>
     </select>
     <h2>Upper Air Plots</h2>
     <p>Use timestep slider above. Click and hold to enlarge.</p>

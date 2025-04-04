@@ -21,6 +21,7 @@
         <div class="dropdown-content">
             <a id="temperature" href="#">2m Temperature</a>
             <a id="dewp" href="#">2m Dewpoint</a>
+            <a id="rh" href="#">Relative Humidity</a>
             <a id="wind" href="#">10m Wind Speed</a>
             <a id="wind_gust" href="#">10m Wind Gust</a>
             <a id="pressure" href="#">MSLP</a>
@@ -56,9 +57,13 @@
         <button class="dropbtn">Aloft - Moisture</button>
         <div class="dropdown-content">
             <a id="td_850mb" href="#">850mb Dew Point</a>
+            <a id="rh_850mb" href="#">850mb Relative Humidity</a>
             <a id="td_700mb" href="#">700mb Dew Point</a>
+            <a id="rh_700mb" href="#">700mb Relative Humidity</a>
             <a id="td_500mb" href="#">500mb Dew Point</a>
+            <a id="rh_500mb" href="#">500mb Relative Humidity</a>
             <a id="td_300mb" href="#">300mb Dew Point</a>
+            <a id="rh_300mb" href="#">300mb Relative Humidity</a>
             <a id="4panel_cloudcover" href="#">4-Panel Cloud Cover</a>
             <a id="cloudcover" href="#">Cloud Cover</a>
             <a id="echo_tops" href="#">Echo Tops</a>
@@ -150,7 +155,7 @@
     </div>
     <p>Product Changelog:</p>
     <ul class="textContainer">
-        <li>700mb/500mb Heights - Only available after the 2025/04/04 00z run. Additionally, the cloud cover maps were modified and had the ends of their colormaps swapped.</li>
+        <li>700mb/500mb Heights, RH (all levels) - Only available after the 2025/04/04 00z run. Additionally, the cloud cover maps were modified and had the ends of their colormaps swapped.</li>
         <li>4-Panel Cloud Cover, improved Cloud Cover - Only available after the 2025/04/03 03z run.</li>
         <li>Minor bug fix - Before the 2025/03/31 03z run, the upper air plots displayed EST time was actually in EDT. This is truly fixed now, promise!</li>
         <li>Aloft temp colormap adjustments - Before the 2025/03/26 06z run, temperatures aloft were plotted on a poor colormap. This was adjusted in this run.</li>

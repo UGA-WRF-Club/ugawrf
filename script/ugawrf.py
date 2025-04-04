@@ -43,6 +43,7 @@ airports = {
 PRODUCTS = {
     "temperature": "T2",
     "dewp": "td2",
+    "rh": "rh2",
     "pressure": "AFWA_MSLP",
     "wind": "U10",
     "wind_gust": "WSPD10MAX",
@@ -64,6 +65,10 @@ PRODUCTS = {
     "td_700mb": "td",
     "td_500mb": "td",
     "td_300mb": "td",
+    "rh_850mb": "rh",
+    "rh_700mb": "rh",
+    "rh_500mb": "rh",
+    "rh_300mb": "rh",
     "wind_850mb": "ua",
     "wind_700mb": "ua",
     "wind_500mb": "ua",

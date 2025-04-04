@@ -34,6 +34,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
+    elif product == 'rh':
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=0, vmax=100)
+        ax.set_title(f"2m Relative Humidity (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f"Relative Humidity (%)"
     elif product == 'wind':
         u10 = getvar(wrf_file, "U10", timeidx=timestep)
         v10 = getvar(wrf_file, "V10", timeidx=timestep)
@@ -149,6 +153,11 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"{level}mb Dew Point (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Dew Point (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product.startswith("rh") and level != None:
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmax=100, vmin=0)
+        ax.set_title(f"{level}mb Relative Humidity (%) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Relative Humidity (%)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("wind") and level != None:
         va = interplevel(getvar(wrf_file, "va", timeidx=timestep), pressure, level)
         ws = np.sqrt(to_np(data_copy)**2 + to_np(va)**2) * 1.94384  # Convert m/s to knots
@@ -205,8 +214,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             maxmin += f"Max: {max_value:.2f}"
             if min_value != 0:
                 maxmin += f"\nMin: {min_value:.2f}"
+        ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     plt.tight_layout()
-    ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')
     ax.annotate(f"{(forecast_times[timestep] - dt.timedelta(hours=5))} EST", xy=(0.25, 1), xycoords='axes fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)

@@ -2,6 +2,7 @@
 const products = {
     "temperature": "Temperature",
     "dewp": "Dew Point",
+    "rh": "2m Relative Humidity",
     "pressure": "Pressure",
     "wind": "Wind",
     "wind_gust": "Wind Gust",

@@ -29,13 +29,18 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == '1hr_temp_c':
-        temp_now = getvar(wrf_file, "T2", timeidx=timestep)
-        temp_prev = getvar(wrf_file, "T2", timeidx=timestep - 1) if timestep > 0 else temp_now * 0
-        temp_change_1hr = (temp_now - temp_prev) * 9/5
-        data_copy = temp_change_1hr.copy()
+        if timestep > 0:
+            temp_now = getvar(wrf_file, "T2", timeidx=timestep)
+            temp_prev = getvar(wrf_file, "T2", timeidx=timestep - 1)
+            temp_change_1hr = (temp_now - temp_prev) * 9/5
+            data_copy = temp_change_1hr.copy()
+        else:
+            ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
+            temp_change_1hr = data_copy * 0
+            data_copy = data_copy * 0
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-15, vmax=15)
-        ax.set_title(f"1 Hour Temp Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
-        label = f'1 Hour Temp Change (°F)'
+        ax.set_title(f"1 Hour 2m Temp Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'1 Hour 2m Temp Change (°F)'
     elif product == 'dewp':
         data_copy = data_copy * 9/5 + 32
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=10, vmax=90)

@@ -3,8 +3,6 @@
 import matplotlib.pyplot as plt
 from wrf import getvar, ll_to_xy, to_np
 import numpy as np
-import metpy.calc as mpcalc
-from metpy.units import units
 import os
 
 def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfhours, run_time):
@@ -18,11 +16,10 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     pressures = []
     for t in hours:
         t_data = getvar(wrf_file, "T2", timeidx=t)[y, x].values
-        q_data = getvar(wrf_file, "Q2", timeidx=t)[y, x].values
+        td_data = getvar(wrf_file, "td2", timeidx=t)[y, x].values
         pressure_data = getvar(wrf_file, "AFWA_MSLP", timeidx=t)[y, x].values
         t_f = (t_data - 273.15) * 9/5 + 32
-        td = mpcalc.dewpoint(mpcalc.vapor_pressure(getvar(wrf_file, 'PSFC', timeidx=t) / 100 * units.mbar, q_data))
-        td_f = to_np(td)[y, x].magnitude * 9/5 + 32
+        td_f = to_np(td_data) * 9/5 + 32
         pressure_mb = to_np(pressure_data) / 100
         temperatures.append(t_f)
         dewpoints.append(td_f)

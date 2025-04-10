@@ -42,6 +42,7 @@ airports = {
 
 PRODUCTS = {
     "temperature": "T2",
+    "1hr_temp_c": "T2",
     "dewp": "td2",
     "rh": "rh2",
     "pressure": "AFWA_MSLP",

@@ -18,7 +18,7 @@ except:
     WRF_FILE = root_dir / "wrfout_d01_2025-03-13_21_00_00"
 try:
     if sys.argv[2] == "default":
-        BASE_OUTPUT = Path(__file__).resolve().parent / "site" / "runs"
+        BASE_OUTPUT = Path(__file__).resolve().parent.parent / "site" / "runs"
     else:
         BASE_OUTPUT = sys.argv[2]
 except:
@@ -78,7 +78,6 @@ airports = {
     "bmx": (33.17895986702925, -86.7823825539515),
     "ohx": (36.24707362357824, -86.56312930475052),
     "gsp": (34.883261598428625, -82.22035185765819),
-    "pdk": (33.87751721073555, -84.30202733048407)
 } # locations to plot numbers on map, skewts, text products, meteograms. meant for airports, you could put any location in domain here
 # format is "folder_name": (lat, lon)
 # !!! IMPORTANT !!! our current skewt plot function is considerably intensive, taking about ~50 seconds per airport to finish (on my hardware).
@@ -90,11 +89,12 @@ PRODUCTS = {
     "dewp": "td2",
     "rh": "rh2",
     "pressure": "AFWA_MSLP",
-    "wind": "U10",
+    "wind": "wspd_wdir10",
     "wind_gust": "WSPD10MAX",
     "comp_reflectivity": "REFD_COM",
     "helicity": "UP_HELI_MAX",
-    "cape": "cape_2d",
+    "mcape": "cape_2d",
+    "mcin": "cape_2d",
     "1hr_precip": "AFWA_TOTPRECIP",
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_snowfall": "SNOWNC",

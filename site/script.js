@@ -8,6 +8,8 @@ const products = {
     "wind": "Wind",
     "wind_gust": "Wind Gust",
     "comp_reflectivity": "Composite Reflectivity",
+    "mcape": "Max CAPE",
+    "mcin": "Max CIN",
     "helicity": "Helicity",
     "1hr_precip": "1-Hour Precipitation",
     "total_precip": "Total Precipitation",

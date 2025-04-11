@@ -51,16 +51,14 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"2m Relative Humidity (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Relative Humidity (%)"
     elif product == 'wind':
-        u10 = getvar(wrf_file, "U10", timeidx=timestep)
-        v10 = getvar(wrf_file, "V10", timeidx=timestep)
-        wind_speed = np.sqrt(u10**2 + v10**2) * 2.23694
-        wind_speed = to_np(wind_speed)
+        data_copy = data[0].copy()
+        data_copy = data_copy * 2.23694
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=30, vmax=90)
-        contour = plt.contourf(to_np(lons), to_np(lats), wind_speed, cmap='YlOrRd', norm=divnorm)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm)
         ax.set_title(f"10m Wind Speed (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = "Wind Speed (mph)"
-        data_copy = wind_speed
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
+        plot_streamlines(ax, wrf_file, timestep, lons, lats)
     elif product == 'wind_gust':
         data_copy = data_copy * 2.23694
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=50, vmax=110)
@@ -68,6 +66,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"10m Wind Gust (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Wind Max (mph)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
+        plot_streamlines(ax, wrf_file, timestep, lons, lats)
     elif product == 'comp_reflectivity':
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), 15, cmap=refl_cmap, vmin=2, vmax=70)
@@ -137,6 +136,16 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = plt.pcolormesh(to_np(lons), to_np(lats), total_cloud_frac, cmap="Blues_r", norm=plt.Normalize(0, 100), transform=ccrs.PlateCarree())
         ax.set_title(f"Cloud Cover - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Cloud Fraction (%)'
+    elif product == 'mcape':
+        data_copy = data[0].copy()
+        label = f'CAPE (J/kg)'
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
+        ax.set_title(f"Max CAPE (MU 500m Parcel) (J/kg) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+    elif product == 'mcin':
+        data_copy = data[1].copy()
+        label = f'CIN (J/kg)'
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
+        ax.set_title(f"Max CIN (MU 500m Parcel) (J/kg) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
     elif product.startswith("temp") and level != None:
         cmax, cmin = None, None
         if level == 850:
@@ -187,6 +196,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"{level}mb Wind Speed (kt) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Wind Speed (kt)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+        plot_streamlines(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("height") and level != None:
         cmax, cmin = None, None
         data_copy = data_copy / 10
@@ -195,7 +205,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         elif level == 500:
             cmax, cmin = 600, 500
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm', vmax=cmax, vmin=cmin)
-        plt.contour(to_np(lons), to_np(lats), to_np(data_copy), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(100, 1000, 10))
+        plt.contour(to_np(lons), to_np(lats), to_np(data_copy), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(100, 1000, 5))
         ax.set_title(f"{level}mb Height (dam) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
@@ -215,11 +225,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"1-Hour {level}mb Temp Change (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
-    elif product == 'cape':
-        data_copy = data[0].copy()
-        label = f'CAPE (J/kg)'
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='inferno_r', vmin=0, vmax=6000)
-        ax.set_title(f"Most Unstable CAPE (J/kg) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
@@ -230,7 +235,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     # counties are very intensive to process, so unless we're doing operational runs, you should leave it off
     #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
-    if product != ("cloudcover" and "cape"):
+    if product != ("cloudcover"):
         try:
             for airport, coords in airports.items():
                     lat, lon = coords
@@ -270,3 +275,15 @@ def plot_wind_barbs(ax, wrf_file, timestep, lons, lats, pressure_level=None):
              to_np(u_interp[::stride, ::stride]), to_np(v_interp[::stride, ::stride]),
              length=6, color='black', pivot='middle', 
              barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222})
+
+def plot_streamlines(ax, wrf_file, timestep, lons, lats, pressure_level=None):
+    if pressure_level:
+        u = getvar(wrf_file, "ua", timeidx=timestep)
+        v = getvar(wrf_file, "va", timeidx=timestep)
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        u_interp = interplevel(u, pressure, pressure_level)
+        v_interp = interplevel(v, pressure, pressure_level)
+    else:
+        u_interp = getvar(wrf_file, "U10", timeidx=timestep)
+        v_interp = getvar(wrf_file, "V10", timeidx=timestep)
+    ax.streamplot(to_np(lons), to_np(lats), to_np(u_interp), to_np(v_interp), density=0.75, color='k', linewidth=1)

@@ -31,7 +31,7 @@ const products = {
     "td_700mb": "Dew Point (700mb)",
     "rh_700mb": "Relative Humidity (700mb)",
     "td_500mb": "Dew Point (500mb)",
-    "rh_850mb": "Relative Humidity (500mb)",
+    "rh_500mb": "Relative Humidity (500mb)",
     "td_300mb": "Dew Point (300mb)",
     "rh_300mb": "Relative Humidity (300mb)",
     "wind_850mb": "Wind (850mb)",

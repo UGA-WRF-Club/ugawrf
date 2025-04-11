@@ -39,6 +39,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-10, vmax=10)
         ax.set_title(f"1 Hour 2m Temp Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°F)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'dewp':
         data_copy = data_copy * 9/5 + 32
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=10, vmax=90)
@@ -213,6 +214,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-15, vmax=15)
         ax.set_title(f"1-Hour {level}mb Temp Change (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°C)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")

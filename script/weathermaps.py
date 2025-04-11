@@ -2,9 +2,7 @@
 
 from wrf import getvar, to_np, latlon_coords, smooth2d, ll_to_xy, interplevel
 import matplotlib.pyplot as plt
-from metpy.units import units
 import os
-import metpy.calc as mpcalc
 import datetime as dt
 import cartopy.crs as ccrs
 from metpy.plots import ctables, USCOUNTIES
@@ -38,9 +36,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
             temp_change_1hr = data_copy * 0
             data_copy = data_copy * 0
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-15, vmax=15)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-10, vmax=10)
         ax.set_title(f"1 Hour 2m Temp Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
-        label = f'1 Hour 2m Temp Change (°F)'
+        label = f'Temperature Change (°F)'
     elif product == 'dewp':
         data_copy = data_copy * 9/5 + 32
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=10, vmax=90)
@@ -86,7 +84,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         precip_1hr = (rain_now - rain_prev) / 25.4
         data_copy = precip_1hr.copy()
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), 20, cmap="magma_r", vmin=0, vmax=5)
-        ax.set_title(f"1 Hour Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':
         data_copy = data_copy / 25.4
@@ -102,7 +100,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=0.3, vmax=3)
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', norm=divnorm)
         ax.set_title(f"1 Hour Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
-        label = f'1 Hour Accumulated Snowfall'
+        label = f'Accumulated Snowfall'
     elif product == 'pressure':
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
@@ -200,6 +198,21 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"{level}mb Height (dam) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product.startswith('1hr_temp_c') and level != None:
+        if timestep > 0:
+            temp_now = getvar(wrf_file, "tc", timeidx=timestep)
+            temp_prev = getvar(wrf_file, "tc", timeidx=timestep - 1)
+            upper_temp_now = interplevel(temp_now, pressure, level)
+            upper_temp_prev = interplevel(temp_prev, pressure, level)
+            temp_change_1hr = (upper_temp_now - upper_temp_prev)
+            data_copy = temp_change_1hr.copy()
+        else:
+            ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
+            temp_change_1hr = data_copy * 0
+            data_copy = data_copy * 0
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-15, vmax=15)
+        ax.set_title(f"1-Hour {level}mb Temp Change (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Temperature Change (°C)'
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
@@ -216,7 +229,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
                     lat, lon = coords
                     idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
                     value = to_np(data_copy)[idx_y, idx_x]
-                    ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='left', va='bottom')
+                    ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='center', va='bottom')
         except:
             pass
     if product != ("cloudcover"):

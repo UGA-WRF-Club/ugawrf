@@ -7,15 +7,58 @@ import numpy as np
 import datetime as dt
 import json
 
+# Specify your wrfout and output folder in the commandline. Arg1 is your wrfout, arg2 is where you plan to store the products created.
+# If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output
+# and (current folder)/wrfout_d01_2025-03-13_21_00_00 (the demo run) for your wrfout inputs.
+# An example input: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" "D:\ugawrf_fork\ugawrf\run"
+try:
+    WRF_FILE = sys.argv[1]
+except:
+    root_dir = Path(__file__).resolve().parent
+    WRF_FILE = root_dir / "wrfout_d01_2025-03-13_21_00_00"
+try:
+    if sys.argv[2] == "default":
+        BASE_OUTPUT = Path(__file__).resolve().parent / "site" / "runs"
+    else:
+        BASE_OUTPUT = sys.argv[2]
+except:
+    root_dir = Path(__file__).resolve().parent.parent
+    BASE_OUTPUT = root_dir / "site" / "runs"
+
+# use run flags, arg3 to specify if you want to disable a certain product or not. This is useful for debugging/concurrent running.
+# 1 - textgen
+# 2 - weathermaps
+# 3 - special
+# 4 - meteogram
+# 5 - skewt
+# ex: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" default "245"
+# this will run all modules except for meteogram and skewt
+try:
+    run_flags = sys.argv[3]
+except:
+    run_flags = "0"
+
 # processing modules - located in the same folder as (module).py
 # if you want to skip generating a certain product, just comment out the module
-import textgen
-import weathermaps
-import special
-import meteogram
-import skewt
+modules_enabled = []
+if "1" not in run_flags:
+    import textgen
+    modules_enabled.append("textgen")
+if "2" not in run_flags:
+    import weathermaps
+    modules_enabled.append("weathermaps")
+if "3" not in run_flags:
+    import special
+    modules_enabled.append("special")
+if "4" not in run_flags:
+    import meteogram
+    modules_enabled.append("meteogram")
+if "5" not in run_flags:
+    import skewt
+    modules_enabled.append("skewt")
 
 print("UGA-WRF Data Processing Program")
+print(f'Modules: {modules_enabled}')
 start_time = dt.datetime.now()
 
 # --- START CONFIG --- #
@@ -62,6 +105,10 @@ PRODUCTS = {
     "temp_700mb": "tc",
     "temp_500mb": "tc",
     "temp_300mb": "tc",
+    "1hr_temp_c_850mb": "tc",
+    "1hr_temp_c_700mb": "tc",
+    "1hr_temp_c_500mb": "tc",
+    "1hr_temp_c_300mb": "tc",
     "td_850mb": "td",
     "td_700mb": "td",
     "td_500mb": "td",
@@ -80,21 +127,6 @@ PRODUCTS = {
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
 # if you're plotting upper air, appending _(level)mb to the end of your folder name interps your pressure level to (level)
-
-# Specify your wrfout and output folder in the commandline. Arg1 is your wrfout, arg2 is where you plan to store the products created.
-# If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output
-# and (current folder)/wrfout_d01_2025-03-13_21_00_00 (the demo run) for your wrfout inputs.
-# An example input: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" "D:\ugawrf_fork\ugawrf\run"
-try:
-    WRF_FILE = sys.argv[1]
-except:
-    root_dir = Path(__file__).resolve().parent
-    WRF_FILE = root_dir / "wrfout_d01_2025-03-13_21_00_00"
-try:
-    BASE_OUTPUT = sys.argv[2]
-except:
-    root_dir = Path(__file__).resolve().parent.parent
-    BASE_OUTPUT = root_dir / "site" / "runs"
 
 # --- END CONFIG --- #
 
@@ -124,77 +156,83 @@ print(f"Metadata JSON saved: {json_output_path}")
 # processing starts here
 
 # text data
-text_start_time = dt.datetime.now()
-for airport, coords in airports.items():
-    try:
-        text_time = dt.datetime.now()
-        text_data = textgen.get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time)
-        output_path = os.path.join(BASE_OUTPUT, run_time, "text", airport)
-        os.makedirs(output_path, exist_ok=True)
-        with open(os.path.join(output_path, "forecast.txt"), 'w') as f:
-            for line in text_data:
-                f.write(f"{line}\n")
-        print(f"processed {airport} text data in {dt.datetime.now() - text_time}")
-    except Exception as e:
-        print(f"error processing {airport} text: {e}!")
-print(f'texts processed successfuly - took {dt.datetime.now() - text_start_time}')
+if "textgen" in modules_enabled:
+    text_start_time = dt.datetime.now()
+    for airport, coords in airports.items():
+        try:
+            text_time = dt.datetime.now()
+            text_data = textgen.get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time)
+            output_path = os.path.join(BASE_OUTPUT, run_time, "text", airport)
+            os.makedirs(output_path, exist_ok=True)
+            with open(os.path.join(output_path, "forecast.txt"), 'w') as f:
+                for line in text_data:
+                    f.write(f"{line}\n")
+            print(f"processed {airport} text data in {dt.datetime.now() - text_time}")
+        except Exception as e:
+            print(f"error processing {airport} text: {e}!")
+    print(f'texts processed successfuly - took {dt.datetime.now() - text_start_time}')
 
-# weather maps
-map_time = dt.datetime.now()
+# weathermaps
+if "weathermaps" in modules_enabled:
+   
+    map_time = dt.datetime.now()
 
-for product, variable in PRODUCTS.items():
-    try:
-        product_time = dt.datetime.now()
-        output_path = os.path.join(BASE_OUTPUT, run_time, product)
-        level = None
-        if "_" in product and "mb" in product:
-            level = int(product.split("_")[-1].replace("mb", ""))
-        for t in range(0, hours + 1):
-            weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, run_time, wrf_file, level)
-        print(f"processed {product} in {dt.datetime.now() - product_time}")
-    except Exception as e:
-        print(f"error processing {product}: {e}! last timestep: {t}")
-print(f"graphics processed successfully - took {dt.datetime.now() - map_time}")
+    for product, variable in PRODUCTS.items():
+        try:
+            product_time = dt.datetime.now()
+            output_path = os.path.join(BASE_OUTPUT, run_time, product)
+            level = None
+            if "_" in product and "mb" in product:
+                level = int(product.split("_")[-1].replace("mb", ""))
+            for t in range(0, hours + 1):
+                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, run_time, wrf_file, level)
+            print(f"processed {product} in {dt.datetime.now() - product_time}")
+        except Exception as e:
+            print(f"error processing {product}: {e}! last timestep: {t}")
+    print(f"graphics processed successfully - took {dt.datetime.now() - map_time}")
 
 # special plots
-special_plot_time = dt.datetime.now()
-try:
-    output_path = os.path.join(BASE_OUTPUT, run_time, "4panel_cloudcover")
-    os.makedirs(output_path, exist_ok=True)
-    for t in range(0, hours + 1):
-        special.generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file)
-    print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
-except Exception as e:
-    print(f"error processing special plots: {e}!")
-print(f"special plots processed successfully - took {dt.datetime.now() - special_plot_time}")
+if "special" in modules_enabled:
+    special_plot_time = dt.datetime.now()
+    try:
+        output_path = os.path.join(BASE_OUTPUT, run_time, "4panel_cloudcover")
+        os.makedirs(output_path, exist_ok=True)
+        for t in range(0, hours + 1):
+            special.generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file)
+        print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
+    except Exception as e:
+        print(f"error processing special plots: {e}!")
+    print(f"special plots processed successfully - took {dt.datetime.now() - special_plot_time}")
 
 # meteograms
-meteogram_plot_time = dt.datetime.now()
+if "meteogram" in modules_enabled:
+    meteogram_plot_time = dt.datetime.now()
 
-for airport, coords in airports.items():
-    try:
-        meteogram_time = dt.datetime.now()
-        output_path = os.path.join(BASE_OUTPUT, run_time, "meteogram", airport)
-        meteogram.plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, hours, run_time)
-        print(f"processed {airport} meteogram in {dt.datetime.now() - meteogram_time}")
-    except Exception as e:
-        print(f"error processing {airport} meteogram: {e}!")
-print(f"meteograms processed successfully - took {dt.datetime.now() - meteogram_plot_time}")
+    for airport, coords in airports.items():
+        try:
+            meteogram_time = dt.datetime.now()
+            output_path = os.path.join(BASE_OUTPUT, run_time, "meteogram", airport)
+            meteogram.plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, hours, run_time)
+            print(f"processed {airport} meteogram in {dt.datetime.now() - meteogram_time}")
+        except Exception as e:
+            print(f"error processing {airport} meteogram: {e}!")
+    print(f"meteograms processed successfully - took {dt.datetime.now() - meteogram_plot_time}")
 
 # upper air plots
-skewt_plot_time = dt.datetime.now()
+if "skewt" in modules_enabled:
+    skewt_plot_time = dt.datetime.now()
 
-for airport, coords in airports.items():
-    try:
-        skewt_time = dt.datetime.now()
-        x_y = ll_to_xy(wrf_file, coords[0], coords[1])
-        output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
-        for t in range(0, hours + 1):
-            skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, run_time)
-        print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
-    except Exception as e:
-        print(f"error processing {airport} upper air plot: {e}!")
-print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
+    for airport, coords in airports.items():
+        try:
+            skewt_time = dt.datetime.now()
+            x_y = ll_to_xy(wrf_file, coords[0], coords[1])
+            output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
+            for t in range(0, hours + 1):
+                skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, run_time)
+            print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
+        except Exception as e:
+            print(f"error processing {airport} upper air plot: {e}!")
+    print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
 
 process_time = dt.datetime.now() - start_time
-print(f"data processed successfully, this is run {run_time} - took {process_time}")
+print(f"modules {modules_enabled} processed successfully, this is run {run_time} - took {process_time}")

@@ -215,6 +215,11 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"1-Hour {level}mb Temp Change (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product == 'cape':
+        data_copy = data[0].copy()
+        label = f'CAPE (J/kg)'
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='inferno_r', vmin=0, vmax=6000)
+        ax.set_title(f"Most Unstable CAPE (J/kg) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
     else:
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"{data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
@@ -225,7 +230,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(cfeature.STATES.with_scale('50m'))
     # counties are very intensive to process, so unless we're doing operational runs, you should leave it off
     #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
-    if product != ("cloudcover"):
+    if product != ("cloudcover" and "cape"):
         try:
             for airport, coords in airports.items():
                     lat, lon = coords

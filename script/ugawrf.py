@@ -85,7 +85,6 @@ airports = {
 # this will scale up quick, so try not to add too many airports right now
 
 PRODUCTS = {
-    
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",

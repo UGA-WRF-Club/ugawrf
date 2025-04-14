@@ -204,8 +204,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax, cmin = 350, 250
         elif level == 500:
             cmax, cmin = 600, 500
+        smooth_z = smooth2d(data_copy, 40, cenweight=6)    
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm', vmax=cmax, vmin=cmin)
-        plt.contour(to_np(lons), to_np(lats), to_np(data_copy), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(100, 1000, 5))
+        plt.contour(to_np(lons), to_np(lats), to_np(smooth_z), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(100, 1000, 5))
         ax.set_title(f"{level}mb Height (dam) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)

@@ -1,0 +1,18 @@
+[project]
+name = "ugawrf"
+version = "0.1.0"
+description = "A script to process ugawrf data and a webpage to view said processed data."
+readme = "../README.md"
+requires-python = ">=3.9,<3.13"
+package-mode = false
+dependencies = [
+    "cartopy>=0.23.0",
+    "matplotlib>=3.8.4",
+    "metpy>=1.6.3",
+    "netcdf4>=1.7.2",
+    "pip>=25.0.1",
+    "wheel>=0.45.1",
+    "wrapt>=1.17.2",
+    "wrf-python @ git+https://github.com/NCAR/wrf-python",
+    "xarray>=2024.7.0",
+]

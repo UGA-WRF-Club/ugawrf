@@ -46,9 +46,24 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
+    
+    elif product == '1hr_dewp_c':
+        if timestep > 0:
+            dewp_now = getvar(wrf_file, "td2", timeidx=timestep)
+            dewp_prev = getvar(wrf_file, "td2", timeidx=timestep - 1)
+            dewp_change_1hr = (dewp_now - dewp_prev) * 9/5
+            data_copy = dewp_change_1hr.copy()
+        else:
+            ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
+            dewp_change_1hr = data_copy * 0
+            data_copy = data_copy * 0
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(dewp_change_1hr), cmap="BrBG", vmin=-20, vmax=20)
+        ax.set_title(f"1 Hour 2m Dewpoint Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Dewpoint Change (°F)'
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'rh':
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=0, vmax=100)
-        ax.set_title(f"2m Relative Humidity (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"2m Relative Humidity (%) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Relative Humidity (%)"
     elif product == 'wind':
         data_copy = data[0].copy()

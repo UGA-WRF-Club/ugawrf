@@ -67,27 +67,32 @@ start_time = dt.datetime.now()
 # whenever you add a new airport, it will automatically make new folders at BASE_OUTPUT/(runname)/skewt/(airport) and BASE_OUTPUT/(runname)/text/(airport).
 # BASE_OUTPUT is whatever you pass in arg2. If you pass nothing, it defaults to (parent folder)/site/runs
 # you should not have to manually add new folders.
-airports = {
+high_prio_airports ={
     "ahn": (33.95167820706025, -83.32489875559355),
     "cni": (34.30887599509864, -84.4273590802223),
-    "atl": (33.6391621022899, -84.43061412634862),
     "ffc": (33.358755552804176, -84.5711101702346),
     "mcn": (32.70076950826015, -83.64790511895201),
-    "rmg": (34.35267229676656, -85.16328449820841),
     "csg": (32.51571975545047, -84.9392150850212),
     "bmx": (33.17895986702925, -86.7823825539515),
-    "ohx": (36.24707362357824, -86.56312930475052),
     "gsp": (34.883261598428625, -82.22035185765819),
-    "sav": (32.128213416567114, -81.19987457392587),
-    "aby": (31.53370678927006, -84.18738548637639),
+    "hun": (34.72526357496368, -86.64485933237611),
     "tae": (30.394458005924445, -84.3398597480267),
+    "sav": (32.128213416567114, -81.19987457392587),
     "ags": (33.369475015594105, -81.96517834789427),
     "tys": (35.807073917260894, -83.99815749815394),
-    "hun":(34.72526357496368, -86.64485933237611)
-} # locations to plot numbers on map, skewts, text products, meteograms. meant for airports, you could put any location in domain here
-# format is "folder_name": (lat, lon)
+} # locations to plot numbers on map, text products, meteograms. meant for airports, you could put any location in domain here
 # !!! IMPORTANT !!! our current skewt plot function is considerably intensive, taking about ~50 seconds per airport to finish (on my hardware).
-# this will scale up quick, so try not to add too many airports right now
+# this will scale up quick, so try not to add too many airports to this one right now
+other_airports = {
+    "atl": (33.6391621022899, -84.43061412634862),
+    "rmg": (34.35267229676656, -85.16328449820841),
+    "aby": (31.53370678927006, -84.18738548637639),
+    "vdi": (32.19211787190395, -82.36896971377632),
+    "avl": (35.437208530161925, -82.53944681688363),
+    "jax": (30.492570769985885, -81.68571176177561),
+    "ohx": (36.24707362357824, -86.56312930475052),
+} # same as above minus generating a skewt (time saving) - more ok to plot many here
+# format is "folder_name": (lat, lon)
 
 PRODUCTS = {
     "temperature": "T2",
@@ -140,6 +145,8 @@ PRODUCTS = {
 
 # --- END CONFIG --- #
 
+airports = {**high_prio_airports, **other_airports}
+
 wrf_file = Dataset(WRF_FILE)
 run_time = str(wrf_file.START_DATE).replace(":", "_")
 
@@ -155,7 +162,8 @@ hours = len(times) -1
 
 run_metadata = {
     "init_time": str(forecast_times[0]),
-    "forecast_hours": hours
+    "forecast_hours": hours,
+    "products": list(PRODUCTS.keys())
 }
 json_output_path = os.path.join(BASE_OUTPUT, run_time, "metadata.json")
 os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
@@ -232,7 +240,7 @@ if "meteogram" in modules_enabled:
 if "skewt" in modules_enabled:
     skewt_plot_time = dt.datetime.now()
 
-    for airport, coords in airports.items():
+    for airport, coords in high_prio_airports.items():
         try:
             skewt_time = dt.datetime.now()
             x_y = ll_to_xy(wrf_file, coords[0], coords[1])

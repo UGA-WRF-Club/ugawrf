@@ -177,7 +177,16 @@ function toggleSecondaryDisplay() {
 document.querySelectorAll('.dropdown-content a').forEach(item => {
     item.addEventListener('click', event => {
         event.preventDefault();
-        updateImage(event.target.id);
+        if (event.target.id == "24hr_change") {
+            const run = runSelector.value;
+            console.log("test")
+            weatherImage.src = `${outputs}${run}/24hr_change/24hr_change.png`;
+            slider.disabled = true
+        }
+        else {
+            updateImage(event.target.id);
+            slider.disabled = false
+        }
     });
 });
 slider.addEventListener('input', () => updateImage());

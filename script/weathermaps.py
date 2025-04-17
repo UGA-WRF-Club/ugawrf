@@ -46,7 +46,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
-    
     elif product == '1hr_dewp_c':
         if timestep > 0:
             dewp_now = getvar(wrf_file, "td2", timeidx=timestep)

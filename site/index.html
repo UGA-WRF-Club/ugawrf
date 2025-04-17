@@ -22,6 +22,7 @@
             <a id="temperature" href="#">2m Temperature</a>
             <a id="1hr_temp_c" href="#">1-Hour Temp Change</a>
             <a id="dewp" href="#">2m Dewpoint</a>
+            <a id="1hr_dewp_c" href="#">1-Hour Dewpoint Change</a>
             <a id="rh" href="#">2m Relative Humidity</a>
             <a id="wind" href="#">10m Wind Speed</a>
             <a id="wind_gust" href="#">10m Wind Gust</a>
@@ -127,41 +128,54 @@
     <h2>Upper Air Plots</h2>
     <p>Use timestep slider above. Click and hold to enlarge.</p>
     <div class="skewtContainer">
-    <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="300"/>
-    <img loading="lazy" class="skewtimg" id="scni" src="#" alt="Upper Air Plot for CNI" width="300"/>
-    <img loading="lazy" class="skewtimg" id="satl" src="#" alt="Upper Air Plot for ATL" width="300"/>
-    <img loading="lazy" class="skewtimg" id="smcn" src="#" alt="Upper Air Plot for MCN" width="300"/>
-    <img loading="lazy" class="skewtimg" id="srmg" src="#" alt="Upper Air Plot for RMG" width="300"/>
-    <img loading="lazy" class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="300"/>
-    <img loading="lazy" class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="300"/>
-    <img loading="lazy" class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for BMX" width="300"/>
-    <img loading="lazy" class="skewtimg" id="sohx" src="#" alt="Upper Air Plot for OHX" width="300"/>
-    <img loading="lazy" class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="300"/>
+        <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="300"/>
+        <img class="skewtimg" id="scni" src="#" alt="Upper Air Plot for CNI" width="300"/>
+        <img class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="300"/>
+        <img class="skewtimg" id="smcn" src="#" alt="Upper Air Plot for MCN" width="300"/>
+        <img class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="300"/>
+        <img class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for BMX" width="300"/>
+        <img class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="300"/>
+        <img class="skewtimg" id="shun" src="#" alt="Upper Air Plot for HUN" width="300"/>
+        <img class="skewtimg" id="stae" src="#" alt="Upper Air Plot for TAE" width="300"/>
+        <img class="skewtimg" id="ssav" src="#" alt="Upper Air Plot for SAV" width="300"/>
+        <img class="skewtimg" id="sags" src="#" alt="Upper Air Plot for AGS" width="300"/>
+        <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="300"/>
     </div>
     <h2>Point Data</h2>
     <label for="textSelector">Select Airport</label>
-    <select id="textSelector">
-        <option value="ahn">AHN</option>
-        <option value="cni">CNI</option>
-        <option value="atl">ATL</option>
-        <option value="mcn">MCN</option>
-        <option value="rmg">RMG</option>
-        <option value="csg">CSG</option>
-        <option value="ffc">(NWS) FFC</option>
-        <option value="bmx">(NWS) BMX</option>
-        <option value="ohx">(NWS) OHX</option>
-        <option value="gsp">(NWS) GSP</option>
-    </select>
+    <label for="textSelector">Select Airport</label>
+<select id="textSelector">
+    <option value="ahn">AHN</option>
+    <option value="cni">CNI</option>
+    <option value="ffc">(NWS) FFC</option>
+    <option value="aby">ABY</option>
+    <option value="ags">AGS</option>
+    <option value="atl">ATL</option>
+    <option value="csg">CSG</option>
+    <option value="mcn">MCN</option>
+    <option value="rmg">RMG</option>
+    <option value="sav">SAV</option>
+    <option value="vdi">VDI</option>
+    <option value="bmx">(NWS) BMX</option>
+    <option value="hun">(NWS) HUN</option>
+    <option value="jax">JAX</option>
+    <option value="tae">(NWS) TAE</option>
+    <option value="gsp">(NWS) GSP</option>
+    <option value="avl">AVL</option>
+    <option value="ohx">(NWS) OHX</option>
+    <option value="tys">TYS</option>
+</select>
     <div class="point-container">
     <h3>Meteogram</h3>
     <h3>Text Forecast</h3>
     <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="600">
     <div class="textContainer">
-        <div id="textForecast">Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally or looking at the staging website unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
+        <div id="textForecast">Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
     </div>
     </div>
     <p>Product Changelog:</p>
     <ul class="textContainer">
+        <li>1-Hour Dewpoint Change, new locations for SkewTs & Point Data - Only available after the 2025/04/16 03z run.</li>
         <li>Max CAPE, CIN, and streamlines on windmaps - Only available after the 2025/04/12 00z run.</li>
         <li>1-Hour Temp Change (all levels) - Only available after the 2025/04/11 03z run.</li>
         <li>700mb/500mb Heights, RH (all levels) - Only available after the 2025/04/04 00z run. Additionally, the cloud cover maps were modified and had the ends of their colormaps swapped.</li>

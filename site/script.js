@@ -3,6 +3,7 @@ const products = {
     "temperature": "2m Temperature",
     "1hr_temp_c" : "1-Hour Temperature Change",
     "dewp": "2m Dew Point",
+    "1hr_dewp_c": "1-Hour Dew Point Change",
     "rh": "2m Relative Humidity",
     "pressure": "Pressure",
     "wind": "Wind",
@@ -62,7 +63,20 @@ const multiEnabler = document.getElementById("multiEnabler")
 const multiSelector = document.getElementById("multiSelector")
 const multiSubchooser = document.getElementById('multiSubchooser')
 const secondaryImage = document.getElementById('secondaryImage')
-const stationIds = ["sahn", "scni", "satl", "smcn", "srmg", "scsg", "sffc", "sbmx", "sohx", "sgsp"];
+const stationIds = [
+    "sahn",
+    "scni",
+    "sffc",
+    "smcn",
+    "scsg",
+    "sbmx",
+    "sgsp",
+    "shun",
+    "stae",
+    "ssav",
+    "sags",
+    "stys"
+  ];
 const stationElements = Object.fromEntries(
     stationIds.map(id => [id, document.getElementById(id)])
 );

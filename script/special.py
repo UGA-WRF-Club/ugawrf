@@ -2,12 +2,13 @@
 
 from wrf import getvar, to_np, latlon_coords, ll_to_xy
 import matplotlib.pyplot as plt
+import datetime as dt
 import os
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
-def hr24_change(output_path, airports, forecast_times, run_time, wrf_file):
-    temp_24 = getvar(wrf_file, "T2", timeidx=24)
+def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file):
+    temp_24 = getvar(wrf_file, "T2", timeidx=hours)
     temp_now = getvar(wrf_file, "T2", timeidx=0)
     hr24_change = (temp_24 - temp_now) * 9/5
     plt.figure(figsize=(8, 6))
@@ -30,11 +31,13 @@ def hr24_change(output_path, airports, forecast_times, run_time, wrf_file):
         if min_value != 0:
             maxmin += f"\nMin: {min_value:.2f}"
     ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
-    ax.set_title(f"24 Hour 2m Temp Change (°F) - Hour 24\nValid: {forecast_times[24]} - Init: {forecast_times[0]}")
+    ax.set_title(f"{hours} Hour 2m Temp Change (°F) - Hour {hours}\nValid: {forecast_times[hours]} - Init: {forecast_times[0]}")
     plt.colorbar(contour, ax=ax, orientation='horizontal', pad=0.05, label='Temperature Change (°F)')
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
+    plt.tight_layout()
+    ax.annotate(f"{(forecast_times[hours] - dt.timedelta(hours=5))} EST", xy=(0.25, 1), xycoords='axes fraction', fontsize=8, color='black')
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"24hr_change.png"))

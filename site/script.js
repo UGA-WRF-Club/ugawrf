@@ -73,7 +73,6 @@ const stationIds = [
     "sgsp",
     "shun",
     "stae",
-    "ssav",
     "sags",
     "stys"
   ];

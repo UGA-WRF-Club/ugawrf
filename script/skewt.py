@@ -58,8 +58,8 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
     lfc_p, lfc_T = mpcalc.lfc(p_q, T_q, Td_q)
     skew.plot(lcl_p, lcl_T, marker='o', color='k', markerfacecolor='k', label='LCL')
     skew.plot(lfc_p, lfc_T, marker='o', color='k', markerfacecolor='white', label='LFC')
-    skew.ax.text(lcl_T.magnitude + 1, lcl_p.magnitude, "LCL", ha="left", va="center", fontsize=9, bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none", alpha=0.7))
-    skew.ax.text(lfc_T.magnitude + 1, lfc_p.magnitude, "LFC", ha="left", va="center", fontsize=9, bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none", alpha=0.7))
+    skew.ax.text(lcl_T.magnitude + 1, lcl_p.magnitude, "LCL", ha="left", va="center", fontsize=12, bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none", alpha=0.7))
+    skew.ax.text(lfc_T.magnitude + 1, lfc_p.magnitude, "LFC", ha="left", va="center", fontsize=12, bbox=dict(boxstyle="round,pad=0.1", fc="white", ec="none", alpha=0.7))
     skew.plot(p, prof, 'k', linewidth=2)
     skew.ax.set_xlim(-50, 40)
     skew.ax.set_ylim(1000, 100)
@@ -92,7 +92,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
         idx = (np.abs(z - i)).argmin().item()
         u_km = u[idx].values
         v_km = v[idx].values
-        h.ax.text(u_km, v_km, f"{i}", color="w", fontsize=8, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10)
+        h.ax.text(u_km, v_km, f"{i}", color="w", fontsize=10, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10)
     h.plot(u, v)
     h.plot_colormapped(u, v, c=p, label='0-12km WIND')
     ax.set_title('Hodograph')

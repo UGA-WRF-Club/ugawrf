@@ -54,6 +54,7 @@ const productSelector = document.getElementById('productSelector');
 const textSelector = document.getElementById('textSelector');
 const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
+const hodographOnly = document.getElementById('hodographOnly')
 const meteogram = document.getElementById('meteogram');
 const textForecast = document.getElementById('textForecast');
 const playButton = document.getElementById("playButton");
@@ -111,7 +112,13 @@ function updateImage(selectedProduct = product) {
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
     weatherImage.src = `${outputs}${run}/${product}/hour_${timestep}.png`;
     stationIds.forEach(id => {
-        stationElements[id].src = `${outputs}${run}/skewt/${id.replace('s', '')}/hour_${timestep}.png`;
+        if (hodographOnly.checked == true) {
+            stationElements[id].src = `${outputs}${run}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;
+        } 
+        else {
+            console.log("no!")
+            stationElements[id].src = `${outputs}${run}/skewt/${id.replace('s', '')}/hour_${timestep}.png`;
+        }
     });
     updateSecondaryDisplay()
 }
@@ -196,6 +203,7 @@ runSelector.addEventListener('change', () => {
 });
 textSelector.addEventListener('change', updateTextForecast);
 weatherImage.addEventListener('click', () => slider.focus());
+hodographOnly.addEventListener('click', () => updateImage());
 textForecast.addEventListener('click', () => textSelector.focus());
 meteogram.addEventListener('click', () => textSelector.focus());
 multiEnabler.addEventListener('click', toggleSecondaryDisplay)

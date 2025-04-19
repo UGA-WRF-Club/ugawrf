@@ -93,7 +93,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
         idx = (np.abs(z - i)).argmin().item()
         u_km = u[idx].values
         v_km = v[idx].values
-        h.ax.text(u_km, v_km, f"{i}", color="w", fontsize=10, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10)
+        h.ax.text(u_km, v_km, f"{i}", color="w", fontsize=8, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10)
     h.plot(u, v)
     h.plot_colormapped(u, v, c=p, label='0-12km WIND')
     ax.set_title('Hodograph')

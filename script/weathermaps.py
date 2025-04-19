@@ -22,7 +22,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     lats, lons = latlon_coords(data)
     if product == 'temperature':
         data_copy = (data_copy - 273.15) * 9/5 + 32
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmin=-5, vmax=105)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5))
         ax.set_title(f"2m Temperature (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -42,7 +42,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'dewp':
         data_copy = data_copy * 9/5 + 32
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=10, vmax=90)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(10, 85, 5))
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -83,13 +83,15 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_streamlines(ax, wrf_file, timestep, lons, lats)
     elif product == 'comp_reflectivity':
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data), 15, cmap=refl_cmap, vmin=2, vmax=70)
+        data_masked = np.ma.masked_less(data_copy, 2)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_masked), cmap=refl_cmap, levels=np.arange(0, 75, 5))
         ax.set_title(f"Composite Reflectivity (dbZ) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Composite Reflectivity (dbZ)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'total_precip':
         data_copy = data_copy / 25.4
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), 20, cmap='magma_r', vmin=0, vmax=20)
+        precip_cmap = ctables.registry.get_colortable('precipitation')
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=precip_cmap, levels=np.arange(0, 20, 0.25), extend='max')
         ax.set_title(f"Total Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Precipitation (in)"
     elif product == '1hr_precip':
@@ -97,7 +99,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         rain_prev = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep - 1) if timestep > 0 else rain_now * 0
         precip_1hr = (rain_now - rain_prev) / 25.4
         data_copy = precip_1hr.copy()
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), 20, cmap="magma_r", vmin=0, vmax=5)
+        precip_cmap = ctables.registry.get_colortable('precipitation')
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), cmap=precip_cmap, levels=np.arange(0, 5, 0.1), extend='max')
         ax.set_title(f"Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':
@@ -134,9 +137,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             helicity = getvar(wrf_file, "UP_HELI_MAX", timeidx=t)
             helicity_sum += to_np(helicity)
         reflectivity = getvar(wrf_file, "REFD_COM", timeidx=timestep)
+        reflectivity_masked = np.ma.masked_less(reflectivity, 2)
         refl_cmap = ctables.registry.get_colortable("NWSReflectivity")
-        plt.contourf(to_np(lons), to_np(lats), to_np(reflectivity), cmap=refl_cmap, vmin=2, vmax=70, alpha=0.4)
-        contour = plt.contourf(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], alpha=0.6)
+        plt.contourf(to_np(lons), to_np(lats), to_np(reflectivity_masked), cmap=refl_cmap, levels=np.arange(0, 75, 5), alpha=0.3)
+        contour = plt.contourf(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], alpha=0.7)
         plt.contour(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], linestyles='dashed')
         ax.set_title(f"Helicity Tracks + Composite Reflectivity - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Helicity m^2/s^2'
@@ -170,7 +174,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax, cmin = 20, -50
         elif level == 300:
             cmax, cmin = 0, -70
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', vmax=cmax, vmin=cmin)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(cmin, cmax, 2))
         ax.set_title(f"{level}mb Temp (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temp (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
@@ -184,7 +188,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax, cmin = -10, -50
         elif level == 300:
             cmax, cmin = -30, -70
-        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmax=cmax, vmin=cmin)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(cmin, cmax, 2))
         ax.set_title(f"{level}mb Dew Point (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Dew Point (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)

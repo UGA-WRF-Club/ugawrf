@@ -214,8 +214,8 @@ if "special" in modules_enabled:
     special_plot_time = dt.datetime.now()
     try:
         output_path = os.path.join(BASE_OUTPUT, run_time)
-        #for t in range(0, hours + 1):
-            #special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, run_time, wrf_file)
+        for t in range(0, hours + 1):
+            special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, run_time, wrf_file)
         special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, run_time, wrf_file)
         print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
     except Exception as e:

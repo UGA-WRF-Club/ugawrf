@@ -12,13 +12,13 @@ body {
           border: 1px solid black;
   }
       .textContainer {
-      width: 400px;
+      width: 500px;
       margin-left: auto;
       margin-right: auto;
       border: 1px solid black;
       text-align: left;
       white-space: pre-line;
-      font-size: 75%;
+      font-size: 100%;
       overflow: auto;
   }
   .point-container {

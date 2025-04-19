@@ -129,17 +129,17 @@
     <h2>Upper Air Plots</h2>
     <p>Use timestep slider above. Click and hold to enlarge.<br><label for="hodographOnly">Hodograph Only</label> <input type="checkbox" id="hodographOnly"></p>
     <div class="skewtContainer">
-        <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="300"/>
-        <img class="skewtimg" id="scni" src="#" alt="Upper Air Plot for CNI" width="300"/>
-        <img class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="300"/>
-        <img class="skewtimg" id="smcn" src="#" alt="Upper Air Plot for MCN" width="300"/>
-        <img class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="300"/>
-        <img class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for BMX" width="300"/>
-        <img class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="300"/>
-        <img class="skewtimg" id="shun" src="#" alt="Upper Air Plot for HUN" width="300"/>
-        <img class="skewtimg" id="stae" src="#" alt="Upper Air Plot for TAE" width="300"/>
-        <img class="skewtimg" id="sags" src="#" alt="Upper Air Plot for AGS" width="300"/>
-        <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="300"/>
+        <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="400"/>
+        <img class="skewtimg" id="scni" src="#" alt="Upper Air Plot for CNI" width="400"/>
+        <img class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="400"/>
+        <img class="skewtimg" id="smcn" src="#" alt="Upper Air Plot for MCN" width="400"/>
+        <img class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="400"/>
+        <img class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for BMX" width="400"/>
+        <img class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="400"/>
+        <img class="skewtimg" id="shun" src="#" alt="Upper Air Plot for HUN" width="400"/>
+        <img class="skewtimg" id="stae" src="#" alt="Upper Air Plot for TAE" width="400"/>
+        <img class="skewtimg" id="sags" src="#" alt="Upper Air Plot for AGS" width="400"/>
+        <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="400"/>
     </div>
     <h2>Point Data</h2>
     <label for="textSelector">Select Airport</label>
@@ -167,13 +167,14 @@
     <div class="point-container">
     <h3>Meteogram</h3>
     <h3>Text Forecast</h3>
-    <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="600">
+    <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="800">
     <div class="textContainer">
         <div id="textForecast">Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
     </div>
     </div>
     <p>Product Changelog:</p>
     <ul class="textContainer">
+        <li>SkewT Overhaul, Hodographs Only - Only available after the 2025/04/19 06z run.</li>
         <li>1-Hour Dewpoint Change, new locations for SkewTs & Point Data - Only available after the 2025/04/16 00z run.</li>
         <li>Max CAPE, CIN, and streamlines on windmaps - Only available after the 2025/04/12 00z run.</li>
         <li>1-Hour Temp Change (all levels) - Only available after the 2025/04/11 03z run.</li>
@@ -190,7 +191,7 @@
     <b><p>Data on this page may be delayed, incorrect, demos, and/or missing. Products may change without notice.</p></b>
     <p>As of now, runs are stored for 30 days before being deleted.</p>
     <p>This project is open source and be found <a href="https://github.com/UGA-WRF-Club/ugawrf">here.</a></p>
-    <p>Made with <3 by the UGA-WRF Club</p>
+    <p>Made with &lt;3 by the UGA-WRF Club</p>
     <p>Download raw wrfout files <a href="calendar.html">here.</a></p>
     </div>
     <script src="script.js"></script>

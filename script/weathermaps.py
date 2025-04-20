@@ -261,7 +261,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
                     lat, lon = coords
                     idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
                     value = to_np(data_copy)[idx_y, idx_x]
-                    ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='center', va='bottom')
+                    ax.text(lon, lat, f"{value:.1f}", color='black', fontsize=8, ha='center', va='bottom')
         except:
             pass
     if product != ("cloudcover"):
@@ -269,9 +269,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         max_value = to_np(data_copy).max()
         min_value = to_np(data_copy).min()
         if max_value != 0:
-            maxmin += f"Max: {max_value:.2f}"
+            maxmin += f"Max: {max_value:.1f}"
             if min_value != 0:
-                maxmin += f"\nMin: {min_value:.2f}"
+                maxmin += f"\nMin: {min_value:.1f}"
         ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     plt.tight_layout()
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='figure fraction', fontsize=8, color='black')

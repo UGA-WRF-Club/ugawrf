@@ -50,6 +50,7 @@ let timestep = 0;
 let product = "temperature";
 const slider = document.getElementById('timeSlider');
 const runSelector = document.getElementById('runSelector');
+const domainSelector = document.getElementById('domainSelector');
 const productSelector = document.getElementById('productSelector');
 const textSelector = document.getElementById('textSelector');
 const weatherImage = document.getElementById('weatherImage');
@@ -108,42 +109,45 @@ async function loadDirectories(pageToken = '') {
 function updateImage(selectedProduct = product) {
     product = selectedProduct;
     const run = runSelector.value;
+    const domain = domainSelector.value;
     timestep = Number(slider.value);
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
-    weatherImage.src = `${outputs}${run}/${product}/hour_${timestep}.png`;
+    weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
     stationIds.forEach(id => {
         if (hodographOnly.checked == true) {
-            stationElements[id].src = `${outputs}${run}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;
+            stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;
         } 
         else {
             console.log("no!")
-            stationElements[id].src = `${outputs}${run}/skewt/${id.replace('s', '')}/hour_${timestep}.png`;
+            stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hour_${timestep}.png`;
         }
     });
     updateSecondaryDisplay()
 }
 function updateSecondaryDisplay() {
     const run = runSelector.value;
+    const domain = domainSelector.value;
     const subchoosed = multiSubchooser.value
     timestep = Number(slider.value);
     if (multiSelector.value == 'map')
         {
-            secondaryImage.src = `${outputs}${run}/${subchoosed}/hour_${timestep}.png`
+            secondaryImage.src = `${outputs}${run}/${domain}/${subchoosed}/hour_${timestep}.png`
         }
     else if (multiSelector.value == 'skewt')
         {
-            secondaryImage.src = `${outputs}${run}/skewt/${subchoosed}/hour_${timestep}.png`
+            secondaryImage.src = `${outputs}${run}/${domain}/skewt/${subchoosed}/hour_${timestep}.png`
         }
 }
 async function updateTextForecast() {
     const run = runSelector.value;
+    const domain = domainSelector.value;
     const textOption = textSelector.value;
-    fetch(`${outputs}${run}/text/${textOption}/forecast.txt`)
+    fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
         .then(response => response.text())
         .then(data => {
             textForecast.textContent = data;
         });
-    meteogram.src = `${outputs}${run}/meteogram/${textOption}/meteogram.png`;
+    meteogram.src = `${outputs}${run}/${domain}/meteogram/${textOption}/meteogram.png`;
 }
 function toggleSecondaryDisplay() {
     if (multiEnabler.checked == true) {
@@ -198,6 +202,16 @@ document.querySelectorAll('.dropdown-content a').forEach(item => {
 });
 slider.addEventListener('input', () => updateImage());
 runSelector.addEventListener('change', () => {
+    const run = runSelector.value;
+    const domain = domainSelector.value;
+    document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
+    updateImage();
+    updateTextForecast();
+});
+domainSelector.addEventListener('change', () => {
+    const run = runSelector.value;
+    const domain = domainSelector.value;
+    document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
     updateImage();
     updateTextForecast();
 });
@@ -238,5 +252,8 @@ window.onload = function () {
     multiEnabler.checked = false
     multiSelector.disabled = true
     multiSubchooser.disabled = true
+    const run = runSelector.value;
+    const domain = domainSelector.value;
+    document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
 };
 updateTextForecast();

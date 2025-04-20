@@ -105,6 +105,9 @@ async function loadDirectories(pageToken = '') {
     });
     updateImage("temperature");
     updateTextForecast();
+    const run = runSelector.value;
+    const domain = domainSelector.value;
+    document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
 }
 function updateImage(selectedProduct = product) {
     product = selectedProduct;
@@ -118,7 +121,6 @@ function updateImage(selectedProduct = product) {
             stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;
         } 
         else {
-            console.log("no!")
             stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hour_${timestep}.png`;
         }
     });
@@ -252,8 +254,5 @@ window.onload = function () {
     multiEnabler.checked = false
     multiSelector.disabled = true
     multiSubchooser.disabled = true
-    const run = runSelector.value;
-    const domain = domainSelector.value;
-    document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
 };
 updateTextForecast();

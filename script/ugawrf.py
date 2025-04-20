@@ -113,7 +113,7 @@ PRODUCTS = {
     "snowfall": "SNOWNC",
     "cloudcover": "cloudfrac",
     "echo_tops": "ECHOTOP",
-    
+
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
     "temp_850mb": "tc",
@@ -149,9 +149,11 @@ airports = {**high_prio_airports, **other_airports}
 
 wrf_file = Dataset(WRF_FILE)
 run_time = str(wrf_file.START_DATE).replace(":", "_")
+domain = os.path.basename(WRF_FILE).split("_")[1]
+file_path = (run_time, domain)
 
 print(f"wrfout: {WRF_FILE}")
-print(f'image output: {BASE_OUTPUT}')
+print(f'image output: {BASE_OUTPUT}\{domain}')
 print(f"let's go! processing data for run {run_time}")
 
 times = extract_times(wrf_file, timeidx=None)
@@ -162,10 +164,11 @@ hours = len(times) -1
 
 run_metadata = {
     "init_time": str(forecast_times[0]),
+    "domain": domain,
     "forecast_hours": hours,
     "products": list(PRODUCTS.keys())
 }
-json_output_path = os.path.join(BASE_OUTPUT, run_time, "metadata.json")
+json_output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "metadata.json")
 os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
 with open(json_output_path, "w") as json_file:
     json.dump(run_metadata, json_file, indent=4)
@@ -179,8 +182,8 @@ if "textgen" in modules_enabled:
     for airport, coords in airports.items():
         try:
             text_time = dt.datetime.now()
-            text_data = textgen.get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time)
-            output_path = os.path.join(BASE_OUTPUT, run_time, "text", airport)
+            text_data = textgen.get_text_data(wrf_file, airport, coords, hours, forecast_times, file_path)
+            output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "text", airport)
             os.makedirs(output_path, exist_ok=True)
             with open(os.path.join(output_path, "forecast.txt"), 'w') as f:
                 for line in text_data:
@@ -198,12 +201,12 @@ if "weathermaps" in modules_enabled:
     for product, variable in PRODUCTS.items():
         try:
             product_time = dt.datetime.now()
-            output_path = os.path.join(BASE_OUTPUT, run_time, product)
+            output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], product)
             level = None
             if "_" in product and "mb" in product:
                 level = int(product.split("_")[-1].replace("mb", ""))
             for t in range(0, hours + 1):
-                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, run_time, wrf_file, level)
+                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, file_path, wrf_file, level)
             print(f"processed {product} in {dt.datetime.now() - product_time}")
         except Exception as e:
             print(f"error processing {product}: {e}! last timestep: {t}")
@@ -213,10 +216,10 @@ if "weathermaps" in modules_enabled:
 if "special" in modules_enabled:
     special_plot_time = dt.datetime.now()
     try:
-        output_path = os.path.join(BASE_OUTPUT, run_time)
+        output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1])
         for t in range(0, hours + 1):
-            special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, run_time, wrf_file)
-        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, run_time, wrf_file)
+            special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, file_path, wrf_file)
+        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, file_path, wrf_file)
         print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
     except Exception as e:
         print(f"error processing special plots: {e}!")
@@ -229,8 +232,8 @@ if "meteogram" in modules_enabled:
     for airport, coords in airports.items():
         try:
             meteogram_time = dt.datetime.now()
-            output_path = os.path.join(BASE_OUTPUT, run_time, "meteogram", airport)
-            meteogram.plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, hours, run_time)
+            output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "meteogram", airport)
+            meteogram.plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, hours, file_path)
             print(f"processed {airport} meteogram in {dt.datetime.now() - meteogram_time}")
         except Exception as e:
             print(f"error processing {airport} meteogram: {e}!")
@@ -244,13 +247,13 @@ if "skewt" in modules_enabled:
         try:
             skewt_time = dt.datetime.now()
             x_y = ll_to_xy(wrf_file, coords[0], coords[1])
-            output_path = os.path.join(BASE_OUTPUT, run_time, "skewt", airport)
+            output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "skewt", airport)
             for t in range(0, hours + 1):
-                skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, run_time)
+                skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, file_path)
             print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
         except Exception as e:
             print(f"error processing {airport} upper air plot: {e}!")
     print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
 
 process_time = dt.datetime.now() - start_time
-print(f"modules {modules_enabled} processed successfully, this is run {run_time} - took {process_time}")
+print(f"modules {modules_enabled} processed successfully, this is run {file_path} - took {process_time}")

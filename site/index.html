@@ -8,14 +8,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="background-color: black;color: white;text-align: center;">
-    <h1>The UGA-WRF is currently down as we modify it's domain.</h1>
-    <h2>New runs will not populate. The area shown may change when it comes back online.</h2>
-</div>
+    <div style="background-color:dimgrey;color: white;text-align: center;">
+        <h1>The UGA-WRF is currently down as we modify it's domain.</h1>
+        <h2>New runs will not populate. The area shown may change when it comes back online.</h2>
+        <h3>We're working to get this back online ASAP. Please hang tight as we work to iron out all the kinks.</h3>
+    </div>
     <div style = "text-align:center">
     <h1>UGA-WRF Viewer</h1>
     <label for="runSelector">Select Run:</label>
     <select id="runSelector">
+    </select>
+    <label for="domainSelector">Select Domain (placeholders):</label>
+    <select id="domainSelector">
+        <option value="d03">North GA</option>
+        <option value="d02">Southeast</option>
+        <option value="d01">East</option>
     </select>
     <p style="font-size: 75%">(YYYY-MM-DD HH:MM:SS UTC)</p>
     <h2>Weather Maps</h2>
@@ -192,10 +199,14 @@
         <li>1-Hour Precip - Only available after the 2025/03/23 03z run</li>
     </ul>
     <h3>Disclaimer: Work in progress.</h3>
-    <b><p>Data on this page may be delayed, incorrect, demos, and/or missing. Products may change without notice.</p></b>
-    <p>As of now, runs are stored for 30 days before being deleted.</p>
-    <p>This project is open source and be found <a href="https://github.com/UGA-WRF-Club/ugawrf">here.</a></p>
-    <p>Download raw wrfout files <a href="calendar.html">here.</a></p>
+    <p>
+        <b>Data on this page may be delayed, incorrect, and/or missing. 
+        <br>Products may change without notice. Previous runs may be deleted without notice.</b>
+        <br>Major changes will be communicated on the top of the page.
+        <br>As of now, runs are stored for 30 days before being deleted.
+        <br>This project is open source and be found <a href="https://github.com/UGA-WRF-Club/ugawrf">here.</a>
+        <br>Download raw wrfout files <a href="calendar.html">here.</a>
+    </p>
     <p>Made with &lt;3 by the UGA-WRF Club</p>
     </div>
     <script src="script.js"></script>

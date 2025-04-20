@@ -252,8 +252,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
-    # counties are very intensive to process, so unless we're doing operational runs, you should leave it off
-    #ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
+    # counties are very intensive to process, so you should leave it off
+    if run_time[1] == "d03":
+        ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     if product != ("cloudcover"):
         try:
             for airport, coords in airports.items():

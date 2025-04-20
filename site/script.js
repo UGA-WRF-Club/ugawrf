@@ -104,6 +104,8 @@ async function loadDirectories(pageToken = '') {
     });
     updateImage("temperature");
     updateTextForecast();
+    const run = runSelector.value;
+    document.getElementById("metadata").href = `${outputs}${run}/metadata.json`
 }
 function updateImage(selectedProduct = product) {
     product = selectedProduct;
@@ -198,6 +200,8 @@ document.querySelectorAll('.dropdown-content a').forEach(item => {
 });
 slider.addEventListener('input', () => updateImage());
 runSelector.addEventListener('change', () => {
+    const run = runSelector.value;
+    document.getElementById("metadata").href = `${outputs}${run}/metadata.json`
     updateImage();
     updateTextForecast();
 });

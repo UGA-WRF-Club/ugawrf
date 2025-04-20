@@ -101,7 +101,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = precip_1hr.copy()
         precip_cmap = ctables.registry.get_colortable('precipitation')
         contour = plt.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), cmap=precip_cmap, levels=np.arange(0, 5, 0.1), extend='max')
-        ax.set_title(f"Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        ax.set_title(f"1 Hour Precipitation (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':
         data_copy = data_copy / 25.4

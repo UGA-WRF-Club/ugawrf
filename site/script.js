@@ -192,8 +192,9 @@ document.querySelectorAll('.dropdown-content a').forEach(item => {
         event.preventDefault();
         if (event.target.id == "24hr_change") {
             const run = runSelector.value;
+            const domain = domainSelector.value;
             console.log("test")
-            weatherImage.src = `${outputs}${run}/24hr_change/24hr_change.png`;
+            weatherImage.src = `${outputs}${run}/${domain}/24hr_change/24hr_change.png`;
             slider.disabled = true
         }
         else {

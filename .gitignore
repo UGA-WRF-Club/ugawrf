@@ -1,6 +1,5 @@
 wrfout*
 __pycache__
-*.png
-*.txt
+site/runs
 *.json
 ._*

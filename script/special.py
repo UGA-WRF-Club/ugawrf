@@ -20,16 +20,16 @@ def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file
                 lat, lon = coords
                 idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
                 value = to_np(hr24_change)[idx_y, idx_x]
-                ax.text(lon, lat, f"{value:.2f}", color='black', fontsize=8, ha='center', va='bottom')
+                ax.text(lon, lat, f"{value:.1f}", color='black', fontsize=8, ha='center', va='bottom')
     except:
         pass
     maxmin = ""
     max_value = to_np(hr24_change).max()
     min_value = to_np(hr24_change).min()
     if max_value != 0:
-        maxmin += f"Max: {max_value:.2f}"
+        maxmin += f"Max: {max_value:.1f}"
         if min_value != 0:
-            maxmin += f"\nMin: {min_value:.2f}"
+            maxmin += f"\nMin: {min_value:.1f}"
     ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     ax.set_title(f"{hours} Hour 2m Temp Change (°F) - Hour {hours}\nValid: {forecast_times[hours]} - Init: {forecast_times[0]}")
     plt.colorbar(contour, ax=ax, orientation='horizontal', pad=0.05, label='Temperature Change (°F)')

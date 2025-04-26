@@ -3,13 +3,14 @@ body {
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
-  }
+
   
       .skewtContainer > img:active {
       width: 600px;
   }
       .skewtimg{
-          border: 1px solid black;
+          border: 1px solid rgb(0, 0, 0);
+          width:600px;
   }
       .textContainer {
       width: 500px;
@@ -31,11 +32,11 @@ body {
     margin: auto;
   }
   .dropbtn {
-    background-color: #537cba;
+    background-color: #919191;
     color: white;
-    padding: 10px;
+    padding: 7px;
     font-size: 16px;
-    border: none;
+    border: black;
   }
   .dropdown {
     position: relative;
@@ -55,9 +56,10 @@ body {
     text-decoration: none;
     display: block;
   }
-  
+
   .dropdown-content a:hover {background-color: #ddd;}
   
   .dropdown:hover .dropdown-content {display: block;}
   
-  .dropdown:hover .dropbtn {background-color: #3e8e41;}
+  .dropdown:hover .dropbtn {background-color: #ad3b1e;}
+}

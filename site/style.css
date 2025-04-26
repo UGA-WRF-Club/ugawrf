@@ -11,6 +11,7 @@ body {
       .skewtimg{
           border: 1px solid rgb(0, 0, 0);
           width:600px;
+          border: 1px solid rgb(176, 59, 30)
   }
       .textContainer {
       width: 500px;
@@ -32,9 +33,9 @@ body {
     margin: auto;
   }
   .dropbtn {
-    background-color: #919191;
+    background-color: rgb(46, 134, 24);
     color: white;
-    padding: 7px;
+    padding: 10px;
     font-size: 16px;
     border: black;
   }

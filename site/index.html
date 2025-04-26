@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        body {
+            background-color: rgb(218, 217, 217);
+        }
+    </style>
     <title>UGA-WRF Viewer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8,7 +13,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="background-color:dimgrey;color: white;text-align: center;">
+    <div style="background-color:rgb(0, 0, 0);color: rgb(221, 80, 45);text-align: center;">
         <h1>The UGA-WRF is back!<br>Our new domain is at a resolution of 1.6km</h1>
         <h2></h2>
         <h3>There may be some issues or missing products. We are working ASAP to get this fixed!</h3>
@@ -119,8 +124,8 @@
     </select>
     <br>
     <div class="multi-container" id="multiContainer">
-    <img id="weatherImage" src="" alt="Model Image" width="900"/>
-    <img id="secondaryImage" src="" alt="Secondary Image" width="700" style="display: none;">
+    <img id="weatherImage" src="" alt="Model Image" width="900" style="border: 2px solid rgb(176, 59, 30);">
+    <img id="secondaryImage" src="" alt="Secondary Image" width="900" style="display: none;">
     </div>
     <br>
     <label for="timeSlider">Timestep:</label>
@@ -138,47 +143,47 @@
     <h2>Upper Air Plots</h2>
     <p>Use timestep slider above. Click and hold to enlarge.<br><label for="hodographOnly">Hodograph Only</label> <input type="checkbox" id="hodographOnly"></p>
     <div class="skewtContainer">
-        <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="400"/>
-        <img class="skewtimg" id="scni" src="#" alt="Upper Air Plot for CNI" width="400"/>
-        <img class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="400"/>
-        <img class="skewtimg" id="smcn" src="#" alt="Upper Air Plot for MCN" width="400"/>
-        <img class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="400"/>
-        <img class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for BMX" width="400"/>
-        <img class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="400"/>
-        <img class="skewtimg" id="shun" src="#" alt="Upper Air Plot for HUN" width="400"/>
-        <img class="skewtimg" id="stae" src="#" alt="Upper Air Plot for TAE" width="400"/>
-        <img class="skewtimg" id="sags" src="#" alt="Upper Air Plot for AGS" width="400"/>
-        <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="400"/>
+        <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="scni" src="#" alt="Upper Air Plot for CNI" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="sffc" src="#" alt="Upper Air Plot for FFC" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="smcn" src="#" alt="Upper Air Plot for MCN" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="scsg" src="#" alt="Upper Air Plot for CSG" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="sbmx" src="#" alt="Upper Air Plot for BMX" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="sgsp" src="#" alt="Upper Air Plot for GSP" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="shun" src="#" alt="Upper Air Plot for HUN" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="stae" src="#" alt="Upper Air Plot for TAE" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="sags" src="#" alt="Upper Air Plot for AGS" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
+        <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
     </div>
     <h2>Point Data</h2>
-    <label for="textSelector">Select Airport</label>
+    <label for="textSelector">Select Airport:</label>
 <select id="textSelector">
-    <option value="ahn">AHN</option>
-    <option value="cni">CNI</option>
-    <option value="ffc">(NWS) FFC</option>
-    <option value="aby">ABY</option>
-    <option value="ags">AGS</option>
-    <option value="atl">ATL</option>
-    <option value="csg">CSG</option>
-    <option value="mcn">MCN</option>
-    <option value="rmg">RMG</option>
-    <option value="sav">SAV</option>
-    <option value="vdi">VDI</option>
-    <option value="bmx">(NWS) BMX</option>
-    <option value="hun">(NWS) HUN</option>
-    <option value="jax">JAX</option>
-    <option value="tae">(NWS) TAE</option>
-    <option value="gsp">(NWS) GSP</option>
-    <option value="avl">AVL</option>
-    <option value="ohx">(NWS) OHX</option>
-    <option value="tys">TYS</option>
+    <option value="ahn">KAHN</option>
+    <option value="cni">KCNI</option>
+    <option value="ffc">(NWS) KFFC</option>
+    <option value="aby">KABY</option>
+    <option value="ags">KAGS</option>
+    <option value="atl">KATL</option>
+    <option value="csg">KCSG</option>
+    <option value="mcn">KMCN</option>
+    <option value="rmg">KRMG</option>
+    <option value="sav">KSAV</option>
+    <option value="vdi">KVDI</option>
+    <option value="bmx">(NWS) KBMX</option>
+    <option value="hun">(NWS) KHUN</option>
+    <option value="jax">KJAX</option>
+    <option value="tae">(NWS) KTAE</option>
+    <option value="gsp">(NWS) KGSP</option>
+    <option value="avl">KAVL</option>
+    <option value="ohx">(NWS) KOHX</option>
+    <option value="tys">KTYS</option>
 </select>
     <div class="point-container">
     <h3>Meteogram</h3>
     <h3>Text Forecast</h3>
-    <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="800">
-    <div class="textContainer">
-        <div id="textForecast">Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
+    <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="800" style="border: 1px solid rgb(176, 59, 30);">
+    <div class="textContainer" style="border: 1px solid rgb(176, 59, 30);">
+        <div id="textForecast"> Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
     </div>
     </div>
     <a id="metadata" href="#">View run metadata</a>

@@ -39,6 +39,17 @@ body {
     font-size: 16px;
     border: black;
   }
+.locbtn {
+    background-color: #53ba69;
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+  }
+.location {
+  position: relative;
+  display: inline-block;
+}
 .dropdown {
     position: relative;
     display: inline-block;
@@ -64,3 +75,4 @@ body {
   
 .dropdown:hover .dropbtn {background-color: #ad3b1e;}
 
+.locbtn:hover {background-color: #ad3b1e;}

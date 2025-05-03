@@ -2,6 +2,8 @@
 
 from wrf import getvar
 from metpy.plots import SkewT, Hodograph
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 from metpy.units import units

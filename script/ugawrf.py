@@ -94,6 +94,8 @@ other_airports = {
 } # same as above minus generating a skewt (time saving) - more ok to plot many here
 # format is "folder_name": (lat, lon)
 
+extents = {"ga": [-86.2, -80.46, 35.33, 30.49]}
+
 PRODUCTS = {
     "temperature": "T2",
     "1hr_temp_c": "T2",
@@ -120,6 +122,8 @@ PRODUCTS = {
     "temp_700mb": "tc",
     "temp_500mb": "tc",
     "temp_300mb": "tc",
+    "te_850mb": "eth",
+    "te_700mb": "eth",
     "1hr_temp_c_850mb": "tc",
     "1hr_temp_c_700mb": "tc",
     "1hr_temp_c_500mb": "tc",
@@ -206,7 +210,9 @@ if "weathermaps" in modules_enabled:
             if "_" in product and "mb" in product:
                 level = int(product.split("_")[-1].replace("mb", ""))
             for t in range(0, hours + 1):
-                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, file_path, wrf_file, level)
+                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level)
+                for loc, extent in extents.items():
+                    weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
             print(f"processed {product} in {dt.datetime.now() - product_time}")
         except Exception as e:
             print(f"error processing {product}: {e}! last timestep: {t}")

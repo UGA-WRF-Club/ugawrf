@@ -106,8 +106,6 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
     sbcape, sbcin = mpcalc.surface_based_cape_cin(p_q, T_q, Td_q)
     k_index = mpcalc.k_index(p_q, T_q, Td_q)
     total_totals = mpcalc.total_totals_index(p_q, T_q, Td_q)
-    plt.figtext(0.83, 0.56, f"MLCAPE: {mlcape.magnitude:.1f} J/kg", ha="center", va="top", fontsize=12, color='black')
-    plt.figtext(0.83, 0.54, f"MLCIN: {mlcin.magnitude:.1f} J/kg", ha="center", va="top", fontsize=12, color='black')
     plt.figtext(0.83, 0.52, f"MUCAPE: {mucape.magnitude:.1f} J/kg", ha="center", va="top", fontsize=12, color='black')
     plt.figtext(0.83, 0.50, f"MUCIN: {mucin.magnitude:.1f} J/kg", ha="center", va="top", fontsize=12, color='black')
     plt.figtext(0.83, 0.48, f"SBCAPE: {sbcape.magnitude:.1f} J/kg", ha="center", va="top", fontsize=12, color='black')

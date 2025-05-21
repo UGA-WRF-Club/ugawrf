@@ -212,7 +212,8 @@ if "weathermaps" in modules_enabled:
             for t in range(0, hours + 1):
                 weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level)
                 for loc, extent in extents.items():
-                    weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
+                    pass
+                    #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
             print(f"processed {product} in {dt.datetime.now() - product_time}")
         except Exception as e:
             print(f"error processing {product}: {e}! last timestep: {t}")

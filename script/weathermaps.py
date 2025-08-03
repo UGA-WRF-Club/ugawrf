@@ -25,7 +25,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     lats, lons = latlon_coords(data)
     if product == 'temperature':
         data_copy = (data_copy - 273.15) * 9/5 + 32
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5))
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5), extend='both')
         ax.set_title(f"2m Temperature (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -39,13 +39,13 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
             temp_change_1hr = data_copy * 0
             data_copy = data_copy * 0
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-10, vmax=10)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-10, vmax=10, extend='both')
         ax.set_title(f"1 Hour 2m Temp Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°F)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'dewp':
         data_copy = data_copy * 9/5 + 32
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(10, 85, 5))
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(10, 85, 5), extend='both')
         ax.set_title(f"2m Dewpoint (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -59,19 +59,20 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
             dewp_change_1hr = data_copy * 0
             data_copy = data_copy * 0
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(dewp_change_1hr), cmap="BrBG", vmin=-20, vmax=20)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(dewp_change_1hr), cmap="BrBG", vmin=-20, vmax=20, extend='both')
         ax.set_title(f"1 Hour 2m Dewpoint Change (°F) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Dewpoint Change (°F)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'rh':
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmin=0, vmax=100)
+        levels = np.arange(0, 100, 5)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=levels)
         ax.set_title(f"2m Relative Humidity (%) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Relative Humidity (%)"
     elif product == 'wind':
         data_copy = data[0].copy()
         data_copy = data_copy * 2.23694
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=30, vmax=90)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm, extend='both')
         ax.set_title(f"10m Wind Speed (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = "Wind Speed (mph)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -79,7 +80,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     elif product == 'wind_gust':
         data_copy = data_copy * 2.23694
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=50, vmax=110)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm, extend='max')
         ax.set_title(f"10m Wind Gust (mph) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Wind Max (mph)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -87,7 +88,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     elif product == 'comp_reflectivity':
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
         data_masked = np.ma.masked_less(data_copy, 2)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_masked), cmap=refl_cmap, levels=np.arange(0, 75, 5))
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_masked), cmap=refl_cmap, levels=np.arange(0, 75, 5), extend='max')
         ax.set_title(f"Composite Reflectivity (dbZ) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Composite Reflectivity (dbZ)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
@@ -109,7 +110,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     elif product == 'snowfall':
         data_copy = data_copy / 25.4
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=1, vmax=10)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', norm=divnorm)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', norm=divnorm, extend='max')
         ax.set_title(f"Total Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Accumulated Snowfall (in)"
     elif product == '1hr_snowfall':
@@ -118,20 +119,20 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         snow_1hr = (snow_now - snow_prev) / 25.4
         data_copy = snow_1hr.copy()
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=0.3, vmax=3)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', norm=divnorm)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', norm=divnorm, extend='max')
         ax.set_title(f"1 Hour Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Accumulated Snowfall'
     elif product == 'pressure':
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm, extend='both')
         smooth_slp = smooth2d(data_copy, 8, cenweight=6)
         ax.contour(to_np(lons), to_np(lats), to_np(smooth_slp), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(960, 1060, 4))
         ax.set_title(f"MSLP (mb) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"MSLP (mb)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'echo_tops':
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data), cmap='cividis_r', vmin=0, vmax=50000)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data), cmap='cividis_r', vmin=0, vmax=50000, extend='max')
         ax.set_title(f"Echo Tops (m) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f"Echo Tops (m)"
     elif product == 'helicity':
@@ -160,12 +161,12 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     elif product == 'mcape':
         data_copy = data[0].copy()
         label = f'CAPE (J/kg)'
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000, extend='max')
         ax.set_title(f"Max CAPE (MU 500m Parcel) (J/kg) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
     elif product == 'mcin':
         data_copy = data[1].copy()
         label = f'CIN (J/kg)'
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000, extend='max')
         ax.set_title(f"Max CIN (MU 500m Parcel) (J/kg) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
     elif product.startswith("temp") and level != None:
         cmax, cmin = None, None
@@ -177,7 +178,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax, cmin = 20, -50
         elif level == 300:
             cmax, cmin = 0, -70
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(cmin, cmax, 2))
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(cmin, cmax, 2), extend='both')
         ax.set_title(f"{level}mb Temp (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temp (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
@@ -188,25 +189,26 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         elif level == 700:
             cmax, cmin = 10, -30
         elif level == 500:
-            cmax, cmin = -10, -50
+            cmax, cmin = 0, -50
         elif level == 300:
             cmax, cmin = -30, -70
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(cmin, cmax, 2))
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(cmin, cmax, 2), extend='both')
         ax.set_title(f"{level}mb Dew Point (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Dew Point (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("rh") and level != None:
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', vmax=100, vmin=0)
+        levels = np.arange(0, 100, 5)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=levels)
         ax.set_title(f"{level}mb Relative Humidity (%) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Relative Humidity (%)'
     elif product.startswith("te") and level != None:
         if level == 850:
-            levels = np.arange(300, 361, 2)
+            levels = np.arange(300, 371, 2)
         elif level == 700:
-            levels = np.arange(290, 341, 2)
+            levels = np.arange(290, 371, 2)
         else:
             levels = np.linspace(np.nanmin(data_copy), np.nanmax(data_copy), 20)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='turbo', levels=levels)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='turbo', levels=levels, extend='both')
         ax.set_title(f"{level}mb Theta E (K) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
         label = f'Theta E (K)'
@@ -223,7 +225,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax = 105
         elif level == 300:
             cmax = 145
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(ws), cmap="plasma", vmax=cmax)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(ws), cmap="plasma", vmax=cmax, extend='max')
         ax.set_title(f"{level}mb Wind Speed (kt) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Wind Speed (kt)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
@@ -235,8 +237,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax, cmin = 350, 250
         elif level == 500:
             cmax, cmin = 600, 500
-        smooth_z = smooth2d(data_copy, 40, cenweight=6)    
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm', vmax=cmax, vmin=cmin)
+        smooth_z = smooth2d(data_copy, 40, cenweight=6)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm', vmax=cmax, vmin=cmin, extend='both')
         ax.contour(to_np(lons), to_np(lats), to_np(smooth_z), colors="black", transform=ccrs.PlateCarree(), levels=np.arange(100, 1000, 5))
         ax.set_title(f"{level}mb Height (dam) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Height (dam)'
@@ -253,7 +255,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             ax.annotate("This product starts on hour 1.", xy=(0.5, 0.5), xycoords='figure fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.9, edgecolor='none'))
             temp_change_1hr = data_copy * 0
             data_copy = data_copy * 0
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-15, vmax=15)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(temp_change_1hr), cmap="coolwarm", vmin=-15, vmax=15, extend='both')
         ax.set_title(f"1-Hour {level}mb Temp Change (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)

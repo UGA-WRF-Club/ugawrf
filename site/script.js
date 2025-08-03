@@ -81,6 +81,7 @@ const stationIds = [
 const stationElements = Object.fromEntries(
     stationIds.map(id => [id, document.getElementById(id)])
 );
+const georgiaEnabler = document.getElementById("georgiaEnabler");
 
 async function loadDirectories(pageToken = '') {
     const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/';
@@ -115,7 +116,11 @@ function updateImage(selectedProduct = product) {
     const domain = domainSelector.value;
     timestep = Number(slider.value);
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
-    weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
+    if (georgiaEnabler.checked == true) {
+        weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}_ga.png`;
+    } else {
+        weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
+    }
     stationIds.forEach(id => {
         if (hodographOnly.checked == true) {
             stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;
@@ -132,7 +137,9 @@ function updateSecondaryDisplay() {
     const subchoosed = multiSubchooser.value
     timestep = Number(slider.value);
     if (multiSelector.value == 'map')
-        {
+        if (georgiaEnabler.checked == true) {
+            secondaryImage.src = `${outputs}${run}/${domain}/${subchoosed}/hour_${timestep}_ga.png`
+        } else {
             secondaryImage.src = `${outputs}${run}/${domain}/${subchoosed}/hour_${timestep}.png`
         }
     else if (multiSelector.value == 'skewt')
@@ -154,7 +161,7 @@ async function updateTextForecast() {
 function toggleSecondaryDisplay() {
     if (multiEnabler.checked == true) {
         weatherImage.style.width = "700px"
-        secondaryImage.setAttribute('style', 'display:')
+        secondaryImage.setAttribute('style', 'display:; border: 2px solid rgb(176, 59, 30);')
         multiSelector.disabled = false
         multiSubchooser.disabled = false
         multiSubchooser.innerHTML = ''
@@ -180,7 +187,7 @@ function toggleSecondaryDisplay() {
     }
     if (multiEnabler.checked == false) {
         weatherImage.style.width = "900px"
-        secondaryImage.setAttribute('style', 'display: none;')
+        secondaryImage.setAttribute('style', 'display: none; ')
         multiSelector.disabled = true
         multiSubchooser.disabled = true
         secondaryImage.removeEventListener('click', () => slider.focus());
@@ -220,6 +227,7 @@ domainSelector.addEventListener('change', () => {
 });
 textSelector.addEventListener('change', updateTextForecast);
 weatherImage.addEventListener('click', () => slider.focus());
+georgiaEnabler.addEventListener('change', () => updateImage());
 hodographOnly.addEventListener('click', () => updateImage());
 textForecast.addEventListener('click', () => textSelector.focus());
 meteogram.addEventListener('click', () => textSelector.focus());

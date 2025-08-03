@@ -200,7 +200,13 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"{level}mb Relative Humidity (%) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Relative Humidity (%)'
     elif product.startswith("te") and level != None:
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral')
+        if level == 850:
+            levels = np.arange(300, 361, 2)
+        elif level == 700:
+            levels = np.arange(290, 341, 2)
+        else:
+            levels = np.linspace(np.nanmin(data_copy), np.nanmax(data_copy), 20)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='turbo', levels=levels)
         ax.set_title(f"{level}mb Theta E (K) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
         label = f'Theta E (K)'

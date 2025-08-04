@@ -267,8 +267,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
-    # counties are very intensive to process, so you should leave it off
-    ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
+    if extent is not None:
+        # counties are very intensive, so we only add them if an extent is specified
+        ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     if product != ("cloudcover"):
         try:
             west, east, north, south = extent

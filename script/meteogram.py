@@ -58,8 +58,8 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     lines_ax2, labels_ax2 = ax2.get_legend_handles_labels()
     all_lines = lines_ax1 + lines_ax2
     all_labels = labels_ax1 + labels_ax2
-    ax1.legend(all_lines, all_labels, loc="upper left")
-    ax2.legend(all_lines, all_labels, loc="upper left")
+    ax1.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.5)
+    ax2.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.5)
     plt.title(f"UGA-WRF Meteogram for {airport.upper()} starting at {forecast_times[1]} UTC - Init: {forecast_times[0]}")
     plt.grid(True)
     plt.tight_layout()

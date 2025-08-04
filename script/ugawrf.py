@@ -199,21 +199,23 @@ if "textgen" in modules_enabled:
 
 # weathermaps
 if "weathermaps" in modules_enabled:
-   
     map_time = dt.datetime.now()
-
     for product, variable in PRODUCTS.items():
         try:
+            times_elapsed = []
             product_time = dt.datetime.now()
             output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], product)
             level = None
             if "_" in product and "mb" in product:
                 level = int(product.split("_")[-1].replace("mb", ""))
             for t in range(0, hours + 1):
+                t_time = dt.datetime.now()
                 weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level)
                 for loc, extent in extents.items():
                     weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
-            print(f"processed {product} in {dt.datetime.now() - product_time}")
+                times_elapsed.append(dt.datetime.now() - t_time)
+            avg_time = sum(times_elapsed, dt.timedelta()) / len(times_elapsed)
+            print(f"processed {product} in {dt.datetime.now() - product_time} - avg time per timestep: {avg_time}")
         except Exception as e:
             print(f"error processing {product}: {e}! last timestep: {t}")
     print(f"graphics processed successfully - took {dt.datetime.now() - map_time}")

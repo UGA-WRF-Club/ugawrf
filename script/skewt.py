@@ -12,6 +12,7 @@ import os
 import metpy.calc as mpcalc
 import numpy as np
 import datetime as dt
+from adjustText import adjust_text
 
 def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_time):
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
@@ -91,11 +92,12 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
     for i in range(10, 120, 20):
         h.ax.annotate(str(i), (0, i), xytext=(0, 2), textcoords='offset pixels',
                     clip_on=True, fontsize=10, weight='bold', alpha=0.3, zorder=0)
+    texts = []
     for i in range(1, 13):
         idx = (np.abs(z - i)).argmin().item()
         u_km = u[idx].values
         v_km = v[idx].values
-        h.ax.text(u_km, v_km, f"{i}", color="w", fontsize=8, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10)
+        texts.append(h.ax.text(u_km, v_km, f"{i}", color="w", fontsize=8,path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10, alpha=0.4))
     h.plot(u, v)
     h.plot_colormapped(u, v, c=p, label='0-12km WIND')
     ax.set_title('Hodograph')
@@ -133,11 +135,13 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, run_ti
                         clip_on=True, fontsize=10,
                         weight='bold', alpha=0.3, zorder=0)
         ax_hod.annotate(str(i), (0, i), xytext=(0, 2), textcoords='offset pixels', clip_on=True, fontsize=10, weight='bold', alpha=0.3, zorder=0)
+    texts = []
     for i in range(1, 13):
         idx = (np.abs(z - i)).argmin().item()
         u_km = u[idx].values
         v_km = v[idx].values
-        ax_hod.text(u_km, v_km, f"{i}", color="w", fontsize=15, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")], ha='center', va='center', zorder=10)
+        texts.append(ax_hod.text(u_km, v_km, f"{i}", color="w", fontsize=15, path_effects=[path_effects.withStroke(linewidth=1, foreground="black")],ha='center', va='center', zorder=10, alpha=0.8))
+    adjust_text(texts, ax=ax_hod, arrowprops=dict(arrowstyle='-', color='gray', lw=1), min_arrow_len=0.1)
     h2.plot(u, v, linewidth=2)
     h2.plot_colormapped(u, v, c=p, label='0-12 km wind')
     ax_hod.set_title(f"UGA-WRF Hodograph for {airport.upper()} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")

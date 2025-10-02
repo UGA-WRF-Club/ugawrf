@@ -17,6 +17,7 @@
     </div>
     <div style = "text-align:center">
     <h1>UGA-WRF Viewer</h1>
+    <p><a href="maps">Weather Maps</a> | <a href="#upper">Upper Air</a> | <a href="#point">Point Data</a></p>
     <label for="runSelector">Select Run:</label>
     <select id="runSelector">
     </select>
@@ -25,7 +26,7 @@
         <option value="d01">Southeast (~1.6km)</option>
     </select>
     <p style="font-size: 75%">(YYYY-MM-DD HH:MM:SS UTC)</p>
-    <h2>Weather Maps</h2>
+    <h2 id="maps">Weather Maps</h2>
     <label for="dropdown">Select Product:</label>
     <div class="dropdown">
         <button class="dropbtn">Surface</button>
@@ -141,7 +142,7 @@
         <option value="500">0.5sec</option>
         <option value="200">0.2sec</option>
     </select>
-    <h2>Upper Air Plots</h2>
+    <h2 id="upper">Upper Air Plots</h2>
     <p>Use timestep slider above. Click and hold to enlarge.<br><label for="hodographOnly">Hodograph Only</label> <input type="checkbox" id="hodographOnly"></p>
     <div class="skewtContainer">
         <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
@@ -156,7 +157,7 @@
         <img class="skewtimg" id="sags" src="#" alt="Upper Air Plot for AGS" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
         <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
     </div>
-    <h2>Point Data</h2>
+    <h2 id="point">Point Data</h2>
     <label for="textSelector">Select Airport:</label>
 <select id="textSelector">
     <option value="">Select location</option>

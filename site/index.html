@@ -6,7 +6,7 @@
             background-color: rgb(218, 217, 217);
         }
     </style>
-    <title>UGA-WRF Viewer</title>
+    <title id="top">UGA-WRF Viewer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans&display=swap" rel="stylesheet">
@@ -27,6 +27,7 @@
     </select>
     <p style="font-size: 75%">(YYYY-MM-DD HH:MM:SS UTC)</p>
     <h2 id="maps">Weather Maps</h2>
+    <p><a href="#top" style="font-size: 50%;">Back to Top</a></p>
     <label for="dropdown">Select Product:</label>
     <div class="dropdown">
         <button class="dropbtn">Surface</button>
@@ -143,6 +144,7 @@
         <option value="200">0.2sec</option>
     </select>
     <h2 id="upper">Upper Air Plots</h2>
+    <p><a href="#top" style="font-size: 50%;">Back to Top</a></p>
     <p>Use timestep slider above. Click and hold to enlarge.<br><label for="hodographOnly">Hodograph Only</label> <input type="checkbox" id="hodographOnly"></p>
     <div class="skewtContainer">
         <img class="skewtimg" id="sahn" src="#" alt="Upper Air Plot for AHN" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
@@ -158,6 +160,7 @@
         <img class="skewtimg" id="stys" src="#" alt="Upper Air Plot for TYS" width="400" style="border: 2px solid rgb(176, 59, 30);"/>
     </div>
     <h2 id="point">Point Data</h2>
+    <p><a href="#top" style="font-size: 50%;">Back to Top</a></p>
     <label for="textSelector">Select Airport:</label>
 <select id="textSelector">
     <option value="">Select location</option>

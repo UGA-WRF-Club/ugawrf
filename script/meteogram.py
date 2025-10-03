@@ -36,6 +36,14 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     min_dew = dewpoints[mindew_x] 
     ax1.plot(hours, temperatures, color='red', label='Temperature (°F)')
     ax1.plot(hours, dewpoints, color='green', label='Dewpoint (°F)')
+    if any(t <= 32 for t in temperatures):
+        ax1.axhline(
+            y=32,
+            color='blue',
+            linestyle='--',
+            linewidth=1.5,
+            label='Freezing (32°F)'
+        )
     ax1.barbs(hours, ax1.get_ylim()[0] * 1.07, u_wind, v_wind, length=6, barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222}) 
     ax1.set_ylabel('Temperature / Dewpoint (°F)')
     ax1.set_xlabel('Forecast Hour') 

@@ -3,3 +3,4 @@ __pycache__
 site/runs
 *.json
 ._*
+.DS_Store

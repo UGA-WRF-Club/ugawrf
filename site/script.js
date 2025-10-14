@@ -112,6 +112,22 @@ async function loadDirectories(pageToken = '') {
     const domain = domainSelector.value;
     document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
 }
+async function loadAlerts() {
+    const response = await fetch('https://api.weather.gov/alerts/active?point=33.94872107111243,-83.3752234533988');
+    const data = await response.json();
+    console.log(data);
+    const alertsDiv = document.getElementById('alertText');
+    if (data.features.length > 0) {
+        let alertMessages = data.features.map(alert => {
+            const properties = alert.properties;
+            return `<strong>${properties.event}</strong>: ${properties.parameters.NWSheadline} (thru ${new Date(properties.expires).toLocaleString("en-US")})`;
+        });
+        alertsDiv.innerHTML = 'Active NWS Alerts for UGA Campus:<br>' + alertMessages.join('<br>');
+    } else {
+        alertsDiv.innerHTML = '';
+    }
+}
+
 function updateImage(selectedProduct = product) {
     product = selectedProduct;
     const run = runSelector.value;
@@ -265,5 +281,6 @@ window.onload = function () {
     multiEnabler.checked = false
     multiSelector.disabled = true
     multiSubchooser.disabled = true
+    loadAlerts();
 };
 updateTextForecast();

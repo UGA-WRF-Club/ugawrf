@@ -122,7 +122,7 @@ async function loadAlerts() {
             const properties = alert.properties;
             return `<strong>${properties.event}</strong>: ${properties.parameters.NWSheadline} (thru ${new Date(properties.expires).toLocaleString("en-US")})`;
         });
-        alertsDiv.innerHTML = 'Active NWS Alerts for UGA Campus:<br>' + alertMessages.join('<br>');
+        alertsDiv.innerHTML = 'Active NWS Alerts for UGA Campus:<br>' + alertMessages.join('<br>For more info, visit <a href="https://forecast.weather.gov/MapClick.php?lat=33.9486&lon=-83.3259">here</a>.');
     } else {
         alertsDiv.innerHTML = '';
     }

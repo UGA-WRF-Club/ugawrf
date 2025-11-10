@@ -122,7 +122,7 @@ async function loadAlerts() {
             const properties = alert.properties;
             return `<strong>${properties.event}</strong>: ${properties.parameters.NWSheadline} (thru ${new Date(properties.expires).toLocaleString("en-US")})`;
         });
-        alertsDiv.innerHTML = 'Active NWS Alerts for UGA Campus:<br>');
+        alertsDiv.innerHTML = 'Active NWS Alerts for UGA Campus:<br>';
     } else {
         alertsDiv.innerHTML = '';
     }

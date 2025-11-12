@@ -10,10 +10,10 @@ body {
 .skewtimg{
     border: 1px solid rgb(0, 0, 0);
     width:600px;
-    border: 1px solid rgb(176, 59, 30)
+    border: 1px solid rgba(176, 59, 30, 0.3)
   }
 .textContainer {
-    width: 500px;
+    width: 510px;
     margin-left: auto;
     margin-right: auto;
     background-color: white;
@@ -56,8 +56,11 @@ body {
   }
 .dropdown-content {
     display: none;
+    padding: 10px;
     position: absolute;
     background-color: #f1f1f1;
+    border:none;
+    transition: all 0.3s cubic-bezier(0,0.3,0.4);
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
@@ -65,11 +68,16 @@ body {
 .dropdown-content a {
     color: black;
     padding: 12px 16px;
+    transform: translate(0);
     text-decoration: none;
     display: block;
   }
 
-.dropdown-content a:hover {background-color: #ddd;}
+.dropdown-content a:hover {
+  background-color: #ddd;
+ transform: translateY(-2px);
+ box-shadow: 0 4px 8px rgba(173, 59, 30, 0.2);
+}
   
 .dropdown:hover .dropdown-content {display: block;}
   

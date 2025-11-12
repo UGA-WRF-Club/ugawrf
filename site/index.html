@@ -190,19 +190,19 @@
     <div class="point-container">
     <h3>Meteogram</h3>
     <h3>Text Forecast</h3>
-    <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="800" style="border: 1px solid rgb(176, 59, 30);">
-    <div class="textContainer" style="border: 1px solid rgb(176, 59, 30);">
-        <div id="textForecast"> Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
+    <img loading="lazy" class="meteogramimg" id="meteogram" src="" alt="Meteogram" width="800" style="border: 1px solid rgba(176, 59, 30, 0.5);">
+    <div class="textContainer" style="border: 1px solid rgba(176, 59, 30, 0.5);">
+        <div id="textForecast" style="margin-left: 5px;"> Text forecast is loading. If this takes too long (over a minute) this indicates there may be an issue with your connection or our model run/servers. If you're running this project locally unfortunately CORS rules will prevent you from fetching the text forecast from our servers.</div>
     </div>
     </div>
-    <a id="metadata" href="#">View run metadata</a>
-    <h3>Disclaimer: Work in progress.</h3>
-    <p>
-        <b>Data on this page may be delayed, incorrect, and/or missing. 
+    <a id="metadata" href="#" style="">View run metadata</a>
+    <div class="notice">
+        <h3>Disclaimer: Work in progress.</h3>
+        <p><b>Data on this page may be delayed, incorrect, and/or missing. 
         <br>Products may change without notice. Previous runs may be deleted without notice.</b>
         <br>Major changes will be communicated on the top of the page.
-        <br>As of now, runs are stored for 30 days before being deleted.
-    </p>
+        <br>As of now, runs are stored for 30 days before being deleted.</p>
+    </div>
     <p>
         <br>This project is open source and be found <a href="https://github.com/UGA-WRF-Club/ugawrf">here.</a>
         <br>Go back to the <a href="https://weatherdawgs.net">WxDawgs homepage.</a>

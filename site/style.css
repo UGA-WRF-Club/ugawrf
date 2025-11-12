@@ -84,14 +84,3 @@ body {
 .dropdown:hover .dropbtn {background-color: #ad3b1e;}
 
 .locbtn:hover {background-color: #ad3b1e;}
-
-#metadata {
-  position: relative;
-  top: 15px;
-  transition: bottom 0.1 ease;
-}
-
-.notice {
-  position: relative;
-  top: 10px;
-}

@@ -259,6 +259,21 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.set_title(f"1-Hour {level}mb Temp Change (°C) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
         label = f'Temperature Change (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product == 'stargazing':
+        #wip
+        low_cloud = to_np(data_copy[0]) * 100 
+        mid_cloud = to_np(data_copy[1]) * 100
+        high_cloud = to_np(data_copy[2]) * 100
+        total_cloud_frac = np.clip((low_cloud + mid_cloud + high_cloud), 0, 1) * 100
+        rh2 = getvar(wrf_file, "rh2", timeidx=timestep)
+        rh2_np = to_np(rh2)
+        clear_sky_score = (100 - total_cloud_frac)
+        transparency_score = (100 - rh2_np)
+        index = (clear_sky_score * 0.75) + (transparency_score * 0.25)
+        contour = ax.contourf(to_np(lons), to_np(lats), index, cmap="RdYlGn", levels=np.arange(0, 105, 5), extend='both')
+        data_copy = index
+        ax.set_title(f"Stargazing Index (0-100) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Index (10=Clear/Dry)'
     else:
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"Unconfigured product: {data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")

@@ -142,6 +142,9 @@ PRODUCTS = {
     "wind_300mb": "ua",
     "heights_700mb": "z",
     "heights_500mb": "z",
+
+    # super special product
+    "stargazing": "cloudfrac",
     
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"

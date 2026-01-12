@@ -203,9 +203,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Relative Humidity (%)'
     elif product.startswith("te") and level != None:
         if level == 850:
-            levels = np.arange(300, 371, 2)
+            levels = np.arange(270, 330, 2)
         elif level == 700:
-            levels = np.arange(290, 371, 2)
+            levels = np.arange(290, 350, 2)
         else:
             levels = np.linspace(np.nanmin(data_copy), np.nanmax(data_copy), 20)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='turbo', levels=levels, extend='both')

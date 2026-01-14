@@ -1,4 +1,5 @@
 import os
+import argparse
 import sys
 from pathlib import Path
 from netCDF4 import Dataset
@@ -9,18 +10,23 @@ import json
 
 # Specify your wrfout and output folder in the commandline. Arg1 is your wrfout, arg2 is where you plan to store the products created.
 # If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output
-# and (current folder)/wrfout_d01_2025-03-13_21_00_00 (the demo run) for your wrfout inputs.
 # An example input: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" "D:\ugawrf_fork\ugawrf\run"
+parser = argparse.ArgumentParser(description='Process UGA-WRF model output to generate products.')
+parser.add_argument('wrf_file', type=str, help='Path to the wrfout file')
+parser.add_argument('output_folder', type=str, nargs='?', help='Base output folder for products. Defaults to ../site/runs.', default=None)
+parser.add_argument('-r', '--run_flags', type=str, nargs='?', help='Run flags to disable certain products', default="0")
+args = parser.parse_args()
+print(args)
 try:
-    WRF_FILE = sys.argv[1]
+    WRF_FILE = args.wrf_file
 except:
     root_dir = Path(__file__).resolve().parent
     WRF_FILE = root_dir / "wrfout_d01_2025-03-13_21_00_00"
 try:
-    if sys.argv[2] == "default":
+    if args.output_folder == None:
         BASE_OUTPUT = Path(__file__).resolve().parent.parent / "site" / "runs"
     else:
-        BASE_OUTPUT = sys.argv[2]
+        BASE_OUTPUT = args.output_folder
 except:
     root_dir = Path(__file__).resolve().parent.parent
     BASE_OUTPUT = root_dir / "site" / "runs"
@@ -33,10 +39,8 @@ except:
 # 5 - skewt
 # ex: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" default "245"
 # this will run all modules except for meteogram and skewt
-try:
-    run_flags = sys.argv[3]
-except:
-    run_flags = "0"
+run_flags = args.run_flags
+
 
 # processing modules - located in the same folder as (module).py
 # if you want to skip generating a certain product, just comment out the module
@@ -97,6 +101,7 @@ other_airports = {
 extents = {"ga": [-86.2, -80.46, 35.33, 30.49]}
 
 PRODUCTS = {
+    "stargazing": "cloudfrac",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",
@@ -114,7 +119,7 @@ PRODUCTS = {
     "1hr_snowfall": "SNOWNC",
     "snowfall": "SNOWNC",
     "cloudcover": "cloudfrac",
-    "echo_tops": "ECHOTOP",
+    #"echo_tops": "ECHOTOP",
 
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
@@ -125,13 +130,13 @@ PRODUCTS = {
     "te_850mb": "eth",
     "te_700mb": "eth",
     "1hr_temp_c_850mb": "tc",
-    "1hr_temp_c_700mb": "tc",
-    "1hr_temp_c_500mb": "tc",
-    "1hr_temp_c_300mb": "tc",
-    "td_850mb": "td",
-    "td_700mb": "td",
-    "td_500mb": "td",
-    "td_300mb": "td",
+    #"1hr_temp_c_700mb": "tc",
+    #"1hr_temp_c_500mb": "tc",
+    #"1hr_temp_c_300mb": "tc",
+    #"td_850mb": "td",
+    #"td_700mb": "td",
+    #"td_500mb": "td",
+    #"td_300mb": "td",
     "rh_850mb": "rh",
     "rh_700mb": "rh",
     "rh_500mb": "rh",

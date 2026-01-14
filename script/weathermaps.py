@@ -214,7 +214,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Theta E (K)'
     elif product.startswith("wind") and level != None:
         va = interplevel(getvar(wrf_file, "va", timeidx=timestep), pressure, level)
-        ws = np.sqrt(to_np(data_copy)**2 + to_np(va)**2) * 1.94384  # Convert m/s to knots
+        ws = np.sqrt(to_np(data_copy)**2 + to_np(va)**2) * 1.944
         data_copy = ws
         cmax = None
         if level == 850:
@@ -261,19 +261,27 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product == 'stargazing':
         #wip
-        low_cloud = to_np(data_copy[0]) * 100 
-        mid_cloud = to_np(data_copy[1]) * 100
-        high_cloud = to_np(data_copy[2]) * 100
-        total_cloud_frac = np.clip((low_cloud + mid_cloud + high_cloud), 0, 1) * 100
+        low_clear_frac = 1.0 - to_np(data_copy[0])
+        mid_clear_frac = 1.0 - to_np(data_copy[1])
+        high_clear_frac = 1.0 - to_np(data_copy[2])
+        total_cloud_frac = 1.0 - (low_clear_frac * mid_clear_frac * high_clear_frac)
+        clear_sky_score = 1.0 - (total_cloud_frac)
+        pwat = getvar(wrf_file, "AFWA_PWAT", timeidx=timestep)
+        transparency_score = np.clip(1.0 - (to_np(pwat) / 30.0), 0.0, 1.0)
+        u_300 = interplevel(getvar(wrf_file, "ua", timeidx=timestep), getvar(wrf_file, "pressure", timeidx=timestep), 300)
+        v_300 = interplevel(getvar(wrf_file, "va", timeidx=timestep), getvar(wrf_file, "pressure", timeidx=timestep), 300)
+        wind_speed_300 = np.sqrt(to_np(u_300)**2 + to_np(v_300)**2)
+        seeing_score = np.clip(1.0 - (wind_speed_300 / 70.0), 0.0, 1.0)
+        wind_10m = getvar(wrf_file, "wspd_wdir10", timeidx=timestep)[0]
+        wind_10m_penalty = np.where(to_np(wind_10m) > 8.0, 0.7, 1.0)
         rh2 = getvar(wrf_file, "rh2", timeidx=timestep)
-        rh2_np = to_np(rh2)
-        clear_sky_score = (100 - total_cloud_frac)
-        transparency_score = (100 - rh2_np)
-        index = (clear_sky_score * 0.75) + (transparency_score * 0.25)
+        rh2_penalty = np.where(to_np(rh2) > 85.0, 0.7, 1.0)
+        index = (clear_sky_score * 75) + (transparency_score * 15) + (seeing_score * 10)
+        index = np.clip(index * wind_10m_penalty * rh2_penalty, 0, 100)
         contour = ax.contourf(to_np(lons), to_np(lats), index, cmap="RdYlGn", levels=np.arange(0, 105, 5), extend='both')
         data_copy = index
-        ax.set_title(f"Stargazing Index (0-100) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
-        label = f'Index (10=Clear/Dry)'
+        ax.set_title(f"Lobdell Stargazing Index (0-100) - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")
+        label = f'Index (100=Clear/Dry)'
     else:
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         ax.set_title(f"Unconfigured product: {data.description} - Hour {timestep}\nValid: {forecast_time} - Init: {forecast_times[0]}")

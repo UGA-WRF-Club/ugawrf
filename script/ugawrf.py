@@ -101,7 +101,6 @@ other_airports = {
 extents = {"ga": [-86.2, -80.46, 35.33, 30.49]}
 
 PRODUCTS = {
-    "stargazing": "cloudfrac",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",

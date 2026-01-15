@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="background-color:rgb(0, 0, 0);color: rgb(221, 80, 45); text-align: center; padding-left: 5px; padding-right: 5px;">
-        <h3 id="alertText" style="margin-left: 15%;margin-right: 15%;"></h3>
-        <h1>Product Update</h1>
-        <p style="font-size: 150%;">01-13-2026: 1hr Temp Change @ 700, 500, 300mb (Aloft - Temps), Dew Point @ 850, 700, 500, 300mb and Echo Tops (Aloft - Moisture) have been deprecated and are no longer available.<br>The WRF post-proc graphics have received a graphical overhaul. We're looking for comments and thoughts on this; please let us know your feedback on them if you have any.</p>
+    <div style="background-color:rgb(0, 0, 0);color: rgb(221, 80, 45); text-align: center; padding-left: 5px; padding-right: 5px; margin-left: 5%;margin-right: 5%;">
+        <h3 id="alertText"></h3>
+        <h1>UGA-WRF Update - 01-15-2026</h1>
+        <p style="font-size: 125%;">1hr Temp Change @ 700, 500, 300mb (Aloft - Temps), Dew Point @ 850, 700, 500, 300mb and Echo Tops (Aloft - Moisture) have been deprecated and are no longer available.<br>Products for P-Type (Winter) and Stargazing Index (Special) have been added. They are still heavy works in progress. Let us know what you think! Colormaps for things like theta-e (Aloft - Temps) and upper air winds (Aloft - Winds) have been standardized and made more logical, too.<br>The WRF post-proc graphics have received a graphical overhaul to better match the MPAS post-proc graphics suite. We're looking for comments and thoughts on this; please let us know your feedback on them if you have any.</p>
     </div>
     
     <div style = "text-align:center">
@@ -145,6 +145,7 @@
         <option value="500">0.5sec</option>
         <option value="200">0.2sec</option>
     </select>
+    <p style="font-size: 75%;">Tip: Click the weathermap to use your arrow keys to navigate through timesteps.</p>
     <h2 id="upper">Upper Air Plots</h2>
     <p><a href="#top" style="font-size: 90%;">Back to Top</a></p>
     <p>Use timestep slider above. Click and hold to enlarge.<br><label for="hodographOnly">Hodograph Only</label> <input type="checkbox" id="hodographOnly"></p>
@@ -208,6 +209,7 @@
         <br>Download raw wrfout files <a href="calendar.html">here.</a>
     </p>
     <p>Made with &lt;3 by the <a href="uga-wrf-club.txt">UGA-WRF Club</a><br>WRF WRF! Go Dawgs!</p>
+    <p>Check out our other weather model, the <a href="https://uga-wrf-club.github.io/ugampas-web">UGA-MPAS Model</a>.</p>
     </div>
     <script src="script.js"></script>
 </body>

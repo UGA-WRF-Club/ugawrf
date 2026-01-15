@@ -219,14 +219,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ws = np.sqrt(to_np(data_copy)**2 + to_np(va)**2) * 1.944
         data_copy = ws
         cmax = None
-        if level == 850:
-            cmax = 75
-        elif level == 700:
-            cmax = 85
-        elif level == 500:
-            cmax = 105
-        elif level == 300:
-            cmax = 145
+        cmax = 135
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(ws), cmap="plasma", vmax=cmax)
         plot_title = f"{level}mb Wind Speed (kt) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f'Wind Speed (kt)'
@@ -283,6 +276,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = ax.contourf(to_np(lons), to_np(lats), index, cmap="RdYlGn", levels=np.arange(0, 105, 5), extend='both')
         data_copy = index
         plot_title = f"Lobdell Stargazing Index (0-100) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        ax.annotate(f'Index Explanation:\n75% Clear Sky\n15% Atmospheric Transparency\n10% Seeing Conditions\nPenalties for High RH and SFC Wind', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=6, color='black', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
         label = f'Index (100=Clear/Dry)'
     elif product == 'ptype':
         if timestep > 0:
@@ -311,8 +305,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Potential Precipitation Type and Intensity - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f'Precipitation Type'
         cbar = fig.colorbar(mesh, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25, ticks=[0, 1, 2, 3, 4])
-        cbar.ax.set_yticks([0.5, 2.5, 5.5, 8.5, 11.5], labels=['None', 'Snow', 'Ice', 'FzRa', 'Rain'])
-        ax.annotate(f'P-TYPE IS A WORK IN PROGRESS!', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=12, color='red')
+        cbar.ax.set_yticks([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5, 12.5], labels=['None', '--', 'Snow', '+', '--', 'Ice', '+', '--', 'FzRa', '+', '--', 'Rain', '+'])
+        ax.annotate(f'P-TYPE IS A WORK IN PROGRESS!\nIntensity Breakpoints (Liquid Eq.):\nHeavy - 7.6mm/hr\nModerate - 2.5mm/hr\nLight - <2.5mm/hr', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=8, color='red', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     else:
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         plot_title = f"Unconfigured product: {data.description} - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
@@ -341,7 +335,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
                     ax.text(lon, lat, f"{value:.1f}", color='black', fontsize=12, ha='center', va='bottom', bbox=dict(facecolor='white', alpha=0.2, edgecolor='none', boxstyle='round'))
             except:
                 pass
-    if product != ("cloudcover"):
+    if product != ("cloudcover") and product != ("ptype"):
         maxmin = ""
         max_value = to_np(data_copy).max()
         min_value = to_np(data_copy).min()

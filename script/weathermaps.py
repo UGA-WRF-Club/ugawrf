@@ -308,11 +308,11 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         bounds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
         norm = colors.BoundaryNorm(bounds, cmap.N)
         mesh = ax.pcolormesh(to_np(lons), to_np(lats), ptype_data, cmap=cmap, norm=norm, transform=ccrs.PlateCarree())
-        plot_title = f"Guessed P-Type - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        plot_title = f"Potential Precipitation Type and Intensity - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f'Precipitation Type'
         cbar = fig.colorbar(mesh, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25, ticks=[0, 1, 2, 3, 4])
-        cbar.ax.set_yticks([0.5, 2.5, 5.5, 8.5, 11.5], labels=['', 'Snow', 'Ice', 'Frz Rain', 'Rain'])
-        ax.annotate(f'P-TYPE IS A GUESS AND A WORK IN PROGRESS!', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=12, color='red')
+        cbar.ax.set_yticks([0.5, 2.5, 5.5, 8.5, 11.5], labels=['None', 'Snow', 'Ice', 'FzRa', 'Rain'])
+        ax.annotate(f'P-TYPE IS A WORK IN PROGRESS!', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=12, color='red')
     else:
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         plot_title = f"Unconfigured product: {data.description} - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"

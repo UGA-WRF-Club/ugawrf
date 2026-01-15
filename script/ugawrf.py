@@ -147,7 +147,8 @@ PRODUCTS = {
     "heights_700mb": "z",
     "heights_500mb": "z",
 
-    # super special product
+    # super special products
+    "ptype": "AFWA_SNOW",
     "stargazing": "cloudfrac",
     
 } # these are the products for the map only to output

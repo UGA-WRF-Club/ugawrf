@@ -284,17 +284,47 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = index
         plot_title = f"Lobdell Stargazing Index (0-100) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f'Index (100=Clear/Dry)'
+    elif product == 'ptype':
+        if timestep > 0:
+            rain = getvar(wrf_file, "AFWA_RAIN", timeidx=timestep) - getvar(wrf_file, "AFWA_RAIN", timeidx=timestep - 1)
+            snow = getvar(wrf_file, "AFWA_SNOW", timeidx=timestep) - getvar(wrf_file, "AFWA_SNOW", timeidx=timestep - 1)
+            ice  = getvar(wrf_file, "AFWA_ICE",  timeidx=timestep) - getvar(wrf_file, "AFWA_ICE",  timeidx=timestep - 1)
+            fzra = getvar(wrf_file, "AFWA_FZRA", timeidx=timestep) - getvar(wrf_file, "AFWA_FZRA", timeidx=timestep - 1)
+        else:
+            rain = getvar(wrf_file, "AFWA_RAIN", timeidx=timestep)
+            snow = getvar(wrf_file, "AFWA_SNOW", timeidx=timestep)
+            ice  = getvar(wrf_file, "AFWA_ICE",  timeidx=timestep)
+            fzra = getvar(wrf_file, "AFWA_FZRA", timeidx=timestep)
+        precip_types = np.array([to_np(snow), to_np(ice), to_np(fzra), to_np(rain)])
+        type_id = np.argmax(precip_types, axis=0)
+        total_rate = np.sum(precip_types, axis=0)
+        intensity = np.zeros(total_rate.shape, dtype=int)
+        intensity[total_rate >= 2.5] = 1
+        intensity[total_rate >= 7.6] = 2
+        ptype_data = (type_id * 3) + intensity + 1  
+        ptype_data[total_rate < 0.1] = 0
+        data_copy = ptype_data.copy()
+        cmap = colors.ListedColormap(['white', 'skyblue', 'deepskyblue', 'blue', 'peachpuff', 'orange', 'darkorange', 'lightpink', 'hotpink', 'deeppink', 'lightgreen', 'green', 'darkgreen'])
+        bounds = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+        norm = colors.BoundaryNorm(bounds, cmap.N)
+        mesh = ax.pcolormesh(to_np(lons), to_np(lats), ptype_data, cmap=cmap, norm=norm, transform=ccrs.PlateCarree())
+        plot_title = f"Guessed P-Type - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        label = f'Precipitation Type'
+        cbar = fig.colorbar(mesh, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25, ticks=[0, 1, 2, 3, 4])
+        cbar.ax.set_yticks([0.5, 2.5, 5.5, 8.5, 11.5], labels=['', 'Snow', 'Ice', 'Frz Rain', 'Rain'])
+        ax.annotate(f'P-TYPE IS A GUESS AND A WORK IN PROGRESS!', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=12, color='red')
     else:
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         plot_title = f"Unconfigured product: {data.description} - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"{data.description}"
-    cbar = fig.colorbar(contour, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
+    if product != ("ptype"):
+        cbar = fig.colorbar(contour, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
     gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
     gl.top_labels = False; gl.right_labels = False
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linewidth=0.5)
     ax.add_feature(cfeature.STATES.with_scale('50m'))
-    if product != ("cloudcover"):
+    if product != ("cloudcover") and product != ("ptype"):
         try:
             west, east, north, south = extent
             for airport, (lat, lon) in airports.items():
@@ -340,7 +370,7 @@ def plot_wind_barbs(ax, wrf_file, timestep, lons, lats, pressure_level=None):
     else:
         u_interp = getvar(wrf_file, "U10", timeidx=timestep)
         v_interp = getvar(wrf_file, "V10", timeidx=timestep)
-    stride = 25
+    stride = 40
     ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), 
              to_np(u_interp[::stride, ::stride]), to_np(v_interp[::stride, ::stride]),
              length=6, color='black', pivot='middle', 

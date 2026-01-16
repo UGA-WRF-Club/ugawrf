@@ -126,11 +126,27 @@ function updateImage(selectedProduct = product) {
     const domain = domainSelector.value;
     timestep = Number(slider.value);
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
+
+    
+
     if (georgiaEnabler.checked == true) {
+        weatherImage.onerror = () => {
+            weatherImage.src = "C:\\Users\\jacristea06\\Downloads\\wrfcode\\ugawrf\\site\\Frame_Unavailable.png";
+        };
+
         weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}_ga.png`;
-    } else {
+
+    } else {    
+
         weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
+
+        weatherImage.onerror = () => {
+            weatherImage.src = "C:\\Users\\jacristea06\\Downloads\\wrfcode\\ugawrf\\site\\Frame_Unavailable.png";
+        };
     }
+
+    
+
     stationIds.forEach(id => {
         if (hodographOnly.checked == true) {
             stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;

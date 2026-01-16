@@ -131,7 +131,7 @@ function updateImage(selectedProduct = product) {
 
     if (georgiaEnabler.checked == true) {
         weatherImage.onerror = () => {
-            weatherImage.src = "C:\\Users\\jacristea06\\Downloads\\wrfcode\\ugawrf\\site\\Frame_Unavailable.png";
+            weatherImage.src = "/Frame_Unavailable.png";
         };
 
         weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}_ga.png`;
@@ -141,7 +141,7 @@ function updateImage(selectedProduct = product) {
         weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
 
         weatherImage.onerror = () => {
-            weatherImage.src = "C:\\Users\\jacristea06\\Downloads\\wrfcode\\ugawrf\\site\\Frame_Unavailable.png";
+            weatherImage.src = "/Frame_Unavailable.png";
         };
     }
 

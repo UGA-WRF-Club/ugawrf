@@ -83,7 +83,6 @@ high_prio_airports ={
     "tae": (30.394458005924445, -84.3398597480267),
     "sav": (32.128213416567114, -81.19987457392587),
     "ags": (33.369475015594105, -81.96517834789427),
-    "tys": (35.807073917260894, -83.99815749815394),
 } # locations to plot numbers on map, text products, meteograms. meant for airports, you could put any location in domain here
 # !!! IMPORTANT !!! our current skewt plot function is considerably intensive, taking about ~50 seconds per airport to finish (on my hardware).
 # this will scale up quick, so try not to add too many airports to this one right now
@@ -94,7 +93,6 @@ other_airports = {
     "vdi": (32.19211787190395, -82.36896971377632),
     "avl": (35.437208530161925, -82.53944681688363),
     "jax": (30.492570769985885, -81.68571176177561),
-    "ohx": (36.24707362357824, -86.56312930475052),
 } # same as above minus generating a skewt (time saving) - more ok to plot many here
 # format is "folder_name": (lat, lon)
 

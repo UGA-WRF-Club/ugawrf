@@ -20,10 +20,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = to_np(interplevel(data, pressure, level))
     forecast_time = forecast_times[timestep].strftime("%Y-%m-%d %H:%M UTC")
     fig, ax = plt.subplots(figsize=(12, 10), subplot_kw=dict(projection=ccrs.PlateCarree()))
-
     if extent is not None:
         ax.set_extent(extent, crs=ccrs.PlateCarree())
-        ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
+    ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     lats, lons = latlon_coords(data)
     if product == 'temperature':
         data_copy = (data_copy - 273.15) * 9/5 + 32
@@ -100,13 +99,38 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=precip_cmap, levels=np.arange(0, 20, 0.25), extend='max')
         plot_title = f"Total Precipitation (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Precipitation (in)"
+    elif product == 'afwarain':
+        data_copy = data_copy / 25.4
+        data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Greens', levels=np.arange(0, 10, 0.25), extend='max')
+        plot_title = f"Total Precipitation (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        label = f"Rainfall (in)"
+    elif product == 'afwasnow':
+        snow_ratio = 10.0
+        data_copy = (data_copy / 25.4) * snow_ratio
+        data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', levels=np.arange(0, 25, 0.25), extend='max')
+        plot_title = f"Total Snowfall (in, 10:1 ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        label = f"Snowfall (in)"
+    elif product == 'afwafrz':
+        data_copy = data_copy / 25.4
+        data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='RdPu', levels=np.arange(0, 3, 0.25), extend='max')
+        plot_title = f"Total Freezing Rain (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        label = f"Freezing Rain (in)"
+    elif product == 'afwaslt':
+        data_copy = data_copy / 25.4
+        data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Oranges', levels=np.arange(0, 3, 0.1), extend='max')
+        plot_title = f"Total Ice Fall (in, liquid eq.) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        label = f"Ice Fall (in)"
     elif product == '1hr_precip':
         rain_now = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep)
         rain_prev = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep - 1) if timestep > 0 else rain_now * 0
         precip_1hr = (rain_now - rain_prev) / 25.4
         data_copy = precip_1hr.copy()
         precip_cmap = ctables.registry.get_colortable('precipitation')
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), cmap=precip_cmap, levels=np.arange(0, 5, 0.1), extend='max')
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(precip_1hr), cmap=precip_cmap, levels=np.arange(0, 5, 0.01), extend='max')
         plot_title = f"1 Hour Precipitation (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':

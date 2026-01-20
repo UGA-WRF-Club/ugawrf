@@ -96,7 +96,8 @@ other_airports = {
 } # same as above minus generating a skewt (time saving) - more ok to plot many here
 # format is "folder_name": (lat, lon)
 
-extents = {"ga": [-86.2, -80.46, 35.33, 30.49]}
+#extents = {"ga": [-86.2, -80.46, 35.33, 30.49]}
+#^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
     "temperature": "T2",
@@ -146,6 +147,10 @@ PRODUCTS = {
     "heights_500mb": "z",
 
     # super special products
+    "afwasnow": "AFWA_SNOW",
+    "afwarain": "AFWA_RAIN",
+    "afwafrz": "AFWA_FZRA",
+    "afwaslt:" "AFWA_ICE",
     "ptype": "AFWA_SNOW",
     "stargazing": "cloudfrac",
     
@@ -217,8 +222,8 @@ if "weathermaps" in modules_enabled:
             for t in range(0, hours + 1):
                 t_time = dt.datetime.now()
                 weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level)
-                for loc, extent in extents.items():
-                    weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
+                #for loc, extent in extents.items():
+                    #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
                 times_elapsed.append(dt.datetime.now() - t_time)
             avg_time = sum(times_elapsed, dt.timedelta()) / len(times_elapsed)
             print(f"processed {product} in {dt.datetime.now() - product_time} - avg time per timestep: {avg_time}")

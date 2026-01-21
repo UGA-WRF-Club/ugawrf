@@ -16,6 +16,13 @@ const products = {
     "total_precip": "Total Precipitation",
     "1hr_snowfall": "1-Hour Snowfall",
     "snowfall": "Snowfall",
+    "ptype": "Precipitation Type",
+    "4panel_ptype": "4-Panel Precipitation Type",
+    "afwarain": "Accumulated Rainfall",
+    "afwasnow": "Accumulated Snowfall (10:1)",
+    "afwasnow_k": "Accumulated Snowfall (Kuchera)",
+    "afwafrz": "Accumulated Freezing Rain",
+    "afwaslt": "Accumulated Icefall (Sleet)",
     "4panel_cloudcover": "4-Panel Cloud Cover",
     "cloudcover": "Cloud Cover",
     "temp_850mb": "Temperature (850mb)",
@@ -35,6 +42,7 @@ const products = {
     "wind_300mb": "Wind (300mb)",
     "heights_700mb": "Heights (700mb)",
     "heights_500mb": "Heights (500mb)",
+    "stagazing": "Stargazing Index"
 };
 
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/";

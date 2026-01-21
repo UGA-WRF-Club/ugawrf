@@ -100,6 +100,12 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
+    "afwasnow": "AFWA_SNOW",
+    "afwasnow_k": "AFWA_SNOW",
+    "afwarain": "AFWA_RAIN",
+    "afwafrz": "AFWA_FZRA",
+    "afwaslt": "AFWA_ICE",
+    "ptype": "AFWA_SNOW",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",
@@ -236,9 +242,10 @@ if "special" in modules_enabled:
     special_plot_time = dt.datetime.now()
     try:
         output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1])
+        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, file_path, wrf_file)
         for t in range(0, hours + 1):
             special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, file_path, wrf_file)
-        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, file_path, wrf_file)
+            special.plot_4panel_ptype(t, os.path.join(output_path, "4panel_ptype"), forecast_times, file_path, wrf_file)
         print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
     except Exception as e:
         print(f"error processing special plots: {e}!")

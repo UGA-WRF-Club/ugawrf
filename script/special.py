@@ -93,7 +93,6 @@ def plot_4panel_ptype(t, output_path, forecast_times, run_time, wrf_file):
         data = np.ma.masked_where(data <= 0.01, data)
         cf = ax.contourf(to_np(lons), to_np(lats), data, cmap=get_truncated_cmap(cmap, min_val=0.2), levels=levels, extend='max', transform=ccrs.PlateCarree())
         cbar = plt.colorbar(cf, ax=ax, orientation='horizontal', pad=0.05)
-        cbar.set_label(title)
         max = to_np(data).max()
         if max != 0:
             ax.annotate(f"Max: {max:.1f}", xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))

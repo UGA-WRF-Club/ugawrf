@@ -12,7 +12,7 @@ import cartopy.feature as cfeature
 from matplotlib import colors
 import numpy as np
 
-def plot_variable(product, variable, timestep, output_path, forecast_times, airports, loc, extent, run_time, wrf_file, level=None):
+def plot_variable(product, variable, timestep, output_path, forecast_times, airports, loc, extent, run_time, wrf_file, level=None, partial_bool=False):
     data = getvar(wrf_file, variable, timeidx=timestep)
     data_copy = data.copy()
     if level:
@@ -31,6 +31,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == '1hr_temp_c':
+        if partial_bool:
+            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            return
         if timestep > 0:
             temp_now = getvar(wrf_file, "T2", timeidx=timestep)
             temp_prev = getvar(wrf_file, "T2", timeidx=timestep - 1)
@@ -51,6 +54,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == '1hr_dewp_c':
+        if partial_bool:
+            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            return
         if timestep > 0:
             dewp_now = getvar(wrf_file, "td2", timeidx=timestep)
             dewp_prev = getvar(wrf_file, "td2", timeidx=timestep - 1)
@@ -110,7 +116,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = (data_copy / 25.4) * snow_ratio
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Blues', min_val=0.2), levels=np.arange(0, 15, 0.25), extend='max')
-        plot_title = f"Total Snowfall (in, 10:1 ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        plot_title = f"Total Snowfall (in) (10:1 ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Snowfall (in)"
     elif product == 'afwasnow_k':
         temp = getvar(wrf_file, "tk", timeidx=timestep) - 273.15
@@ -119,7 +125,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = (data_copy / 25.4) * snow_ratio
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Blues', min_val=0.2), levels=np.arange(0, 15, 0.25), extend='max')
-        plot_title = f"Total Snowfall (in, Kuchera ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        plot_title = f"Total Snowfall (in) (Kuchera ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        ax.annotate(
+            f'Kuchera ratio is a work in progress and unfinished, with one big caveat:\n The Kuchera ratio for the *entire* total snowfall is recalculated at each step,\nmeaning values may not be fully indicative of actual snowfall.', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=8, color='red', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
         label = f"Snowfall (in)"
     elif product == 'afwafrz':
         data_copy = data_copy / 25.4
@@ -131,9 +139,12 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = data_copy / 25.4
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Oranges', min_val=0.2), levels=np.arange(0, 3, 0.1), extend='max')
-        plot_title = f"Total Ice Fall (in, liquid equiv.) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        plot_title = f"Total Ice Fall (in) (liquid equiv.) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Ice Fall (in)"
     elif product == '1hr_precip':
+        if partial_bool:
+            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            return
         rain_now = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep)
         rain_prev = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep - 1) if timestep > 0 else rain_now * 0
         precip_1hr = (rain_now - rain_prev) / 25.4
@@ -149,6 +160,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Total Accumulated Snowfall (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Accumulated Snowfall (in)"
     elif product == '1hr_snowfall':
+        if partial_bool:
+            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            return
         snow_now = getvar(wrf_file, "SNOWNC", timeidx=timestep)
         snow_prev = getvar(wrf_file, "SNOWNC", timeidx=timestep - 1) if timestep > 0 else snow_now * 0
         snow_1hr = (snow_now - snow_prev) / 25.4
@@ -272,6 +286,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith('1hr_temp_c') and level != None:
+        if partial_bool:
+            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            return
         if timestep > 0:
             temp_now = getvar(wrf_file, "tc", timeidx=timestep)
             temp_prev = getvar(wrf_file, "tc", timeidx=timestep - 1)
@@ -312,6 +329,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.annotate(f'Index Explanation:\n75% Clear Sky\n15% Atmospheric Transparency\n10% Seeing Conditions\nPenalties for High RH and SFC Wind', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=6, color='black', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
         label = f'Index (100=Clear/Dry)'
     elif product == 'ptype':
+        if partial_bool:
+            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            return
         if timestep > 0:
             rain = getvar(wrf_file, "AFWA_RAIN", timeidx=timestep) - getvar(wrf_file, "AFWA_RAIN", timeidx=timestep - 1)
             snow = getvar(wrf_file, "AFWA_SNOW", timeidx=timestep) - getvar(wrf_file, "AFWA_SNOW", timeidx=timestep - 1)

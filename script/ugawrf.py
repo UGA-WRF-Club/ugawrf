@@ -11,10 +11,11 @@ import json
 # Specify your wrfout and output folder in the commandline. Arg1 is your wrfout, arg2 is where you plan to store the products created.
 # If you do not specify one, it will try to use the defaults of (parent folder)/site/runs for your image output
 # An example input: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" "D:\ugawrf_fork\ugawrf\run"
-parser = argparse.ArgumentParser(description='Process UGA-WRF model output to generate products.')
-parser.add_argument('wrf_file', type=str, help='Path to the wrfout file')
+parser = argparse.ArgumentParser(description='A tool to process UGA-WRF model output and generate human-readable products.')
+parser.add_argument('wrf_file', type=str, help='Path to the wrfout file.')
 parser.add_argument('output_folder', type=str, nargs='?', help='Base output folder for products. Defaults to ../site/runs.', default=None)
-parser.add_argument('-r', '--run_flags', type=str, nargs='?', help='Run flags to disable certain products', default="0")
+parser.add_argument('-r', '--run_flags', type=str, nargs='?', help='Run flags to disable certain products. See comments in file for more info.', default="0")
+parser.add_argument('-p', '--partial', help='Denotes this is a partial wrfout (i.e. one that is only one hour long) and skips plots that require multiple hours like 1-hour temp change.', action='store_true')
 args = parser.parse_args()
 print(args)
 try:
@@ -227,9 +228,9 @@ if "weathermaps" in modules_enabled:
                 level = int(product.split("_")[-1].replace("mb", ""))
             for t in range(0, hours + 1):
                 t_time = dt.datetime.now()
-                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level)
+                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level, args.partial)
                 #for loc, extent in extents.items():
-                    #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level)
+                    #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level, args.partial)
                 times_elapsed.append(dt.datetime.now() - t_time)
             avg_time = sum(times_elapsed, dt.timedelta()) / len(times_elapsed)
             print(f"processed {product} in {dt.datetime.now() - product_time} - avg time per timestep: {avg_time}")
@@ -242,7 +243,7 @@ if "special" in modules_enabled:
     special_plot_time = dt.datetime.now()
     try:
         output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1])
-        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, file_path, wrf_file)
+        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, file_path, wrf_file, args.partial)
         for t in range(0, hours + 1):
             special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, file_path, wrf_file)
             special.plot_4panel_ptype(t, os.path.join(output_path, "4panel_ptype"), forecast_times, file_path, wrf_file)
@@ -252,7 +253,7 @@ if "special" in modules_enabled:
     print(f"special plots processed successfully - took {dt.datetime.now() - special_plot_time}")
 
 # meteograms
-if "meteogram" in modules_enabled:
+if ("meteogram" in modules_enabled) and not args.partial:
     meteogram_plot_time = dt.datetime.now()
 
     for airport, coords in airports.items():
@@ -264,6 +265,8 @@ if "meteogram" in modules_enabled:
         except Exception as e:
             print(f"error processing {airport} meteogram: {e}!")
     print(f"meteograms processed successfully - took {dt.datetime.now() - meteogram_plot_time}")
+elif args.partial:
+    print('warning: partial run detected. despite meteograms not being skipped via run flags, this product requires a full run! skipping!')
 
 # upper air plots
 if "skewt" in modules_enabled:

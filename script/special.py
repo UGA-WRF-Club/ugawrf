@@ -10,41 +10,45 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from metpy.plots import USCOUNTIES
 
-def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file):
-    temp_24 = getvar(wrf_file, "T2", timeidx=hours)
-    temp_now = getvar(wrf_file, "T2", timeidx=0)
-    hr24_change = (temp_24 - temp_now) * 9/5
-    plt.figure(figsize=(12, 10))
-    ax = plt.axes(projection=ccrs.PlateCarree())
-    lats, lons = latlon_coords(hr24_change)
-    contour = plt.contourf(to_np(lons), to_np(lats), to_np(hr24_change), cmap="coolwarm", vmin=-35, vmax=35)
-    try:
-        for airport, coords in airports.items():
-                lat, lon = coords
-                idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
-                value = to_np(hr24_change)[idx_y, idx_x]
-                ax.text(lon, lat, f"{value:.1f}", color='black', fontsize=14, ha='center', va='bottom', bbox=dict(facecolor='white', alpha=0.2, edgecolor='none', boxstyle='round'))
-    except:
+def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file, partial=False):
+    if partial:
+        print("The partial flag is on. 24 hour temp change is skipped.")
         pass
-    maxmin = ""
-    max_value = to_np(hr24_change).max()
-    min_value = to_np(hr24_change).min()
-    if max_value != 0:
-        maxmin += f"Max: {max_value:.1f}"
-        if min_value != 0:
-            maxmin += f"\nMin: {min_value:.1f}"
-    ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=12, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
-    ax.set_title(f"{hours} Hour 2m Temp Change (°F) - Hour {hours}\nValid: {forecast_times[hours]}\nInit: {forecast_times[0]}", fontweight='bold', fontsize=14, loc='left')
-    plt.colorbar(contour, ax=ax, orientation='vertical', fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
-    ax.coastlines()
-    ax.add_feature(cfeature.BORDERS, linewidth=0.5)
-    ax.add_feature(cfeature.STATES.with_scale('50m'))
-    ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.2)
-    plt.tight_layout()
-    ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='axes fraction', fontsize=8, color='black')
-    os.makedirs(output_path, exist_ok=True)
-    plt.savefig(os.path.join(output_path, f"24hr_change.png"))
-    plt.close()
+    else:
+        temp_24 = getvar(wrf_file, "T2", timeidx=hours)
+        temp_now = getvar(wrf_file, "T2", timeidx=0)
+        hr24_change = (temp_24 - temp_now) * 9/5
+        plt.figure(figsize=(12, 10))
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        lats, lons = latlon_coords(hr24_change)
+        contour = plt.contourf(to_np(lons), to_np(lats), to_np(hr24_change), cmap="coolwarm", vmin=-35, vmax=35)
+        try:
+            for airport, coords in airports.items():
+                    lat, lon = coords
+                    idx_x, idx_y = ll_to_xy(wrf_file, lat, lon)
+                    value = to_np(hr24_change)[idx_y, idx_x]
+                    ax.text(lon, lat, f"{value:.1f}", color='black', fontsize=14, ha='center', va='bottom', bbox=dict(facecolor='white', alpha=0.2, edgecolor='none', boxstyle='round'))
+        except:
+            pass
+        maxmin = ""
+        max_value = to_np(hr24_change).max()
+        min_value = to_np(hr24_change).min()
+        if max_value != 0:
+            maxmin += f"Max: {max_value:.1f}"
+            if min_value != 0:
+                maxmin += f"\nMin: {min_value:.1f}"
+        ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=12, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
+        ax.set_title(f"{hours} Hour 2m Temp Change (°F) - Hour {hours}\nValid: {forecast_times[hours]}\nInit: {forecast_times[0]}", fontweight='bold', fontsize=14, loc='left')
+        plt.colorbar(contour, ax=ax, orientation='vertical', fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
+        ax.coastlines()
+        ax.add_feature(cfeature.BORDERS, linewidth=0.5)
+        ax.add_feature(cfeature.STATES.with_scale('50m'))
+        ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.2)
+        plt.tight_layout()
+        ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.02), xycoords='axes fraction', fontsize=8, color='black')
+        os.makedirs(output_path, exist_ok=True)
+        plt.savefig(os.path.join(output_path, f"24hr_change.png"))
+        plt.close()
     
 def generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file):
     forecast_time = forecast_times[t].strftime("%Y-%m-%d %H:%M UTC")

@@ -103,19 +103,27 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = data_copy / 25.4
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Greens', levels=np.arange(0, 10, 0.25), extend='max')
-        plot_title = f"Total Precipitation (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        plot_title = f"Total Rainfall (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Rainfall (in)"
     elif product == 'afwasnow':
         snow_ratio = 10.0
         data_copy = (data_copy / 25.4) * snow_ratio
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', levels=np.arange(0, 25, 0.25), extend='max')
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', levels=np.arange(0, 15, 0.25), extend='max')
         plot_title = f"Total Snowfall (in, 10:1 ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        label = f"Snowfall (in)"
+    elif product == 'afwasnow_k':
+        temp = getvar(wrf_file, "tk") - 273.15
+        snow_ratio = kuchera_ratio(temp)
+        data_copy = (data_copy / 25.4) * snow_ratio
+        data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', levels=np.arange(0, 15, 0.25), extend='max')
+        plot_title = f"Total Snowfall (in, Kuchera ratio) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Snowfall (in)"
     elif product == 'afwafrz':
         data_copy = data_copy / 25.4
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='RdPu', levels=np.arange(0, 3, 0.25), extend='max')
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='RdPu', levels=np.arange(0, 3, 0.01), extend='max')
         plot_title = f"Total Freezing Rain (in) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Freezing Rain (in)"
     elif product == 'afwaslt':
@@ -389,9 +397,9 @@ def plot_wind_barbs(ax, wrf_file, timestep, lons, lats, pressure_level=None):
         u_interp = getvar(wrf_file, "U10", timeidx=timestep)
         v_interp = getvar(wrf_file, "V10", timeidx=timestep)
     stride = 40
-    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]), 
+    ax.barbs(to_np(lons[::stride, ::stride]), to_np(lats[::stride, ::stride]),
              to_np(u_interp[::stride, ::stride]), to_np(v_interp[::stride, ::stride]),
-             length=6, color='black', pivot='middle', 
+             length=6, color='black', pivot='middle',
              barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222})
 
 def plot_streamlines(ax, wrf_file, timestep, lons, lats, pressure_level=None):
@@ -410,3 +418,9 @@ def plot_streamlines(ax, wrf_file, timestep, lons, lats, pressure_level=None):
     u2 = to_np(u_interp)[::ds, ::ds]
     v2 = to_np(v_interp)[::ds, ::ds]
     ax.streamplot(lon2, lat2, u2, v2, density=0.75, color='k', linewidth=1)
+
+def kuchera_ratio(temp):
+    if np.nanmax(temp) > -1.99:
+       return 12 + (2 * (-1.99 - np.nanmax(temp)))
+    elif np.nanmax(temp) <= -1.99:
+       return 12 + (-1.99 - np.nanmax(temp))

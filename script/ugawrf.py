@@ -148,12 +148,12 @@ PRODUCTS = {
 
     # super special products
     "afwasnow": "AFWA_SNOW",
+    "afwasnow_k": "AFWA_SNOW",
     "afwarain": "AFWA_RAIN",
     "afwafrz": "AFWA_FZRA",
-    "afwaslt:" "AFWA_ICE",
+    "afwaslt": "AFWA_ICE",
     "ptype": "AFWA_SNOW",
     "stargazing": "cloudfrac",
-    
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"
 # if you're plotting upper air, appending _(level)mb to the end of your folder name interps your pressure level to (level)

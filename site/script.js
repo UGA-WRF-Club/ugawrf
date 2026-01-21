@@ -47,7 +47,7 @@ const products = {
 
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/";
 //const outputs = "runs/"
-const hours = 24;
+const hours = 48;
 let timestep = 0;
 let product = "temperature";
 const slider = document.getElementById('timeSlider');

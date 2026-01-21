@@ -131,7 +131,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = data_copy / 25.4
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Oranges', min_val=0.2), levels=np.arange(0, 3, 0.1), extend='max')
-        plot_title = f"Total Ice Fall (in, liquid eq.) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
+        plot_title = f"Total Ice Fall (in, liquid equiv.) - Hour {timestep}\nValid: {forecast_time}\nInit: {forecast_times[0]}"
         label = f"Ice Fall (in)"
     elif product == '1hr_precip':
         rain_now = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep)

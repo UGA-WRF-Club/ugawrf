@@ -81,7 +81,7 @@ def plot_4panel_ptype(t, output_path, forecast_times, run_time, wrf_file):
     lats, lons = latlon_coords(snow)
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
     ptype_data = [to_np(rain), to_np(snow), to_np(fzra), to_np(ice)]
-    titles = ["Rain Total (in)", "Snowfall Total (in, Kuchera)", "Freezing Rain Total (in)", "Ice Fall Total (in)"]
+    titles = ["Rain Total (in)", "Snowfall Total (in, Kuchera)", "Freezing Rain Total (in)", "Ice Fall Total (in, liquid equiv.)"]
     cmaps = ['Greens', 'Blues', 'RdPu', 'Oranges']
     levels_list = [np.arange(0, 5.5, 0.25), np.arange(0, 15.25, 0.25), np.arange(0, 3.1, 0.1), np.arange(0, 3.1, 0.1)]
     for ax, data, title, cmap, levels in zip(axes.flat, ptype_data, titles, cmaps, levels_list):

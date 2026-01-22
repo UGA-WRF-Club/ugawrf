@@ -1,3 +1,6 @@
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import os
 import argparse
 from pathlib import Path
@@ -216,7 +219,7 @@ if "textgen" in modules_enabled and not args.partial:
         except Exception as e:
             print(f"error processing {airport} text: {e}!")
     print(f'texts processed successfuly - took {dt.datetime.now() - text_start_time}')
-elif args.partial:
+elif args.partial and "textgen" in modules_enabled:
     print('warning: partial run detected. despite text data not being skipped via run flags, this product requires a full run! skipping!')
 
 # weathermaps
@@ -272,7 +275,7 @@ if ("meteogram" in modules_enabled) and not args.partial:
         except Exception as e:
             print(f"error processing {airport} meteogram: {e}!")
     print(f"meteograms processed successfully - took {dt.datetime.now() - meteogram_plot_time}")
-elif args.partial:
+elif args.partial and "meteogram" in modules_enabled:
     print('warning: partial run detected. despite meteograms not being skipped via run flags, this product requires a full run! skipping!')
 
 # upper air plots
@@ -285,7 +288,7 @@ if "skewt" in modules_enabled:
             x_y = ll_to_xy(wrf_file, coords[0], coords[1])
             output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "skewt", airport)
             for t in range(hours):
-                skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, file_path)
+                skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, init_dt, init_str, file_path)
             print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
         except Exception as e:
             print(f"error processing {airport} upper air plot: {e}!")

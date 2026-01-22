@@ -403,9 +403,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='axes fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     if loc is None:
-        fig.savefig(os.path.join(output_path, f"hour_{timestep}.png"), bbox_inches='tight', dpi=125)
+        fig.savefig(os.path.join(output_path, f"hour_{f_hour}.png"), bbox_inches='tight', dpi=125)
     else:
-        fig.savefig(os.path.join(output_path, f"hour_{timestep}_{loc}.png"), bbox_inches='tight', dpi=125)
+        fig.savefig(os.path.join(output_path, f"hour_{f_hour}_{loc}.png"), bbox_inches='tight', dpi=125)
     plt.close(fig)
     print(f'-> {product} hr {timestep} with {extent}')
 

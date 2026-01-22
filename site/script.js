@@ -77,8 +77,7 @@ const stationIds = [
     "sgsp",
     "shun",
     "stae",
-    "sags",
-    "stys"
+    "sags"
   ];
 const stationElements = Object.fromEntries(
     stationIds.map(id => [id, document.getElementById(id)])
@@ -291,12 +290,12 @@ playButton.addEventListener('click', startLoop);
 pauseButton.addEventListener('click', endLoop);
 loadDirectories();
 window.onload = function () {
+    loadAlerts();
     timestep = Number(slider.value);
     updateImage("temperature");
     updateTextForecast();
     multiEnabler.checked = false
     multiSelector.disabled = true
     multiSubchooser.disabled = true
-    loadAlerts();
 };
 updateTextForecast();

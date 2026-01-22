@@ -1,6 +1,5 @@
 import os
 import argparse
-import sys
 from pathlib import Path
 from netCDF4 import Dataset
 from wrf import extract_times, ll_to_xy
@@ -171,6 +170,8 @@ airports = {**high_prio_airports, **other_airports}
 
 wrf_file = Dataset(WRF_FILE)
 run_time = str(wrf_file.START_DATE).replace(":", "_")
+init_dt = dt.datetime.strptime(str(wrf_file.START_DATE), "%Y-%m-%d_%H:%M:%S")
+init_str = init_dt.strftime("%Y-%m-%d %H:%M UTC")
 domain = os.path.basename(WRF_FILE).split("_")[1]
 file_path = (run_time, domain)
 
@@ -182,13 +183,14 @@ times = extract_times(wrf_file, timeidx=None)
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(dt.datetime)
 forecast_times = [convert_time(t) for t in times]
-hours = len(times) -1
+hours = len(times)
 
 run_metadata = {
     "init_time": str(forecast_times[0]),
     "domain": domain,
     "forecast_hours": hours,
-    "products": list(PRODUCTS.keys())
+    "products": list(PRODUCTS.keys()),
+    "in_progress": (True if args.partial else False)
 }
 json_output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "metadata.json")
 os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
@@ -199,7 +201,7 @@ print(f"Metadata JSON saved: {json_output_path}")
 # processing starts here
 
 # text data
-if "textgen" in modules_enabled:
+if "textgen" in modules_enabled and not args.partial:
     text_start_time = dt.datetime.now()
     for airport, coords in airports.items():
         try:
@@ -214,6 +216,8 @@ if "textgen" in modules_enabled:
         except Exception as e:
             print(f"error processing {airport} text: {e}!")
     print(f'texts processed successfuly - took {dt.datetime.now() - text_start_time}')
+elif args.partial:
+    print('warning: partial run detected. despite text data not being skipped via run flags, this product requires a full run! skipping!')
 
 # weathermaps
 if "weathermaps" in modules_enabled:
@@ -226,9 +230,9 @@ if "weathermaps" in modules_enabled:
             level = None
             if "_" in product and "mb" in product:
                 level = int(product.split("_")[-1].replace("mb", ""))
-            for t in range(0, hours + 1):
+            for t in range(hours):
                 t_time = dt.datetime.now()
-                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, wrf_file, level, args.partial)
+                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, init_dt, init_str, wrf_file, level, args.partial)
                 #for loc, extent in extents.items():
                     #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level, args.partial)
                 times_elapsed.append(dt.datetime.now() - t_time)
@@ -243,10 +247,13 @@ if "special" in modules_enabled:
     special_plot_time = dt.datetime.now()
     try:
         output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1])
-        special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours, forecast_times, file_path, wrf_file, args.partial)
-        for t in range(0, hours + 1):
-            special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, file_path, wrf_file)
-            special.plot_4panel_ptype(t, os.path.join(output_path, "4panel_ptype"), forecast_times, file_path, wrf_file)
+        if not args.partial:
+            special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours - 1, forecast_times, file_path[0], init_dt, init_str, wrf_file)
+        elif args.partial:
+            print("warning: partial run detected. 24 hour temp change plot skipped.")
+        for t in range(hours):
+            special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, file_path[0], init_dt, init_str, wrf_file)
+            special.plot_4panel_ptype(t, os.path.join(output_path, "4panel_ptype"), forecast_times, file_path[0], init_dt, init_str, wrf_file)
         print(f"processed special plots in {dt.datetime.now() - special_plot_time}")
     except Exception as e:
         print(f"error processing special plots: {e}!")
@@ -277,7 +284,7 @@ if "skewt" in modules_enabled:
             skewt_time = dt.datetime.now()
             x_y = ll_to_xy(wrf_file, coords[0], coords[1])
             output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "skewt", airport)
-            for t in range(0, hours + 1):
+            for t in range(hours):
                 skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, file_path)
             print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
         except Exception as e:

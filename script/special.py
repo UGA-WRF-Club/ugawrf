@@ -10,7 +10,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from metpy.plots import USCOUNTIES
 
-def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file, partial=False):
+def hr24_change(output_path, airports, hours, forecast_times, run_time, init_dt, init_str, wrf_file, partial=False):
     if partial:
         print("The partial flag is on. 24 hour temp change is skipped.")
         pass
@@ -38,7 +38,8 @@ def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file
             if min_value != 0:
                 maxmin += f"\nMin: {min_value:.1f}"
         ax.annotate(maxmin, xy=(0.98, 0.03), xycoords='axes fraction', fontsize=12, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
-        ax.set_title(f"{hours} Hour 2m Temp Change (°F) - Hour {hours}\nValid: {forecast_times[hours]}\nInit: {forecast_times[0]}", fontweight='bold', fontsize=14, loc='left')
+        valid_time = forecast_times[hours]
+        ax.set_title(f"Full Model/{hours} Hour 2m Temp Change (°F)\nValid: {valid_time}\nInit: {init_str}", fontweight='bold', fontsize=14, loc='left')
         plt.colorbar(contour, ax=ax, orientation='vertical', fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
         ax.coastlines()
         ax.add_feature(cfeature.BORDERS, linewidth=0.5)
@@ -49,9 +50,11 @@ def hr24_change(output_path, airports, hours, forecast_times, run_time, wrf_file
         os.makedirs(output_path, exist_ok=True)
         plt.savefig(os.path.join(output_path, f"24hr_change.png"))
         plt.close()
-    
-def generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file):
-    forecast_time = forecast_times[t].strftime("%Y-%m-%d %H:%M UTC")
+
+def generate_cloud_cover(t, output_path, forecast_times, run_time, init_dt, init_str, wrf_file):
+    valid_time = forecast_times[t]
+    f_hour = int(round((valid_time - init_dt).total_seconds() / 3600))
+    valid_time_str = valid_time.strftime("%Y-%m-%d %H:%M UTC")
     cloud_fracs = getvar(wrf_file, "cloudfrac", timeidx=t)
     low_cloud_frac = to_np(cloud_fracs[0]) * 100 
     mid_cloud_frac = to_np(cloud_fracs[1]) * 100
@@ -68,14 +71,16 @@ def generate_cloud_cover(t, output_path, forecast_times, run_time, wrf_file):
         ax.add_feature(cfeature.STATES, linewidth=0.5)
         cf = ax.pcolormesh(to_np(lons), to_np(lats), data, cmap="Blues_r", norm=plt.Normalize(0, 100), transform=ccrs.PlateCarree())
     cbar = plt.colorbar(cf, ax=axes[:,:], orientation='vertical', fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
-    plt.suptitle(f"Cloud Cover - Hour {t}\nValid: {forecast_time}\nInit: {forecast_times[0]}", fontweight='bold', fontsize=14)
+    plt.suptitle(f"Cloud Cover - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}", fontweight='bold', fontsize=14)
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{t}.png"))
     plt.close(fig)
 
-def plot_4panel_ptype(t, output_path, forecast_times, run_time, wrf_file):
-    forecast_time = forecast_times[t].strftime("%Y-%m-%d %H:%M UTC")
+def plot_4panel_ptype(t, output_path, forecast_times, run_time, init_dt, init_str, wrf_file):
+    valid_time = forecast_times[t]
+    f_hour = int(round((valid_time - init_dt).total_seconds() / 3600))
+    valid_time_str = valid_time.strftime("%Y-%m-%d %H:%M UTC")
     temp = getvar(wrf_file, "tk", timeidx=t) - 273.15
     pressure = getvar(wrf_file, "pressure", timeidx=t)
     snow = (getvar(wrf_file, "AFWA_SNOW", timeidx=t) / 25.4) * kuchera_ratio(temp, pressure)
@@ -100,7 +105,7 @@ def plot_4panel_ptype(t, output_path, forecast_times, run_time, wrf_file):
         max = to_np(data).max()
         if max != 0:
             ax.annotate(f"Max: {max:.1f}", xy=(0.98, 0.03), xycoords='axes fraction', fontsize=8, color='black', ha='right', va='bottom', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
-    plt.suptitle(f"Precipitation Types - Hour {t}\nValid: {forecast_time}\nInit: {forecast_times[0]}", fontweight='bold', fontsize=14)
+    plt.suptitle(f"Precipitation Types - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}", fontweight='bold', fontsize=14)
     plt.tight_layout()
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)

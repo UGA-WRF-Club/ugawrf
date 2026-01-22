@@ -121,7 +121,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {valid_time_str} - Init: {init_str}", x=0.4, ha="center", va="top")
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
-    plt.savefig(os.path.join(output_path, f"hour_{timestep}.png"), bbox_inches='tight')
+    plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"), bbox_inches='tight')
     plt.close()
     fig_hod = plt.figure(figsize=(6, 6))
     ax_hod = fig_hod.add_subplot(1, 1, 1)
@@ -151,5 +151,5 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     ax_hod.set_ylabel('V (knots)')
     fig_hod.tight_layout()
     fig_hod.savefig(
-    os.path.join(output_path, f"hodograph_hour_{timestep}.png"),bbox_inches='tight')
+    os.path.join(output_path, f"hodograph_hour_{f_hour}.png"),bbox_inches='tight')
     plt.close(fig_hod)

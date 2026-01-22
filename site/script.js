@@ -82,7 +82,6 @@ const stationIds = [
 const stationElements = Object.fromEntries(
     stationIds.map(id => [id, document.getElementById(id)])
 );
-const georgiaEnabler = document.getElementById("georgiaEnabler");
 
 async function loadDirectories(pageToken = '') {
     const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/';
@@ -133,23 +132,9 @@ function updateImage(selectedProduct = product) {
     const domain = domainSelector.value;
     timestep = Number(slider.value);
     timeLabel.textContent = `Hour ${timestep}/${hours}`;
-
-    
-
-    if (georgiaEnabler.checked == true) {
-        weatherImage.onerror = () => {
-            weatherImage.src = "/Frame_Unavailable.png";
-        };
-
-        weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}_ga.png`;
-
-    } else {    
-
-        weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
-
-        weatherImage.onerror = () => {
-            weatherImage.src = "/Frame_Unavailable.png";
-        };
+    weatherImage.src = `${outputs}${run}/${domain}/${product}/hour_${timestep}.png`;
+    weatherImage.onerror = () => {
+        weatherImage.src = "/Frame_Unavailable.png";
     }
 
     
@@ -170,15 +155,9 @@ function updateSecondaryDisplay() {
     const subchoosed = multiSubchooser.value
     timestep = Number(slider.value);
     if (multiSelector.value == 'map')
-        if (georgiaEnabler.checked == true) {
-            secondaryImage.src = `${outputs}${run}/${domain}/${subchoosed}/hour_${timestep}_ga.png`
-        } else {
-            secondaryImage.src = `${outputs}${run}/${domain}/${subchoosed}/hour_${timestep}.png`
-        }
+        secondaryImage.src = `${outputs}${run}/${domain}/${subchoosed}/hour_${timestep}.png`
     else if (multiSelector.value == 'skewt')
-        {
-            secondaryImage.src = `${outputs}${run}/${domain}/skewt/${subchoosed}/hour_${timestep}.png`
-        }
+        secondaryImage.src = `${outputs}${run}/${domain}/skewt/${subchoosed}/hour_${timestep}.png`
 }
 async function updateTextForecast() {
     const run = runSelector.value;
@@ -260,7 +239,6 @@ domainSelector.addEventListener('change', () => {
 });
 textSelector.addEventListener('change', updateTextForecast);
 weatherImage.addEventListener('click', () => slider.focus());
-georgiaEnabler.addEventListener('change', () => updateImage());
 hodographOnly.addEventListener('click', () => updateImage());
 textForecast.addEventListener('click', () => textSelector.focus());
 meteogram.addEventListener('click', () => textSelector.focus());

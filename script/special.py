@@ -74,7 +74,7 @@ def generate_cloud_cover(t, output_path, forecast_times, run_time, init_dt, init
     plt.suptitle(f"Cloud Cover - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}", fontweight='bold', fontsize=14)
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
-    plt.savefig(os.path.join(output_path, f"hour_{t}.png"))
+    plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"))
     plt.close(fig)
 
 def plot_4panel_ptype(t, output_path, forecast_times, run_time, init_dt, init_str, wrf_file):
@@ -109,5 +109,5 @@ def plot_4panel_ptype(t, output_path, forecast_times, run_time, init_dt, init_st
     plt.tight_layout()
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
-    plt.savefig(os.path.join(output_path, f"hour_{t}.png"))
+    plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"))
     plt.close(fig)

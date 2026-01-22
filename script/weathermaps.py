@@ -407,7 +407,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     else:
         fig.savefig(os.path.join(output_path, f"hour_{f_hour}_{loc}.png"), bbox_inches='tight', dpi=125)
     plt.close(fig)
-    print(f'-> {product} hr {timestep} with {extent}')
+    print(f'-> {product} hr {f_hour} with {extent}')
 
 def plot_wind_barbs(ax, wrf_file, timestep, lons, lats, pressure_level=None):
     if pressure_level:

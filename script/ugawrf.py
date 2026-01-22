@@ -103,12 +103,6 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
-    "afwasnow": "AFWA_SNOW",
-    "afwasnow_k": "AFWA_SNOW",
-    "afwarain": "AFWA_RAIN",
-    "afwafrz": "AFWA_FZRA",
-    "afwaslt": "AFWA_ICE",
-    "ptype": "AFWA_SNOW",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",

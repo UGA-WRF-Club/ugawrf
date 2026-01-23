@@ -22,7 +22,7 @@ body {
     border: 1px solid black;
     text-align: left;
     white-space: pre-line;
-    font-size: 130%;
+    font-size: 100%;
     overflow-y: auto;
   }
 .point-container {

@@ -334,7 +334,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = ax.contourf(to_np(lons), to_np(lats), index, cmap="RdYlGn", levels=np.arange(0, 105, 5), extend='both')
         data_copy = index
         plot_title = f"Lobdell Stargazing Index (0-100) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        ax.annotate(f'Index Explanation:\n75% Clear Sky\n15% Atmospheric Transparency\n10% Seeing Conditions\nPenalties for High RH and SFC Wind', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=6, color='black', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
+        ax.annotate(f'Index Explanation:\n75% Clear Sky\n15% Atmospheric Transparency\n10% Seeing Conditions\nPenalties for High Sfc. RH and Wind', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=6, color='black', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
         label = f'Index (100=Clear/Dry)'
     elif product == 'ptype':
         if partial_bool:

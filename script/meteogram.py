@@ -8,14 +8,14 @@ import os
 
 def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfhours, run_time):
     x, y = ll_to_xy(wrf_file, coords[0], coords[1])
-    hours = np.arange(wrfhours)
+    hours = np.arange(1, wrfhours)
     times = [forecast_times[t].strftime('%H UTC') for t in hours]
     u_wind = [to_np(getvar(wrf_file, "U10", timeidx=t)[y, x]) for t in hours]
     v_wind = [to_np(getvar(wrf_file, "V10", timeidx=t)[y, x]) for t in hours]
     temperatures = []
     dewpoints = []
     pressures = []
-    for t in range(1, hours):
+    for t in hours:
         t_data = getvar(wrf_file, "T2", timeidx=t)[y, x].values
         td_data = getvar(wrf_file, "td2", timeidx=t)[y, x].values
         pressure_data = getvar(wrf_file, "AFWA_MSLP", timeidx=t)[y, x].values

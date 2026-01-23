@@ -223,10 +223,13 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         cmax, cmin = None, None
+        contour_freezing = False
         if level == 925:
             cmax, cmin = 40, -20
+            contour_freezing = True
         elif level == 850:
             cmax, cmin = 40, -20
+            contour_freezing = True
         elif level == 700:
             cmax, cmin = 30, -30
         elif level == 500:
@@ -234,7 +237,11 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         elif level == 300:
             cmax, cmin = 0, -70
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(cmin, cmax, 2), extend='both')
-        plot_title = f"{level}mb Temp (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        if contour_freezing:
+            ax.contour(to_np(lons), to_np(lats), to_np(smooth_temp), levels=[0], linestyles='dashed')
+            plot_title = f"{level}mb Temp (°C) (0°C Dashed) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        else:
+            plot_title = f"{level}mb Temp (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Temp (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("td") and level != None:

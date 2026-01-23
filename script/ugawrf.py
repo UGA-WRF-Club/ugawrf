@@ -124,10 +124,12 @@ PRODUCTS = {
 
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
+    "temp_925mb": "tc",
     "temp_850mb": "tc",
     "temp_700mb": "tc",
     "temp_500mb": "tc",
     "temp_300mb": "tc",
+    "te_925mb": "eth",
     "te_850mb": "eth",
     "te_700mb": "eth",
     "1hr_temp_c_850mb": "tc",
@@ -138,10 +140,12 @@ PRODUCTS = {
     #"td_700mb": "td",
     #"td_500mb": "td",
     #"td_300mb": "td",
+    "rh_925mb": "rh",
     "rh_850mb": "rh",
     "rh_700mb": "rh",
     "rh_500mb": "rh",
     "rh_300mb": "rh",
+    "wind_925mb": "ua",
     "wind_850mb": "ua",
     "wind_700mb": "ua",
     "wind_500mb": "ua",

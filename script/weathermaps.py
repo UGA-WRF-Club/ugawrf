@@ -29,6 +29,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     if product == 'temperature':
         data_copy = (data_copy - 273.15) * 9/5 + 32
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5), extend='both')
+        ax.contour(to_np(lons), to_np(lats), to_np(data_copy), levels=[32], linestyles='dashed')
         plot_title = f"2m Temperature (°F) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)

@@ -223,7 +223,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         cmax, cmin = None, None
-        if level == 850:
+        if level == 925:
+            cmax, cmin = 40, -20
+        elif level == 850:
             cmax, cmin = 40, -20
         elif level == 700:
             cmax, cmin = 30, -30
@@ -255,7 +257,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"{level}mb Relative Humidity (%) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Relative Humidity (%)'
     elif product.startswith("te") and level != None:
-        if level == 850:
+        if level == 925:
+            levels = np.arange(270, 330, 2)
+        elif level == 850:
             levels = np.arange(270, 330, 2)
         elif level == 700:
             levels = np.arange(290, 350, 2)

@@ -63,10 +63,11 @@ const textForecast = document.getElementById('textForecast');
 const playButton = document.getElementById("playButton");
 const pauseButton = document.getElementById("pauseButton");
 const speedSelector = document.getElementById("speedSelector");
-const multiEnabler = document.getElementById("multiEnabler")
-const multiSelector = document.getElementById("multiSelector")
-const multiSubchooser = document.getElementById('multiSubchooser')
-const secondaryImage = document.getElementById('secondaryImage')
+const sizeSelector = document.getElementById("sizeSelector");
+const multiEnabler = document.getElementById("multiEnabler");
+const multiSelector = document.getElementById("multiSelector");
+const multiSubchooser = document.getElementById('multiSubchooser');
+const secondaryImage = document.getElementById('secondaryImage');
 const stationIds = [
     "sahn",
     "scni",
@@ -238,6 +239,7 @@ domainSelector.addEventListener('change', () => {
     updateTextForecast();
 });
 textSelector.addEventListener('change', updateTextForecast);
+sizeSelector.addEventListener('change', () => weatherImage.width = sizeSelector.value)
 weatherImage.addEventListener('click', () => slider.focus());
 hodographOnly.addEventListener('click', () => updateImage());
 textForecast.addEventListener('click', () => textSelector.focus());

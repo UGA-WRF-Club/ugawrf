@@ -107,6 +107,7 @@ async function loadDirectories(pageToken = '') {
     });
     updateImage("temperature");
     updateTextForecast();
+    checkRunStatus();
     const run = runSelector.value;
     const domain = domainSelector.value;
     document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
@@ -164,11 +165,15 @@ async function updateTextForecast() {
     const run = runSelector.value;
     const domain = domainSelector.value;
     const textOption = textSelector.value;
-    fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
-        .then(response => response.text())
-        .then(data => {
-            textForecast.textContent = data;
-        });
+    try {
+        fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
+            .then(response => response.text())
+            .then(data => {
+                textForecast.textContent = data;
+            });
+    } catch (error) {
+        textForecast.textContent = "Text forecast failed to load. Text forecasts are not processed until after a run finishes, so please try again later."
+    }
     meteogram.src = `${outputs}${run}/${domain}/meteogram/${textOption}/meteogram.png`;
 }
 function toggleSecondaryDisplay() {
@@ -230,6 +235,7 @@ runSelector.addEventListener('change', () => {
     document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
     updateImage();
     updateTextForecast();
+    checkRunStatus();
 });
 domainSelector.addEventListener('change', () => {
     const run = runSelector.value;
@@ -279,3 +285,21 @@ window.onload = function () {
     multiSubchooser.disabled = true
 };
 updateTextForecast();
+
+async function checkRunStatus() {
+    const run = runSelector.value;
+    const domain = domainSelector.value;
+    const statusElement = document.getElementById('runStatus');
+    statusElement.textContent = "";
+    try {
+        const response = await fetch(`${outputs}${run}/${domain}/metadata.json`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.in_progress === true) {
+                statusElement.textContent = "Model run in progress - not all frames/products will be available";
+            } 
+        }
+    } catch (error) {
+        console.log("no metadata found or fetch error");
+    }
+}

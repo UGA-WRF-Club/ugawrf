@@ -3,6 +3,7 @@ body {
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+    font-size: 130%;
 }
 .skewtContainer > img:active {
     width: 600px;
@@ -21,7 +22,7 @@ body {
     border: 1px solid black;
     text-align: left;
     white-space: pre-line;
-    font-size: 100%;
+    font-size: 130%;
     overflow-y: auto;
   }
 .point-container {
@@ -37,32 +38,33 @@ body {
     background-color: rgb(46, 134, 24);
     color: white;
     padding: 10px;
-    font-size: 16px;
+    font-size: 100%;
     border: black;
   }
 .locbtn {
     background-color: #53ba69;
     color: white;
     padding: 10px;
-    font-size: 16px;
+    font-size: 100%;
     border: none;
   }
 .location {
   position: relative;
   display: inline-block;
-}
+  }
 .dropdown {
     position: relative;
     display: inline-block;
   }
 .dropdown-content {
     display: none;
-    padding: 10px;
+    padding: 5px;
+    font-size: 90%;
     position: absolute;
     background-color: #f1f1f1;
     border:none;
     transition: all 0.3s cubic-bezier(0,0.3,0.4);
-    min-width: 160px;
+    min-width: 180px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
   }
@@ -78,7 +80,7 @@ body {
   background-color: #ddd;
  transform: translateY(-2px);
  box-shadow: 0 4px 8px rgba(173, 59, 30, 0.2);
-}
+  }
   
 .dropdown:hover .dropdown-content {display: block;}
   

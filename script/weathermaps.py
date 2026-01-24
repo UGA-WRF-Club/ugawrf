@@ -238,6 +238,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             cmax, cmin = 0, -70
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(cmin, cmax, 2), extend='both')
         if contour_freezing:
+            smooth_temp = smooth2d(data_copy, 4)
             ax.contour(to_np(lons), to_np(lats), to_np(smooth_temp), levels=[0], linestyles='dashed')
             plot_title = f"{level}mb Temp (°C) (0°C Dashed) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         else:

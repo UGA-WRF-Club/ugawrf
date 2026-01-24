@@ -291,7 +291,7 @@ async function checkRunStatus() {
     const statusElement = document.getElementById('runStatus');
     statusElement.textContent = "";
     try {
-        const response = await fetch(`${outputs}${run}/${domain}/metadata.json`);
+        const response = await fetch(`${outputs}${run}/${domain}/metadata.json`, {cache: 'no-store'});
         if (response.ok) {
             const data = await response.json();
             console.log(data)

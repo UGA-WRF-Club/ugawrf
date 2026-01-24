@@ -282,6 +282,7 @@ window.onload = function () {
     multiEnabler.checked = false
     multiSelector.disabled = true
     multiSubchooser.disabled = true
+    weatherImage.width = sizeSelector.value
 };
 updateTextForecast();
 

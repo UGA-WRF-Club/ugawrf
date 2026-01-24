@@ -296,7 +296,7 @@ async function checkRunStatus() {
         if (response.ok) {
             const data = await response.json();
             if (data.in_progress === true) {
-                statusElement.textContent = "Model run in progress - not all frames/products will be available";
+                statusElement.textContent = "Model run in-progress/unfinished - not all frames or products will be available";
             } 
         }
     } catch (error) {

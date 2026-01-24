@@ -115,7 +115,6 @@ async function loadDirectories(pageToken = '') {
 async function loadAlerts() {
     const response = await fetch('https://api.weather.gov/alerts/active?point=33.94872107111243,-83.3752234533988');
     const data = await response.json();
-    console.log(data);
     const alertsDiv = document.getElementById('alertText');
     if (data.features.length > 0) {
         let alertMessages = data.features.map(alert => {
@@ -295,6 +294,7 @@ async function checkRunStatus() {
         const response = await fetch(`${outputs}${run}/${domain}/metadata.json`);
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             if (data.in_progress === true) {
                 statusElement.textContent = "Model run in-progress/unfinished - not all frames or products will be available";
             } 

@@ -96,6 +96,8 @@ other_airports = {
     "vdi": (32.19211787190395, -82.36896971377632),
     "avl": (35.437208530161925, -82.53944681688363),
     "jax": (30.492570769985885, -81.68571176177561),
+    "gvl": (34.2736228317857, -83.83156673325958),
+    "cha": (35.037647142434366, -85.20214251419357)
 } # same as above minus generating a skewt (time saving) - more ok to plot many here
 # format is "folder_name": (lat, lon)
 

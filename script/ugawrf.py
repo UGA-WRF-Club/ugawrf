@@ -107,6 +107,7 @@ PRODUCTS = {
     "1hr_temp_c": "T2",
     "dewp": "td2",
     '1hr_dewp_c': 'td2',
+    "wet_bulb": "twb",
     "rh": "rh2",
     "pressure": "AFWA_MSLP",
     "wind": "wspd_wdir10",

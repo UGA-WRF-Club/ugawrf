@@ -105,10 +105,15 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
-    "temperature": "T2",
+    "ptype": "AFWA_SNOW",
     "1hr_temp_c": "T2",
-    "dewp": "td2",
     '1hr_dewp_c': 'td2',
+    "1hr_snowfall": "SNOWNC",
+    "1hr_precip": "AFWA_TOTPRECIP",
+    "1hr_temp_c_850mb": "tc",
+    
+    "temperature": "T2",
+    "dewp": "td2",
     "wet_bulb": "twb",
     "rh": "rh2",
     "pressure": "AFWA_MSLP",
@@ -118,13 +123,10 @@ PRODUCTS = {
     "helicity": "UP_HELI_MAX",
     "mcape": "cape_2d",
     "mcin": "cape_2d",
-    "1hr_precip": "AFWA_TOTPRECIP",
     "total_precip": "AFWA_TOTPRECIP",
-    "1hr_snowfall": "SNOWNC",
     "snowfall": "SNOWNC",
     "cloudcover": "cloudfrac",
     #"echo_tops": "ECHOTOP",
-
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
     "temp_925mb": "tc",
@@ -135,7 +137,6 @@ PRODUCTS = {
     "te_925mb": "eth",
     "te_850mb": "eth",
     "te_700mb": "eth",
-    "1hr_temp_c_850mb": "tc",
     #"1hr_temp_c_700mb": "tc",
     #"1hr_temp_c_500mb": "tc",
     #"1hr_temp_c_300mb": "tc",
@@ -162,7 +163,6 @@ PRODUCTS = {
     "afwarain": "AFWA_RAIN",
     "afwafrz": "AFWA_FZRA",
     "afwaslt": "AFWA_ICE",
-    "ptype": "AFWA_SNOW",
     "stargazing": "cloudfrac",
 } # these are the products for the map only to output
 # format is "folder_name": "variable_name"

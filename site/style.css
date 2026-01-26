@@ -23,8 +23,7 @@ body {
     text-align: left;
     white-space: pre-line;
     font-size: 100%;
-    overflow-y: auto;
-    overflow-x: auto;
+    overflow: auto;
   }
 .point-container {
     display: grid;

@@ -24,6 +24,7 @@ body {
     white-space: pre-line;
     font-size: 100%;
     overflow-y: auto;
+    overflow-x: auto;
   }
 .point-container {
     display: grid;

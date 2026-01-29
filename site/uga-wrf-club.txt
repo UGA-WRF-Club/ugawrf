@@ -10,7 +10,7 @@ Mason Sikes - mason.sikes@uga.edu
 
 
 In addition, we also greatly thank these people for helping to lay the foundation of modern day UGA-WRF:
-Kyle Brooks - kyle.brooks@cmich.edu
-Carter Watson - cwat@uga.edu
+Kyle Brooks
+Carter Watson
 Stevenray Janke
 Christian Walker

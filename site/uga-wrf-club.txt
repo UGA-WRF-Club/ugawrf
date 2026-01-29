@@ -1,12 +1,16 @@
-Kyle Brooks - kyle.brooks@cmich.edu
-Carter Watson - cwat@uga.edu
-Stevenray Janke
-Christian Walker
-Scout Carlson - scout.carlson@uga.edu
+The UGA-WRF is developed and maintained by the aptly named UGA-WRF Club.
 
-With additional contributions from:
+The UGA-WRF is made with contributions from:
+Scout Carlson (club coordinator, lead dev, main contact) - scout.carlson@uga.edu
+Joseph Cristea - Joseph.Cristea@uga.edu
 Margaret Needham - margaret.needham@uga.edu
 Gabe Lobdell - gabelobdell@uga.edu
 Jacob Peace - jacob.peace@uga.edu
 Mason Sikes - mason.sikes@uga.edu
-Joseph Cristea - Joseph.Cristea@uga.edu
+
+
+In addition, we also greatly thank these people for helping to lay the foundation of modern day UGA-WRF:
+Kyle Brooks - kyle.brooks@cmich.edu
+Carter Watson - cwat@uga.edu
+Stevenray Janke
+Christian Walker

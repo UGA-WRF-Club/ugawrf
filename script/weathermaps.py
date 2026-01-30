@@ -12,7 +12,7 @@ import cartopy.feature as cfeature
 from matplotlib import colors
 import numpy as np
 
-def plot_variable(product, variable, timestep, output_path, forecast_times, airports, loc, extent, run_time, init_dt, init_str, wrf_file, level=None, partial_bool=False):
+def plot_variable(product, variable, timestep, output_path, forecast_times, airports, loc, extent, run_time, init_dt, init_str, wrf_file, level=None, partial_bool=False, process_all=False):
     data = getvar(wrf_file, variable, timeidx=timestep)
     data_copy = data.copy()
     if level:
@@ -27,6 +27,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
     ax.add_feature(USCOUNTIES.with_scale('20m'), alpha=0.05)
     lats, lons = latlon_coords(data)
     if product == 'temperature':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = (data_copy - 273.15) * 9/5 + 32
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5), extend='both')
         smooth_temp = smooth2d(data_copy, 4)
@@ -34,18 +38,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"2m Temperature (°F) (32°F Dashed) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Temp (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
-    elif product == 'wet_bulb':
-        height_agl = getvar(wrf_file, "height_agl", timeidx=timestep)
-        data_copy = interplevel(data, height_agl, 2.0)
-        data_copy = (data_copy - 273.15) * 9/5 + 32
-        smooth_wb = smooth2d(data_copy, 4)
-        ax.contour(to_np(lons), to_np(lats), to_np(smooth_wb), levels=[32], linestyles='dashed', colors='k')
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5), extend='both')
-        plot_title = f"2m Wet Bulb Temperature (°F) (32°F Dashed) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        label = f"Temp (°F)"
     elif product == '1hr_temp_c':
-        if partial_bool:
+        if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            plt.close(fig)
             return
         if timestep > 0:
             temp_now = getvar(wrf_file, "T2", timeidx=timestep)
@@ -61,14 +57,19 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Temperature Change (°F)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'dewp':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy * 9/5 + 32
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=np.arange(10, 85, 5), extend='both')
         plot_title = f"2m Dewpoint (°F) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Dewpoint (°F)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == '1hr_dewp_c':
-        if partial_bool:
+        if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            plt.close(fig)
             return
         if timestep > 0:
             dewp_now = getvar(wrf_file, "td2", timeidx=timestep)
@@ -84,11 +85,19 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Dewpoint Change (°F)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'rh':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         levels = np.arange(0, 100, 5)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=levels, extend="max")
         plot_title = f"2m Relative Humidity (%) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Relative Humidity (%)"
     elif product == 'wind':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data[0].copy()
         data_copy = data_copy * 2.23694
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=30, vmax=90)
@@ -98,6 +107,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
         plot_streamlines(ax, wrf_file, timestep, lons, lats)
     elif product == 'wind_gust':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy * 2.23694
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=50, vmax=110)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='YlOrRd', norm=divnorm)
@@ -106,6 +119,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
         plot_streamlines(ax, wrf_file, timestep, lons, lats)
     elif product == 'comp_reflectivity':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         refl_cmap = ctables.registry.get_colortable('NWSReflectivity')
         data_masked = np.ma.masked_less(data_copy, 2)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_masked), cmap=refl_cmap, levels=np.arange(0, 75, 5), extend='max')
@@ -113,18 +130,30 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"Composite Reflectivity (dbZ)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'total_precip':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy / 25.4
         precip_cmap = ctables.registry.get_colortable('precipitation')
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=precip_cmap, levels=np.arange(0, 20, 0.25), extend='max')
         plot_title = f"Total Precipitation (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Precipitation (in)"
     elif product == 'afwarain':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy / 25.4
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Greens', min_val=0.2), levels=np.arange(0, 10, 0.25), extend='max')
         plot_title = f"Total Rainfall (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Rainfall (in)"
     elif product == 'afwasnow':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         snow_ratio = 10.0
         data_copy = (data_copy / 25.4) * snow_ratio
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
@@ -132,6 +161,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Total Snowfall (in) (10:1 ratio) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Snowfall (in)"
     elif product == 'afwasnow_k':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         temp = getvar(wrf_file, "tk", timeidx=timestep) - 273.15
         pressure = getvar(wrf_file, "pressure", timeidx=timestep)
         snow_ratio = kuchera_ratio(temp, pressure)
@@ -143,6 +176,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             f'Kuchera ratio is a work in progress and unfinished, with one big caveat:\n The Kuchera ratio for the *entire* total snowfall is recalculated at each step,\nmeaning values may not be fully indicative of actual snowfall.', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=8, color='red', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
         label = f"Snowfall (in)"
     elif product == 'afwafrz':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy / 25.4
         data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('RdPu', min_val=0.2), levels=np.arange(0, 3, 0.1), extend='max')
@@ -155,8 +192,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Total Ice Fall (in) (liquid equiv.) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Ice Fall (in)"
     elif product == '1hr_precip':
-        if partial_bool:
+        if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            plt.close(fig)
             return
         rain_now = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep)
         rain_prev = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep - 1) if timestep > 0 else rain_now * 0
@@ -167,14 +205,19 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"1 Hour Precipitation (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'1 Hour Rainfall (in)'
     elif product == 'snowfall':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy / 25.4
         divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=1, vmax=10)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', norm=divnorm, extend='max')
         plot_title = f"Total Accumulated Snowfall (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Accumulated Snowfall (in)"
     elif product == '1hr_snowfall':
-        if partial_bool:
+        if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            plt.close(fig)
             return
         snow_now = getvar(wrf_file, "SNOWNC", timeidx=timestep)
         snow_prev = getvar(wrf_file, "SNOWNC", timeidx=timestep - 1) if timestep > 0 else snow_now * 0
@@ -185,6 +228,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"1 Hour Accumulated Snowfall (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Accumulated Snowfall'
     elif product == 'pressure':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data_copy / 100
         divnorm = colors.TwoSlopeNorm(vmin=970, vcenter=1013, vmax=1050)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm, extend='both')
@@ -194,10 +241,18 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f"MSLP (mb)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'echo_tops':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data), cmap='cividis_r', vmin=0, vmax=50000, extend='max')
         plot_title = f"Echo Tops (m) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Echo Tops (m)"
     elif product == 'helicity':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         helicity_sum = 0
         for t in range(timestep + 1):  
             helicity = getvar(wrf_file, "UP_HELI_MAX", timeidx=t)
@@ -212,6 +267,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Helicity m^2/s^2'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'cloudcover':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         low_cloud_frac = to_np(data_copy[0]) * 100 
         mid_cloud_frac = to_np(data_copy[1]) * 100
         high_cloud_frac = to_np(data_copy[2]) * 100
@@ -221,16 +280,28 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Cloud Cover - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Cloud Fraction (%)'
     elif product == 'mcape':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data[0].copy()
         label = f'CAPE (J/kg)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
         plot_title = f"Max CAPE (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product == 'mcin':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         data_copy = data[1].copy()
         label = f'CIN (J/kg)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         cmax, cmin = None, None
         contour_freezing = False
         if level == 925:
@@ -255,6 +326,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Temp (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("td") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         cmax, cmin = None, None
         if level == 850:
             cmax, cmin = 30, -20
@@ -269,11 +344,19 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Dew Point (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("rh") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         levels = np.arange(0, 100, 5)
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='BrBG', levels=levels, extend='max')
         plot_title = f"{level}mb Relative Humidity (%) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Relative Humidity (%)'
     elif product.startswith("te") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         if level == 925:
             levels = np.arange(270, 330, 2)
         elif level == 850:
@@ -287,6 +370,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
         label = f'Theta E (K)'
     elif product.startswith("wind") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         va = interplevel(getvar(wrf_file, "va", timeidx=timestep), pressure, level)
         ws = np.sqrt(to_np(data_copy)**2 + to_np(va)**2) * 1.944
         data_copy = ws
@@ -298,6 +385,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
         plot_streamlines(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith("height") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         cmax, cmin = None, None
         data_copy = data_copy / 10
         if level == 700:
@@ -311,8 +402,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product.startswith('1hr_temp_c') and level != None:
-        if partial_bool:
+        if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            plt.close(fig)
             return
         if timestep > 0:
             temp_now = getvar(wrf_file, "tc", timeidx=timestep)
@@ -330,6 +422,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Temperature Change (°C)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
     elif product == 'stargazing':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
         #wip
         low_clear_frac = 1.0 - to_np(data_copy[0])
         mid_clear_frac = 1.0 - to_np(data_copy[1])
@@ -354,8 +450,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         ax.annotate(f'Index Explanation:\n75% Clear Sky\n15% Atmospheric Transparency\n10% Seeing Conditions\nPenalties for High Sfc. RH and Wind', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=6, color='black', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
         label = f'Index (100=Clear/Dry)'
     elif product == 'ptype':
-        if partial_bool:
+        if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+            plt.close(fig)
             return
         if timestep > 0:
             rain = getvar(wrf_file, "AFWA_RAIN", timeidx=timestep) - getvar(wrf_file, "AFWA_RAIN", timeidx=timestep - 1)

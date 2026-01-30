@@ -17,7 +17,8 @@ parser = argparse.ArgumentParser(description='A tool to process UGA-WRF model ou
 parser.add_argument('wrf_file', type=str, help='Path to the wrfout file.')
 parser.add_argument('output_folder', type=str, nargs='?', help='Base output folder for products. Defaults to ../site/runs.', default=None)
 parser.add_argument('-r', '--run_flags', type=str, nargs='?', help='Run flags to disable certain products. See comments in file for more info.', default="0")
-parser.add_argument('-p', '--partial', help='Denotes this is a partial wrfout (i.e. one that is only one hour long) and skips plots that require multiple hours like 1-hour temp change.', action='store_true')
+parser.add_argument('-p', '--partial', help='Denotes this is a partial wrfout (i.e. one that is only one hour long) and skips plots that require multiple hours like 1-hour temp change. Omit to only plot products skipped in a partial run.', action='store_true')
+parser.add_argument('-a', '--all', help="Process all products, regardless of partial status.", action='store_true')
 args = parser.parse_args()
 print(args)
 try:
@@ -105,16 +106,10 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
-    "ptype": "AFWA_SNOW",
-    "1hr_temp_c": "T2",
-    '1hr_dewp_c': 'td2',
-    "1hr_snowfall": "SNOWNC",
-    "1hr_precip": "AFWA_TOTPRECIP",
-    "1hr_temp_c_850mb": "tc",
-    
     "temperature": "T2",
+    "1hr_temp_c": "T2",
     "dewp": "td2",
-    "wet_bulb": "twb",
+    '1hr_dewp_c': 'td2',
     "rh": "rh2",
     "pressure": "AFWA_MSLP",
     "wind": "wspd_wdir10",
@@ -124,7 +119,9 @@ PRODUCTS = {
     "mcape": "cape_2d",
     "mcin": "cape_2d",
     "total_precip": "AFWA_TOTPRECIP",
-    "snowfall": "SNOWNC",
+    "1hr_precip": "AFWA_TOTPRECIP",
+    #"snowfall": "SNOWNC",
+    #"1hr_snowfall": "SNOWNC",
     "cloudcover": "cloudfrac",
     #"echo_tops": "ECHOTOP",
 
@@ -137,6 +134,7 @@ PRODUCTS = {
     "te_925mb": "eth",
     "te_850mb": "eth",
     "te_700mb": "eth",
+     "1hr_temp_c_850mb": "tc",
     #"1hr_temp_c_700mb": "tc",
     #"1hr_temp_c_500mb": "tc",
     #"1hr_temp_c_300mb": "tc",
@@ -158,6 +156,7 @@ PRODUCTS = {
     "heights_500mb": "z",
 
     # super special products
+    "ptype": "AFWA_SNOW",
     "afwasnow": "AFWA_SNOW",
     "afwasnow_k": "AFWA_SNOW",
     "afwarain": "AFWA_RAIN",
@@ -236,9 +235,9 @@ if "weathermaps" in modules_enabled:
                 level = int(product.split("_")[-1].replace("mb", ""))
             for t in range(hours):
                 t_time = dt.datetime.now()
-                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, init_dt, init_str, wrf_file, level, args.partial)
+                weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, None, None, file_path, init_dt, init_str, wrf_file, level, args.partial, args.all)
                 #for loc, extent in extents.items():
-                    #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level, args.partial)
+                    #weathermaps.plot_variable(product, variable, t, output_path, forecast_times, airports, loc, extent, file_path, wrf_file, level, args.partial, args.all)
                 times_elapsed.append(dt.datetime.now() - t_time)
             avg_time = sum(times_elapsed, dt.timedelta()) / len(times_elapsed)
             print(f"processed {product} in {dt.datetime.now() - product_time} - avg time per timestep: {avg_time}")

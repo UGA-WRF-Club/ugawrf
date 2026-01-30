@@ -187,11 +187,12 @@ def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(dt.datetime)
 forecast_times = [convert_time(t) for t in times]
 hours = len(times)
+fhour = int(round((forecast_times[-1] - init_dt).total_seconds() / 3600))
 
 run_metadata = {
     "init_time": str(forecast_times[0]),
     "domain": domain,
-    "forecast_hours": hours,
+    "forecast_hours": fhour,
     "products": list(PRODUCTS.keys()),
     "in_progress": (True if args.partial else False)
 }

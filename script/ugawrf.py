@@ -41,6 +41,7 @@ except:
 # 3 - special
 # 4 - meteogram
 # 5 - skewt
+# 6 - modelstats (reports hourly outputs at specified airports into a CSV file for easy verification testing)
 # ex: python.exe ugawrf.py "D:\ugawrf_fork\ugawrf\wrfout_d01_2025-03-13_21_00_00" default "245"
 # this will run all modules except for meteogram and skewt
 run_flags = args.run_flags
@@ -64,6 +65,9 @@ if "4" not in run_flags:
 if "5" not in run_flags:
     import skewt
     modules_enabled.append("skewt")
+if "6" not in run_flags:
+    import modelstats
+    modules_enabled.append("modelstats")
 
 print("UGA-WRF Data Processing Program")
 print(f'Modules: {modules_enabled}')
@@ -192,7 +196,7 @@ fhour = int(round((forecast_times[-1] - init_dt).total_seconds() / 3600))
 run_metadata = {
     "init_time": str(forecast_times[0]),
     "domain": domain,
-    "forecast_hours": fhour,
+    "forecast_hours": (fhour if args.partial else hours),
     "products": list(PRODUCTS.keys()),
     "in_progress": (True if args.partial else False)
 }
@@ -294,6 +298,22 @@ if "skewt" in modules_enabled:
         except Exception as e:
             print(f"error processing {airport} upper air plot: {e}!")
     print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
+
+# model stats
+if "modelstats" in modules_enabled and not args.partial:
+    modelstats_time = dt.datetime.now()
+    for airport, coords in airports.items():
+        try:
+            stats_time = dt.datetime.now()
+            output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "modelstats")
+            os.makedirs(output_path, exist_ok=True)
+            modelstats.generate_model_stats(wrf_file, airport, coords, hours, forecast_times, file_path[0], output_path)
+            print(f"processed {airport} model stats in {dt.datetime.now() - stats_time}")
+        except Exception as e:
+            print(f"error processing {airport} model stats: {e}!")
+    print(f"model stats processed successfully - took {dt.datetime.now() - modelstats_time}")
+elif "modelstats" in modules_enabled and args.partial:
+    print('warning: partial run detected. despite modelstats not being skipped via run flags, this product requires a full run. skipping!')
 
 process_time = dt.datetime.now() - start_time
 print(f"modules {modules_enabled} processed successfully, this is run {file_path} - took {process_time}")

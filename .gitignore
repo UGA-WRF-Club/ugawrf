@@ -4,3 +4,4 @@ site/runs
 *.json
 ._*
 .DS_Store
+.*

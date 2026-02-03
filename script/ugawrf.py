@@ -172,7 +172,6 @@ PRODUCTS = {
 # if you're plotting upper air, appending _(level)mb to the end of your folder name interps your pressure level to (level)
 
 # --- END CONFIG --- #
-
 airports = {**high_prio_airports, **other_airports}
 
 wrf_file = Dataset(WRF_FILE)
@@ -183,7 +182,7 @@ domain = os.path.basename(WRF_FILE).split("_")[1]
 file_path = (run_time, domain)
 
 print(f"wrfout: {WRF_FILE}")
-print(f'image output: {BASE_OUTPUT}\{domain}')
+print(f'image output: {BASE_OUTPUT}/{domain}')
 print(f"let's go! processing data for run {run_time}")
 
 times = extract_times(wrf_file, timeidx=None)

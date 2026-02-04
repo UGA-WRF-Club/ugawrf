@@ -36,15 +36,23 @@ def main():
     merged = pd.merge(df_model, df_obs, left_on='Valid Time (UTC)', right_on='valid_round', how='inner')
     merged['METAR_OBS'] = df_obs['valid']
     merged['Error_Temp'] = merged['Temperature (F)'] - merged['tmpf']
+    merged.rename(columns={'Temperature (F)': 'Model Temperature (F)'}, inplace=True)
+    merged.rename(columns={'tmpf': 'Observed Temperature (F)'}, inplace=True)
     merged['Error_Dew'] = merged['Dew Point (F)'] - merged['dwpf']
+    merged.rename(columns={'Dew Point (F)': 'Model Dew Point (F)'}, inplace=True)
+    merged.rename(columns={'dwpf': 'Observed Dew Point (F)'}, inplace=True)
     merged['Error_Wind'] = merged['Wind Speed (mph)'] - merged['obs_wind_mph']
+    merged.rename(columns={'Wind Speed (mph)': 'Model Wind Speed (mph)'}, inplace=True)
+    merged.rename(columns={'obs_wind_mph': 'Observed Wind Speed (F)'}, inplace=True)
     merged['Error_MSLP'] = merged['Pressure (mb)'] - merged['mslp']
+    merged.rename(columns={'Pressure (mb)': 'Model MSLP (mb)'}, inplace=True)
+    merged.rename(columns={'mslp': 'Observed Pressure (mb)'}, inplace=True)
     merged.rename(columns={'valid': 'Obs Time (UTC)'}, inplace=True)
     if args.output:
         out_file = args.output
     else:
         out_file = f"verified_{os.path.basename(args.csv_file)}"
-    final_cols = ['Init Time (UTC)', 'Airport', 'Forecast Hour','Valid Time (UTC)', 'Obs Time (UTC)', 'Temperature (F)', 'tmpf', 'Error_Temp', 'Wind Speed (mph)', 'obs_wind_mph', 'Error_Wind', 'Pressure (mb)', 'mslp', 'Error_MSLP']
+    final_cols = ['Init Time (UTC)', 'Airport', 'Forecast Hour','Valid Time (UTC)', 'Obs Time (UTC)', 'Model Temperature (F)', 'Observed Temperature (F)', 'Error_Temp', 'Model Dew Point (F)', 'Observed Dew Point (F)', 'Error_Dew', 'Model Wind Speed (mph)', 'Observed Wind Speed (F)', 'Error_Wind', 'Model MSLP (mb)', 'Observed Pressure (mb)', 'Error_MSLP']
     merged[final_cols].to_csv(out_file, index=False)
     print(f"verified {len(merged)} forecast times to obs. saved to {out_file}")
 if __name__ == "__main__":

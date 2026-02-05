@@ -9,7 +9,7 @@ import datetime as dt
 import cartopy.crs as ccrs
 from metpy.plots import ctables, USCOUNTIES
 import metpy.calc as mpcalc
-import metpy.units as units
+from metpy.units import units
 import cartopy.feature as cfeature
 from matplotlib import colors
 import numpy as np

@@ -4,6 +4,8 @@ import requests
 import io
 import os
 from datetime import timedelta
+import matplotlib.pyplot as plt
+import numpy as np
 
 parser = argparse.ArgumentParser(description='A helper tool to automate verification of UGA-WRF output CSVs')
 parser.add_argument('csv_file', type=str, help='Path to the Model Output CSV')
@@ -17,6 +19,7 @@ def main():
     print(f"reading model data from {args.csv_file}...")
     df_model = pd.read_csv(args.csv_file)
     df_model['Valid Time (UTC)'] = pd.to_datetime(df_model['Valid Time (UTC)'])
+    #Min and Max time are a special date/time object
     min_time = df_model['Valid Time (UTC)'].min() - timedelta(hours=2)
     max_time = df_model['Valid Time (UTC)'].max() + timedelta(days=1)
     station = df_model['Airport'].iloc[0] 
@@ -55,5 +58,21 @@ def main():
     final_cols = ['Init Time (UTC)', 'Airport', 'Forecast Hour','Valid Time (UTC)', 'Obs Time (UTC)', 'Model Temperature (F)', 'Observed Temperature (F)', 'Error_Temp', 'Model Dew Point (F)', 'Observed Dew Point (F)', 'Error_Dew', 'Model Wind Speed (mph)', 'Observed Wind Speed (F)', 'Error_Wind', 'Model MSLP (mb)', 'Observed Pressure (mb)', 'Error_MSLP']
     merged[final_cols].to_csv(out_file, index=False)
     print(f"verified {len(merged)} forecast times to obs. saved to {out_file}")
+ 
+    graphical_verification(df_model, df_obs, merged)
+
+def graphical_verification(forecast, observations, merged_CSV): 
+    print(f"Testing graphical verifcation")
+
+    model_difference = pd.to_numeric(forecast["Temperature (F)"]) - pd.to_numeric(observations["tmpf"])
+    time_scale = np.arange(0, merged_CSV['Forecast Hour'].max(), 1)
+
+    plt.plot(time_scale, model_difference[0:merged_CSV['Forecast Hour'].max()], color="red")
+
+    plt.ylabel("Model Error (Temperature - Obs)")
+    plt.xlabel("Forecast Hour (hours)")
+    plt.axhline(y = 0, linestyle="dashed")
+    plt.show()
+
 if __name__ == "__main__":
     main()

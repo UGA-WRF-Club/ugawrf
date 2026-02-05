@@ -128,6 +128,7 @@ PRODUCTS = {
     #"1hr_snowfall": "SNOWNC",
     "cloudcover": "cloudfrac",
     #"echo_tops": "ECHOTOP",
+    "apparent_temperature": "T2",
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
     "temp_925mb": "tc",

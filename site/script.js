@@ -2,6 +2,7 @@
 const products = {
     "temperature": "2m Temperature",
     "1hr_temp_c" : "1-Hour Temperature Change",
+    "apparent_temperature": "Apparent Temperature",
     "dewp": "2m Dew Point",
     "rh": "2m Relative Humidity",
     "1hr_dewp_c": "1-Hour Dew Point Change",

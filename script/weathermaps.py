@@ -9,6 +9,7 @@ import datetime as dt
 import cartopy.crs as ccrs
 from metpy.plots import ctables, USCOUNTIES
 import metpy.calc as mpcalc
+import metpy.units as units
 import cartopy.feature as cfeature
 from matplotlib import colors
 import numpy as np
@@ -62,7 +63,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
             plt.close(fig)
             return
-        data_copy = (data_copy - 273.15) * 9/5 + 32
+        data_copy = ((data_copy - 273.15) * 9/5 + 32) * units.degF
         rh = getvar(wrf_file, 'rh2', timeidx=timestep)
         wspdir = getvar(wrf_file, 'wspd_wdir10', timeidx = timestep)
         wsp = wspdir[0]

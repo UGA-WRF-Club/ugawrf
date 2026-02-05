@@ -70,8 +70,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         apparent_temperature = mpcalc.apparent_temperature(data_copy, rh, wsp)
         data_copy = apparent_temperature
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-10, 110, 5), extend='both')
-        smooth_temp = smooth2d(data_copy, 4)
-        ax.contour(to_np(lons), to_np(lats), to_np(smooth_temp), levels=[32], linestyles='dashed')
         plot_title = f'2m Apparent Temperature (°F) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}'
         label = f'Temperature (°F)'
     elif product == 'dewp':

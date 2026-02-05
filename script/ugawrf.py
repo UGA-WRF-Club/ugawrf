@@ -122,6 +122,8 @@ PRODUCTS = {
     "helicity": "UP_HELI_MAX",
     "mcape": "cape_2d",
     "mcin": "cape_2d",
+    "k_index": "ki",
+    "storm_relative_helicity": "srhel",
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_precip": "AFWA_TOTPRECIP",
     #"snowfall": "SNOWNC",

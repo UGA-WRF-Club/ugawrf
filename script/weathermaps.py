@@ -256,6 +256,15 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"MSLP (mb) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"MSLP (mb)"
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
+    elif product == 'omega' and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        data_copy = data_copy / 100
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm, extend='both')
+        plot_title = f"{level}mb Omega (mb/s) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        label = f"{level}mb Omega (mb/s)"
     elif product == 'echo_tops':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -417,6 +426,9 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"{level}mb Height (dam) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+            
+
+        
     elif product.startswith('1hr_temp_c') and level != None:
         if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')

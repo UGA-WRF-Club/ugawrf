@@ -157,6 +157,7 @@ PRODUCTS = {
     "wind_700mb": "ua",
     "wind_500mb": "ua",
     "wind_300mb": "ua",
+    "omega_700mb": "omg",
     "heights_700mb": "z",
     "heights_500mb": "z",
 

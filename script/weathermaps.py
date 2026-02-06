@@ -314,6 +314,24 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'CIN (J/kg)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        
+    elif product == 'k_index':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        td = getvar(wrf_file, "td", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        tc_700mb = interplevel(tc, pressure, 700)
+        tc_500mb = interplevel(tc, pressure, 500)
+        td_850mb = interplevel(td, pressure, 850)
+        td_500mb = interplevel(td, pressure, 500)
+        data_copy = ((tc_850mb)-(tc_500mb))+(td_850mb)-((tc_700mb)-(td_500mb))
+        label = f'K Index (°C)'
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,35,2), extend="max")
+        plot_title = f"K Index (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -418,6 +436,16 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"{level}mb Height (dam) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Height (dam)'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats, level)
+    elif product.startswith("omega") and level != None:
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        data_copy = data_copy / 100
+        divnorm = colors.TwoSlopeNorm(vmin=-2, vcenter=0, vmax=2)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='RdBu', norm=divnorm)
+        plot_title = f"{level}mb Omega (mb/s) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        label = f"{level}mb Omega (mb/s)"
     elif product.startswith('1hr_temp_c') and level != None:
         if partial_bool is True:
             print(f'-> skipping {product} {timestep} due to partial flag being enabled')

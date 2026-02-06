@@ -332,6 +332,25 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'K Index (°C)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,35,2), extend="max")
         plot_title = f"K Index (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+    elif product == 'total_totals':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        pressure - getvar(wrf_file, "pressure", timeidx=timestep)
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        td = getvar(wrf_file, "td", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        tc_500mb = interplevel(tc, pressure, 500)
+        td_850mb = interplevel(td, pressure, 850)
+        data_copy = (tc_850mb - tc_500mb)
+        VT = data_copy
+        data_copy = (td_850mb - tc_500mb)
+        CT = data_copy
+        data_copy = VT + CT
+        label = f'Total Totals (°C)'
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,55,2), extend="max")
+        plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')

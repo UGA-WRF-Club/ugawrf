@@ -123,6 +123,7 @@ PRODUCTS = {
     "mcape": "cape_2d",
     "mcin": "cape_2d",
     "k_index": "tc",
+    "total_totals": "tc",
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_precip": "AFWA_TOTPRECIP",
     #"snowfall": "SNOWNC",

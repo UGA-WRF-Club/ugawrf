@@ -15,6 +15,7 @@ const products = {
     "helicity": "Helicity",
     "k_index": "K Index",
     "omega_700mb": "Omega (700mb)",
+    "total_totals": "Total Totals",
     "1hr_precip": "1-Hour Precipitation",
     "total_precip": "Total Precipitation",
     "1hr_snowfall": "1-Hour Snowfall",

@@ -2,6 +2,7 @@ wrfout*
 __pycache__
 site/runs
 *.json
+*.csv
 ._*
 .DS_Store
 .*

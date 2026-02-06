@@ -123,6 +123,8 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"), bbox_inches='tight')
     plt.close()
+
+    #hodograph png
     fig_hod = plt.figure(figsize=(6, 6))
     ax_hod = fig_hod.add_subplot(1, 1, 1)
     h2 = Hodograph(ax_hod, component_range=80.)

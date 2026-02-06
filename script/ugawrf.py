@@ -140,7 +140,7 @@ PRODUCTS = {
     "te_925mb": "eth",
     "te_850mb": "eth",
     "te_700mb": "eth",
-     "1hr_temp_c_850mb": "tc",
+    "1hr_temp_c_850mb": "tc",
     #"1hr_temp_c_700mb": "tc",
     #"1hr_temp_c_500mb": "tc",
     #"1hr_temp_c_300mb": "tc",

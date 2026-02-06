@@ -330,8 +330,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         td_500mb = interplevel(td, pressure, 500)
         data_copy = ((tc_850mb)-(tc_500mb))+(td_850mb)-((tc_700mb)-(td_500mb))
         label = f'K Index (°C)'
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,50,2), extend="max")
-        plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,35,2), extend="max")
+        plot_title = f"K Index (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -442,7 +442,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             plt.close(fig)
             return
         data_copy = data_copy / 100
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='plasma_r', extend='both', levels=np.arange(0,2,0.1))
+        divnorm = colors.TwoSlopeNorm(vmin=-2, vcenter=0, vmax=2)
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='RdBu', norm=divnorm)
         plot_title = f"{level}mb Omega (mb/s) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"{level}mb Omega (mb/s)"
     elif product.startswith('1hr_temp_c') and level != None:

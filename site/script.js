@@ -14,7 +14,7 @@ const products = {
     "mcin": "Max CIN",
     "helicity": "Helicity",
     "k_index": "K Index",
-    "omega_700mb": "Omega at 700mb",
+    "omega_700mb": "Omega (700mb)",
     "1hr_precip": "1-Hour Precipitation",
     "total_precip": "Total Precipitation",
     "1hr_snowfall": "1-Hour Snowfall",

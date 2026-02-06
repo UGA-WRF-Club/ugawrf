@@ -110,7 +110,6 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
-    "omega_700mb": "omg",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",

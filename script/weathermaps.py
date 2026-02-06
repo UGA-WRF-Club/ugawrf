@@ -337,7 +337,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
             plt.close(fig)
             return
-        pressure - getvar(wrf_file, "pressure", timeidx=timestep)
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
         tc = getvar(wrf_file, "tc", timeidx=timestep)
         td = getvar(wrf_file, "td", timeidx=timestep)
         tc_850mb = interplevel(tc, pressure, 850)
@@ -350,6 +350,32 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         data_copy = VT + CT
         label = f'Total Totals (°C)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,55,2), extend="max")
+        plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+    elif product == 'sweat_index':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        td = getvar(wrf_file, "td", timeidx=timestep)
+        ua = getvar(wrf_file, "ua", timeidx=timestep)
+        va = getvar(wrf_file, "va", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        tc_500mb = interplevel(tc, pressure, 500)
+        td_850mb = interplevel(td, pressure, 850)
+        ua_850mb = interplevel(ua, pressure, 850)
+        va_850mb = interplevel(va, pressure, 850)
+        ua_500mb = interplevel(ua, pressure, 850)
+        va_500mb = interplevel(va, pressure, 850)
+        wind_850mb = (ua_850mb**2 + va_850mb**2)**0.5
+        wind_500mb = (ua_500mb**2 + va_500mb**2)**0.5
+        VT = (tc_850mb - tc_500mb)
+        CT = (td_850mb - tc_500mb)
+        TT = VT + CT
+        data_copy = 20(TT-49)+12*(td_850mb)+2*(wind_850mb)+wind_500mb+125[np.sin(wind_500mb-wind_850mb)+0.2]
+        label = f'Total Totals (°C)'
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='viridis_r', levels=np.arange(0,400,2), extend="max")
         plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:

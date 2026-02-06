@@ -291,25 +291,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Helicity Tracks (m^2/s^2) + Comp. Reflectivity (dbZ, transparent) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'Helicity m^2/s^2'
         plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
-    elif product == 'storm_relative_helicity' and level != None:
-        if not partial_bool and process_all:
-            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
-            plt.close(fig)
-            return
-        data_copy = data_copy 
-        storm_relative_helicity_sum = 0
-        for t in range(timestep + 1):
-            storm_relative_helicity  = getvar(wrf_file, "srhel", timeidx=timestep)
-            storm_relative_helicity_sum += to_np(storm_relative_helicity)
-        reflectivity = getvar(wrf_file, "REFD_COM", timeidx=timestep)
-        reflectivity_masked = np.ma.masked_less(reflectivity, 2)
-        refl_cmap = ctables.registry.get_colortable("NWSReflectivity")
-        ax.contourf(to_np(lons), to_np(lats), to_np(reflectivity_masked), cmap=refl_cmap, levels=np.arange(0, 75, 5), alpha=0.3)
-        contour = ax.contourf(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], alpha=0.7)
-        ax.contour(to_np(lons), to_np(lats), helicity_sum, levels=[50, 100, 200, 300, 400, 500], colors=['green', 'cyan', 'blue', 'purple', 'red', 'black'], linestyles='dashed')
-        plot_title = f"STORM RELATIVE HELICITY (m^2/s^2) + Comp. Reflectivity (dbZ, transparent) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        label = f'SR Helicity m^2/s^2'
-        plot_wind_barbs(ax, wrf_file, timestep, lons, lats)
     elif product == 'cloudcover':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -342,15 +323,23 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         
-    elif product == 'k_index':6
+    elif product == 'k_index':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
             plt.close(fig)
             return
-        data_copy = ((tc_850)-(tc_500))+(td_850)-((tc_700)-(td_500))
-        label = f'K_INDEX (°C)'
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        td = getvar(wrf_file, "td", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        tc_700mb = interplevel(tc, pressure, 700)
+        tc_500mb = interplevel(tc, pressure, 500)
+        td_850mb = interplevel(td, pressure, 850)
+        td_500mb = interplevel(td, pressure, 500)
+        data_copy = ((tc_850mb)-(tc_500mb))+(td_850mb)-((tc_700mb)-(td_500mb))
+        label = f'K Index (°C)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
-        plot_title = f"K INDEX (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')

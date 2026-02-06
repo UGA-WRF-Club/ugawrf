@@ -13,7 +13,6 @@ const products = {
     "mcape": "Max CAPE",
     "mcin": "Max CIN",
     "helicity": "Helicity",
-    "srhel": "Storm Relative Helicity",
     "k_index": "K Index",
     "omega_700mb": "Omega at 700mb",
     "1hr_precip": "1-Hour Precipitation",

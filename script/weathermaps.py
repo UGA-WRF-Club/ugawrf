@@ -443,7 +443,7 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
             plt.close(fig)
             return
         data_copy = data_copy / 100
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='bwr_r', norm=divnorm, extend='both')
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='plasma_r', extend='both')
         plot_title = f"{level}mb Omega (mb/s) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"{level}mb Omega (mb/s)"    
     elif product.startswith('1hr_temp_c') and level != None:

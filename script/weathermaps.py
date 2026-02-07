@@ -314,7 +314,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'CIN (J/kg)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        
     elif product == 'k_index':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -349,8 +348,8 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         CT = data_copy
         data_copy = VT + CT
         label = f'Total Totals (°C)'
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,55,2), extend="max")
-        plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(30,60,2), extend="max")
+        plot_title = f"Total Totals (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product == 'sweat_index':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -373,10 +372,10 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         VT = (tc_850mb - tc_500mb)
         CT = (td_850mb - tc_500mb)
         TT = VT + CT
-        data_copy = 20(TT-49)+12*(td_850mb)+2*(wind_850mb)+wind_500mb+125[np.sin(wind_500mb-wind_850mb)+0.2]
-        label = f'Total Totals (°C)'
+        data_copy = 20(TT-49)+12*(td_850mb)+2*(wind_850mb)+wind_500mb+125*[np.sin(wind_500mb-wind_850mb)+0.2]
+        label = f'SWEAT Index (°C)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='viridis_r', levels=np.arange(0,400,2), extend="max")
-        plot_title = f"K Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+        plot_title = f"SWEAT Index (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')

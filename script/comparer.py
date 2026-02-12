@@ -7,9 +7,9 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 
-parser = argparse.ArgumentParser(description='A helper tool to automate verification of UGA-WRF output CSVs')
+parser = argparse.ArgumentParser(description='A helper tool to automate verification of UGA-WRF output CSVs. Creates a new CSV and deposits it in your CWD')
 parser.add_argument('csv_file', type=str, help='Path to the Model Output CSV')
-parser.add_argument('--output', type=str, default=None, help='Output filename.')
+parser.add_argument('--output', type=str, default=None, help='Output filename')
 args = parser.parse_args()
 
 def main():

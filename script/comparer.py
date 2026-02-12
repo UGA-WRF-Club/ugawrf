@@ -59,7 +59,7 @@ def main():
     merged[final_cols].to_csv(out_file, index=False)
     print(f"verified {len(merged)} forecast times to obs. saved to {out_file}")
  
-    graphical_verification(df_model, df_obs, merged)
+    #graphical_verification(df_model, df_obs, merged)
 
 def graphical_verification(forecast, observations, merged_CSV): 
     print(f"Testing graphical verifcation")

@@ -290,15 +290,17 @@ if "skewt" in modules_enabled:
     skewt_plot_time = dt.datetime.now()
 
     for airport, coords in high_prio_airports.items():
-        try:
+        #try:
             skewt_time = dt.datetime.now()
+            #Coords[0] and Coords[1], lat and long respectively of something?? Perhaps GGY?
             x_y = ll_to_xy(wrf_file, coords[0], coords[1])
             output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], "skewt", airport)
             for t in range(hours):
-                skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, init_dt, init_str, file_path)
+                #skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, init_dt, init_str, file_path)
+                skewt.skewT_tester(wrf_file, x_y, t, airport, output_path, forecast_times, init_dt, init_str, file_path)
             print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
-        except Exception as e:
-            print(f"error processing {airport} upper air plot: {e}!")
+        #except Exception as e:
+           #print(f"error processing {airport} upper air plot: {e}!")
     print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
 
 # model stats

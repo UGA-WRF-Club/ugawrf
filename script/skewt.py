@@ -14,6 +14,7 @@ import numpy as np
 import datetime as dt
 from adjustText import adjust_text
 
+
 def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_dt, init_str, run_time):
     valid_time = forecast_times[timestep]
     f_hour = int(round((valid_time - init_dt).total_seconds() / 3600))
@@ -123,8 +124,6 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"), bbox_inches='tight')
     plt.close()
-
-    #hodograph png
     fig_hod = plt.figure(figsize=(6, 6))
     ax_hod = fig_hod.add_subplot(1, 1, 1)
     h2 = Hodograph(ax_hod, component_range=80.)
@@ -155,3 +154,102 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     fig_hod.savefig(
     os.path.join(output_path, f"hodograph_hour_{f_hour}.png"),bbox_inches='tight')
     plt.close(fig_hod)
+
+#Init_dt is the datetime objects and init_str is the string version of that object
+#data = qrd file, x_y is the lat/lon for the airport
+#forecast time is an array of dtatetime objects
+def skewT_tester(data, x_y, timestep, airport, output_path, forcast_times, init_dt, init_str, run_time):
+
+    #Defining forecast times:
+    #timestep is obtainined through the for-loop in ugawrf
+    valid_Time = forcast_times[timestep]
+
+    #inital time - forecast time to get the forecast hour
+    f_Hour = (valid_Time - init_dt)
+    print(f_Hour)
+
+    #Obtains variables from the wrfout file
+    #for testing purposes, we are only using the first timeindex
+    raw_pressure = getvar(data, "pressure", timeidx = timestep)
+    raw_temperatrue = getvar(data, "tc", timeidx = timestep)
+    raw_dewpoint = getvar(data, "td", timeidx = timestep)
+    raw_Xcomponent_windspeed = getvar(data, "ua", timeidx = timestep)
+    raw_Ycomponent_winderspeed = getvar(data, "va", timeidx = timestep)
+
+    #What exactly does ":, x_y[0], x_y[1]" mean? 
+    #Extract data (w.r.t to height) at a particular location + specifiy units 
+    raw_pressure = raw_pressure[:, x_y[0], x_y[1]] * units.hPa
+    raw_temperatrue = raw_temperatrue[:, x_y[0], x_y[1]] * units.degC
+    raw_dewpoint = raw_dewpoint[:, x_y[0], x_y[1]] * units.degC
+    raw_Xcomponent_windspeed = raw_Xcomponent_windspeed[:, x_y[0], x_y[1]] * units.knots
+    raw_Ycomponent_winderspeed = raw_Ycomponent_winderspeed[:, x_y[0], x_y[1]] * units.knots
+
+    #Reassigns the data into a unit array
+    raw_pressure = raw_pressure.metpy.unit_array
+    raw_temperatrue = raw_temperatrue.metpy.unit_array
+    raw_dewpoint = raw_dewpoint.metpy.unit_array
+    raw_Xcomponent_windspeed = raw_Xcomponent_windspeed.metpy.unit_array
+    raw_Ycomponent_winderspeed = raw_Ycomponent_winderspeed.metpy.unit_array
+
+    
+    fig = plt.figure(figsize=(18, 10)) #Create a fig with certain size
+    skew = SkewT(fig, rect=(0.05, 0.05, 0.50, 0.90)) #Create skewT with that fig and set the skewT bounds
+
+    #Axises limits
+    skew.ax.set_ylim(1000, 100) 
+    skew.ax.set_xlim(-30, 30)
+
+    #Label axis
+    skew.ax.set_xlabel(str.upper("Temperature (°C)"), weight="bold")
+    skew.ax.set_ylabel(str.upper("Pressure (hPa)"), weight="bold")
+
+    #Set the background of the Skew T and figure to white
+    fig.set_facecolor("#ffffff")
+    skew.ax.set_facecolor("#ffffff")
+
+    #Plot fundamental background lines
+    #alpha: transparency of line, and lw: linewidth
+    skew.plot_dry_adiabats(color="red", alpha=0.3, lw=1)
+    skew.plot_moist_adiabats(color="blue", alpha=0.3, lw=1)
+    skew.plot_mixing_lines(color="green", alpha=0.3, lw=1)
+    skew.ax.axvline(0, linestyle="--", color="blue", alpha=0.5) #Bold 0C isotherm
+   
+    #Plot the variables we derived from WRF, second parameter is color
+    #Think of it as plotting temp/dew/ect w.r.t pressure
+    skew.plot(raw_pressure, raw_temperatrue, "r", lw=4, label="Temperature")
+    skew.plot(raw_pressure, raw_dewpoint, "g", lw=4, label="Dewpoint")
+
+    #plot windbarbs
+    #creates an log spaced array where each element is log-spaced; convert to hPa 
+    interval = np.logspace(2, 3, 40) * units.hPa  #Why does it start at 2 and end at 3?
+    #Retrieves the indicies from the data array that are closest to the indicies in the interval array
+    idx = mpcalc.resample_nn_1d(raw_pressure, interval) 
+    #inputs the necessary variables at the refined indicies defined above
+    skew.plot_barbs(pressure=raw_pressure[idx], u=raw_Xcomponent_windspeed[idx], v=raw_Ycomponent_winderspeed[idx])
+
+
+    #Calculate temperature and pressure at the LFC + LCL height
+    lfc_p, lfc_t = mpcalc.lfc(raw_pressure, raw_temperatrue, raw_dewpoint)
+    lcl_p, lcl_t = mpcalc.lcl(raw_pressure[0], raw_temperatrue[0], raw_dewpoint[0])
+
+    #LFC will return nan if there is no LFC, from a meteologoical stand point
+    #Marker: shape that will indicate the LCL/LFC, color: circle outline color
+    #Markerfacecolor: color of inside the shape, in this case circle
+    skew.plot(lfc_p, lfc_t,marker="o", color="k", markerfacecolor="k", label="lfc")
+    skew.plot(lcl_p, lcl_t, "ko", markerfacecolor="white", label="lcl")
+
+    #Calculate and plot parcel path, need to convert to C!
+    parcel_path = mpcalc.parcel_profile(raw_pressure, raw_temperatrue[0], raw_dewpoint[0]).to('degC')
+    skew.plot(raw_pressure, parcel_path, color="black", lw=2, label="Parcel path") #ls: linestyle, "--": dotted
+
+
+    cape = mpcalc.cape_cin(raw_pressure, raw_temperatrue, raw_dewpoint, parcel_path, "bottom", "bottom")
+    skew.shade_cin(raw_pressure, raw_temperatrue, parcel_path, raw_dewpoint, alpha = 0.2)
+    skew.shade_cape(raw_pressure, raw_temperatrue, parcel_path, alpha = 0.2)
+    
+    #Temproary for testing, but stores SkewT images in the runs folder
+    file_name = f"{airport}_{f_Hour}.png"
+    print(file_name)
+    #Replace ":" since windows doesnt support that character in file naming
+    plt.savefig(os.path.join("./site/runs/", str(file_name).replace(":", "_"))) 
+

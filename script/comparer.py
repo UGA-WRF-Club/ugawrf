@@ -7,9 +7,9 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 
-parser = argparse.ArgumentParser(description='A helper tool to automate verification of UGA-WRF output CSVs')
+parser = argparse.ArgumentParser(description='A helper tool to automate verification of UGA-WRF output CSVs. Creates a new CSV and deposits it in your CWD')
 parser.add_argument('csv_file', type=str, help='Path to the Model Output CSV')
-parser.add_argument('--output', type=str, default=None, help='Output filename.')
+parser.add_argument('--output', type=str, default=None, help='Output filename')
 args = parser.parse_args()
 
 def main():
@@ -59,7 +59,7 @@ def main():
     merged[final_cols].to_csv(out_file, index=False)
     print(f"verified {len(merged)} forecast times to obs. saved to {out_file}")
  
-    graphical_verification(df_model, df_obs, merged)
+    #graphical_verification(df_model, df_obs, merged)
 
 def graphical_verification(forecast, observations, merged_CSV): 
     print(f"Testing graphical verifcation")

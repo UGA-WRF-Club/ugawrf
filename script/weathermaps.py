@@ -314,7 +314,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'CIN (J/kg)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', vmin=0, vmax=6000)
         plot_title = f"Max CIN (MU 500m Parcel) (J/kg) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        
     elif product == 'k_index':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -332,6 +331,65 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'K Index (°C)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(0,35,2), extend="max")
         plot_title = f"K Index (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+    elif product == 'total_totals':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        td = getvar(wrf_file, "td", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        tc_500mb = interplevel(tc, pressure, 500)
+        td_850mb = interplevel(td, pressure, 850)
+        data_copy = (tc_850mb - tc_500mb)
+        VT = data_copy
+        data_copy = (td_850mb - tc_500mb)
+        CT = data_copy
+        data_copy = VT + CT
+        label = f'Total Totals (°C)'
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(30,60,2), extend="max")
+        plot_title = f"Total Totals (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+    elif product == 'sweat_index':
+        if not partial_bool and not process_all:
+            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
+            plt.close(fig)
+            return
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        wspdir = getvar(wrf_file, 'wspd_wdir', timeidx = timestep)
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        td = getvar(wrf_file, "td", timeidx=timestep)
+        ua = getvar(wrf_file, "ua", timeidx=timestep)
+        va = getvar(wrf_file, "va", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        tc_500mb = interplevel(tc, pressure, 500)
+        td_850mb = interplevel(td, pressure, 850)
+        ua_850mb = interplevel(ua, pressure, 850)
+        va_850mb = interplevel(ua, pressure, 850)
+        ua_500mb = interplevel(ua, pressure, 500)
+        va_500mb = interplevel(va, pressure, 500)
+        wsdir_500mb = interplevel(wspdir, pressure, 500)
+        wsdir_850mb = interplevel(wspdir, pressure, 850)
+        wsdir_500mb = wspdir[1]
+        wsdir_850mb = wspdir[1]
+        wind_850mb = (ua_850mb**2 + va_850mb**2)**0.5
+        wind_500mb = (ua_500mb**2 + va_500mb**2)**0.5
+        VT = (tc_850mb - tc_500mb)
+        CT = (td_850mb - tc_500mb)
+        TT = VT + CT
+        wsdir_850_500 = wsdir_500mb - wsdir_850mb
+        if np.logical_and(wsdir_850mb >= 130, wsdir_850mb <=250):
+            wsdir_850_500 = 0
+        elif np.logical_and(wsdir_500mb >= 210, wsdir_500mb <=310):
+            wsdir_850_500 = 0
+        elif (wsdir_500mb - wsdir_850mb) <= 0:
+            wsdir_850_500 = 0
+        elif np.logical_and(wind_850mb = 15,wind_500mb = 15):
+            wsdir_850_500 = 0
+        data_copy = 20*(TT-49)+12*(td_850mb)+2*(wind_850mb)+wind_500mb+125[np.sin(wsdir_850_500)+0.2]
+        label = f'SWEAT Index (°C)'
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='viridis_r', levels=np.arange(0,400,2), extend="max")
+        plot_title = f"SWEAT Index (°C) {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')

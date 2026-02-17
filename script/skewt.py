@@ -239,6 +239,9 @@ def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init
     skew.plot(lfc_p, lfc_t, marker="o", color="k", markerfacecolor="k", label="lfc")
     skew.plot(lcl_p, lcl_t, "ko", markerfacecolor="white", label="lcl")
 
+    #Want to plot lines represetning LCL, LFC, and EL way off to the right
+    #In order to do that need to convert SkewT coords to x,y coords on the skewT itself
+    #Then convert the coords from the skewT to relative coords to the whole fig
     temp_temp_array = [32, 38]
     temp_pressure_array = [lcl_p.m, lcl_p.m]
     
@@ -322,6 +325,7 @@ def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init
     MWy = [MW[1].m, MW[1].m + 0.1]
     hodo.plot(MWx, MWy, color="black")    
 
+    #Need to continue working on getting the effective inflow later shaded on the hodograph
     #get X and Y components for a vector going from the sfc to RM 
     sfc_to_RM_XVector = [raw_Xcomponent_windspeed[0].m, RM[0].m]
     sfc_to_RM_YVector = [raw_Ycomponent_winderspeed[0].m, RM[1].m]
@@ -450,7 +454,8 @@ def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init
     skew.ax.legend(loc="upper left")
     hodo.ax.legend(loc="upper left")
 
-    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {str(valid_time)} - Init: {init_str}", x=0.35, ha="center", va="top", weight="bold", fontsize=16)
+    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {str(valid_time)} - Init: {init_str}", 
+                 x=0.35, ha="center", va="top", weight="bold", fontsize=16)
     
 
     #Temp for testing, but stores SkewT images in the runs folder

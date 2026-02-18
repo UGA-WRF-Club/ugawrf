@@ -15,7 +15,8 @@ import datetime as dt
 from adjustText import adjust_text
 
 
-def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_dt, init_str, run_time):
+def plot_skewt_dep(data, x_y, timestep, airport, output_path, forecast_times, init_dt, init_str, run_time):
+    # old skewt code, to be removed in future push
     valid_time = forecast_times[timestep]
     f_hour = int(round((valid_time - init_dt).total_seconds() / 3600))
     valid_time_str = valid_time.strftime("%Y-%m-%d %H:%M UTC")
@@ -158,7 +159,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
 #Init_dt is the datetime objects and init_str is the string version of that object
 #data = qrd file, x_y is the lat/lon for the airport
 #forecast time is an array of dtatetime objects
-def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init_dt, init_str, run_time):
+def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_dt, init_str, run_time):
 
     #Defining forecast times:
     #timestep is obtainined through the for-loop in ugawrf
@@ -198,7 +199,7 @@ def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init
 
     #Axises limits
     skew.ax.set_ylim(1000, 100) 
-    skew.ax.set_xlim(-30, 45)
+    skew.ax.set_xlim(-35, 45)
 
     #Label axis
     skew.ax.set_xlabel(str.upper("Temperature (°C)"), weight="bold")
@@ -245,13 +246,13 @@ def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init
     temp_temp_array = [32, 38]
     temp_pressure_array = [lcl_p.m, lcl_p.m]
     
-    skew.plot(temp_pressure_array, temp_temp_array, "g", label="LCL")
+    skew.plot(temp_pressure_array, temp_temp_array, "black", label="LCL")
     
     test= ((2 * (raw_pressure[0].m - lcl_p.m))/np.sqrt(2)) + lcl_t.m
     #print(f"LCL_p: {lcl_p}.m, sfc_pressure: {raw_pressure[0].m}, LCL_t: {lcl_t.m}")
     test_2 = 0.006 * test
     #print(f"test: {test_2}")
-    skew.ax.text(test_2, 0.5, "WTF", weight="bold", fontsize=20)
+    skew.ax.text(test_2, 0.5, "lcl if it actually worked", weight="bold", fontsize=20)
 
     #Calculate and plot parcel path, need to convert to C!
     parcel_path = mpcalc.parcel_profile(raw_pressure, raw_temperatrue[0], raw_dewpoint[0]).to('degC')
@@ -454,16 +455,9 @@ def skewT_tester(data, x_y, timestep, airport, output_path, forecast_times, init
     skew.ax.legend(loc="upper left")
     hodo.ax.legend(loc="upper left")
 
-    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {str(valid_time)} - Init: {init_str}", 
-                 x=0.35, ha="center", va="top", weight="bold", fontsize=16)
-    
-
-    #Temp for testing, but stores SkewT images in the runs folder
-    #file_name = f"{airport}_{f_hour}.png"
-    #print(file_name)
-    #Replace ":" since windows doesnt support that character in file naming
-    #plt.savefig(os.path.join("./site/runs/", str(file_name).replace(":", "_"))) 
+    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {str(valid_time)} - Init: {init_str}", x=0.3, ha="center", va="top", weight="bold", fontsize=16)
 
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"))
-
+    plt.close()
+    print(f'-> {airport} skewt hr {f_hour}')

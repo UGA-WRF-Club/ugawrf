@@ -90,7 +90,7 @@ const stationElements = Object.fromEntries(
 );
 
 async function loadDirectories(pageToken = '') {
-    const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/';
+    const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/202';
     let directories = [];
     while (true) {
         const response = await fetch(pageToken ? `${baseUrl}&pageToken=${pageToken}` : baseUrl);

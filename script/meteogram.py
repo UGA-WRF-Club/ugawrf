@@ -1,12 +1,10 @@
 # This module generates our meteograms.
 
-from matplotlib.lines import lineStyles
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 from wrf import getvar, ll_to_xy, to_np
 import numpy as np
 import os
-from adjustText import adjust_text
 
 def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfhours, run_time):
     x, y = ll_to_xy(wrf_file, coords[0], coords[1])

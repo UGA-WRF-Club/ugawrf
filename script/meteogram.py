@@ -1,5 +1,6 @@
 # This module generates our meteograms.
 
+from matplotlib.lines import lineStyles
 import matplotlib.pyplot as plt
 import matplotlib.patheffects as path_effects
 from wrf import getvar, ll_to_xy, to_np
@@ -9,7 +10,7 @@ import os
 def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfhours, run_time):
     x, y = ll_to_xy(wrf_file, coords[0], coords[1])
     hours = np.arange(1, wrfhours)
-    times = [forecast_times[t].strftime('%H UTC') for t in hours]
+    times = [forecast_times[t].strftime('%H') for t in hours]
     u_wind = [to_np(getvar(wrf_file, "U10", timeidx=t)[y, x]) for t in hours]
     v_wind = [to_np(getvar(wrf_file, "V10", timeidx=t)[y, x]) for t in hours]
     temperatures = []
@@ -34,19 +35,19 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     min_temp = temperatures[mintemp_x]
     max_dew = dewpoints[maxdew_x]
     min_dew = dewpoints[mindew_x] 
-    ax1.plot(hours, temperatures, color='red', label='Temperature (°F)')
-    ax1.plot(hours, dewpoints, color='green', label='Dewpoint (°F)')
+    ax1.plot(hours, temperatures, color='red', label='Temp (°F)')
+    ax1.plot(hours, dewpoints, color='green', label='Dewp (°F)')
     if any(t <= 32 for t in temperatures):
         ax1.axhline(
             y=32,
             color='blue',
             linestyle='--',
             linewidth=1.5,
-            label='Freezing (32°F)'
+            label='Frz (32°F)'
         )
     ax1.barbs(hours, ax1.get_ylim()[0] * 1.07, u_wind, v_wind, length=6, barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222}) 
     ax1.set_ylabel('Temperature / Dewpoint (°F)')
-    ax1.set_xlabel('Forecast Hour') 
+    ax1.set_xlabel('Hour (UTC)') 
     ax1.set_xticks(hours)
     ax1.set_xticklabels(times, rotation=45)
     ax1.annotate(f"{max_temp:.1f} F", xy=(maxtemp_x, max_temp), xytext=(maxtemp_x + 1, max_temp), color='red', fontsize=14, ha='center', path_effects=[path_effects.withStroke(linewidth=1, foreground="black")],)
@@ -59,15 +60,16 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     max_pressure = pressures[maxpressure_x]
     min_pressure = pressures[minpressure_x]
     ax2.plot(hours, pressures, color='blue', label='Pressure (mb)')
-    ax2.set_ylabel('Pressure (mb)')
+    ax2.set_ylabel('MSLP (mb)')
     ax2.annotate(f"{max_pressure:.1f} mb", xy=(maxpressure_x, max_pressure), xytext=(maxpressure_x + 1, max_pressure), color='blue', fontsize=14, ha='center', path_effects=[path_effects.withStroke(linewidth=1, foreground="black")],)
     ax2.annotate(f"{min_pressure:.1f} mb", xy=(minpressure_x, min_pressure), xytext=(minpressure_x + 1, min_pressure), color='blue', fontsize=14, ha='center', path_effects=[path_effects.withStroke(linewidth=1, foreground="black")],)
+    ax1.axvline(x=24, color='black', linestyle='--', linewidth=0.5, label='FHR24')
     lines_ax1, labels_ax1 = ax1.get_legend_handles_labels()
     lines_ax2, labels_ax2 = ax2.get_legend_handles_labels()
     all_lines = lines_ax1 + lines_ax2
     all_labels = labels_ax1 + labels_ax2
-    ax1.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.5)
-    ax2.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.5)
+    ax1.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.30, fontsize='small')
+    ax2.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.3, fontsize='small')
     plt.title(f"UGA-WRF Meteogram for {airport.upper()} starting at {forecast_times[1]} UTC - Init: {forecast_times[0]}")
     plt.grid(True)
     plt.tight_layout()

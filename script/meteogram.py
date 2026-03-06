@@ -6,6 +6,7 @@ from wrf import getvar, ll_to_xy, to_np
 import numpy as np
 import os
 
+
 def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfhours, run_time):
     x, y = ll_to_xy(wrf_file, coords[0], coords[1])
     hours = np.arange(1, wrfhours)
@@ -25,7 +26,7 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
         temperatures.append(t_f)
         dewpoints.append(td_f)
         pressures.append(pressure_mb)
-    fig, ax1 = plt.subplots(figsize=(10, 6))
+    fig, ax1 = plt.subplots(figsize=(12, 6))
     ax1.plot(hours, temperatures, color='red', label='Temp (°F)')
     ax1.plot(hours, dewpoints, color='green', label='Dewp (°F)')
     if any(t <= 32 for t in temperatures):
@@ -42,6 +43,7 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     ax1.set_xticks(hours)
     ax1.set_xticklabels(times, rotation=45)
     # will turn this into an actual function later, but just implementing first pass
+    # holy cow this looks so bad
     start1, end1 = 1, 24
     maxtemp_x_24 = np.argmax(temperatures[start1:end1]) + start1
     mintemp_x_24 = np.argmin(temperatures[start1:end1]) + start1
@@ -83,14 +85,14 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
     min_pressure_48 = pressures[minpressure_x_48]
     ax2.annotate(f"{max_pressure_48:.1f} mb", xy=(maxpressure_x_48, max_pressure_48), xytext=(maxpressure_x_48 + 1, max_pressure_48), color='blue', fontsize=14, ha='center', path_effects=[path_effects.withStroke(linewidth=1, foreground="black")],)
     ax2.annotate(f"{min_pressure_48:.1f} mb", xy=(minpressure_x_48, min_pressure_48), xytext=(minpressure_x_48 + 1, min_pressure_48), color='blue', fontsize=14, ha='center', path_effects=[path_effects.withStroke(linewidth=1, foreground="black")],)
-    ax1.axvline(x=24, color='black', linestyle='--', linewidth=0.5, label='FHR24')
+    ax2.axvline(x=24, color='black', linestyle='--', linewidth=0.5, label='FHR24')
     lines_ax1, labels_ax1 = ax1.get_legend_handles_labels()
     lines_ax2, labels_ax2 = ax2.get_legend_handles_labels()
     all_lines = lines_ax1 + lines_ax2
     all_labels = labels_ax1 + labels_ax2
-    ax1.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.30, fontsize='small')
-    ax2.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.3, fontsize='small')
-    plt.title(f"UGA-WRF Meteogram for {airport.upper()} starting at {forecast_times[1]} UTC - Init: {forecast_times[0]}")
+    ax1.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.2, fontsize='small')
+    ax2.legend(all_lines, all_labels, loc="upper left", fancybox=True, framealpha=0.2, fontsize='small')
+    plt.title(f"UGA-WRF Meteogram - {airport.upper()} - Init: {forecast_times[0]}\nStarting at {forecast_times[1]} UTC", fontweight='bold', loc='left')
     plt.grid(True)
     plt.tight_layout()
     plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')

@@ -109,7 +109,6 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
-    "mslp_850_t_w": "AFWA_MSLP",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",

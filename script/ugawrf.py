@@ -109,6 +109,7 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
+    "mslp_850_t_w": "AFWA_MSLP",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",
@@ -130,7 +131,6 @@ PRODUCTS = {
     "cloudcover": "cloudfrac",
     #"echo_tops": "ECHOTOP",
     "apparent_temperature": "T2",
-    "visby": "AFWA_VIS",
 
     # upper level vars are very taxing to process: feel free to comment some/all of them out while you're working locally!
     "temp_925mb": "tc",
@@ -162,6 +162,9 @@ PRODUCTS = {
     "omega_700mb": "omg",
     "heights_700mb": "z",
     "heights_500mb": "z",
+
+    # multiparam stuff
+    "mslp_850_t_w": "AFWA_MSLP",
 
     # super special products
     "ptype": "AFWA_SNOW",

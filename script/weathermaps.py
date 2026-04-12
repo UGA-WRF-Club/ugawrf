@@ -364,6 +364,18 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         label = f'Total Totals (°C)'
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='magma_r', levels=np.arange(45,60,2), extend="max")
         plot_title = f"Total Totals (°C) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+    elif product == 'mslp_850_t_w':
+        tc = getvar(wrf_file, "tc", timeidx=timestep)
+        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
+        tc_850mb = interplevel(tc, pressure, 850)
+        data_copy = data_copy / 100
+        smooth_slp = smooth2d(data_copy, 8, cenweight=6)
+        slp_contour = ax.contour(to_np(lons), to_np(lats), to_np(smooth_slp), transform=ccrs.PlateCarree(), colors="white", levels=np.arange(960, 1060, 4))
+        ax.clabel(slp_contour)
+        data_copy = tc_850mb
+        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='nipy_spectral', levels=np.arange(-20, 40, 2), extend='both')
+        plot_wind_barbs(ax, wrf_file, timestep, lons, lats, 850)
+        plot_title = f"850mb Temp (shaded, °C), MSLP (contours, mb), 850mb Winds (barbs, kt) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
     elif product.startswith("temp") and level != None:
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')

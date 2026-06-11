@@ -1,7 +1,6 @@
 # This module generates our text forecasts.
 
 from wrf import getvar, to_np, ll_to_xy
-import numpy as np
 
 def get_text_data(wrf_file, airport, coords, hours, forecast_times, run_time):
     forecast_time = forecast_times[1].strftime("%Y-%m-%d %H:%M UTC")

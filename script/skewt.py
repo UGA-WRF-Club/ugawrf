@@ -11,7 +11,6 @@ import matplotlib.gridspec as gridspec
 import os
 import metpy.calc as mpcalc
 import numpy as np
-import datetime as dt
 from adjustText import adjust_text
 
 

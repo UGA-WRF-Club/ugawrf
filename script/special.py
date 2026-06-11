@@ -4,7 +4,6 @@ from wrf import getvar, to_np, latlon_coords, ll_to_xy
 from weathermaps import get_truncated_cmap, kuchera_ratio
 import numpy as np
 import matplotlib.pyplot as plt
-import datetime as dt
 import os
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature

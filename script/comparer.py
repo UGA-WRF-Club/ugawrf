@@ -46,7 +46,7 @@ def main():
     merged.rename(columns={'dwpf': 'Observed Dew Point (F)'}, inplace=True)
     merged['Error_Wind'] = merged['Wind Speed (mph)'] - merged['obs_wind_mph']
     merged.rename(columns={'Wind Speed (mph)': 'Model Wind Speed (mph)'}, inplace=True)
-    merged.rename(columns={'obs_wind_mph': 'Observed Wind Speed (F)'}, inplace=True)
+    merged.rename(columns={'obs_wind_mph': 'Observed Wind Speed (mph)'}, inplace=True)
     merged['Error_MSLP'] = merged['Pressure (mb)'] - merged['mslp']
     merged.rename(columns={'Pressure (mb)': 'Model MSLP (mb)'}, inplace=True)
     merged.rename(columns={'mslp': 'Observed Pressure (mb)'}, inplace=True)
@@ -55,23 +55,33 @@ def main():
         out_file = args.output
     else:
         out_file = f"verified_{os.path.basename(args.csv_file)}"
-    final_cols = ['Init Time (UTC)', 'Airport', 'Forecast Hour','Valid Time (UTC)', 'Obs Time (UTC)', 'Model Temperature (F)', 'Observed Temperature (F)', 'Error_Temp', 'Model Dew Point (F)', 'Observed Dew Point (F)', 'Error_Dew', 'Model Wind Speed (mph)', 'Observed Wind Speed (F)', 'Error_Wind', 'Model MSLP (mb)', 'Observed Pressure (mb)', 'Error_MSLP']
+    final_cols = ['Init Time (UTC)', 'Airport', 'Forecast Hour','Valid Time (UTC)', 'Obs Time (UTC)', 'Model Temperature (F)', 'Observed Temperature (F)', 'Error_Temp', 'Model Dew Point (F)', 'Observed Dew Point (F)', 'Error_Dew', 'Model Wind Speed (mph)', 'Observed Wind Speed (mph)', 'Error_Wind', 'Model MSLP (mb)', 'Observed Pressure (mb)', 'Error_MSLP']
     merged[final_cols].to_csv(out_file, index=False)
     print(f"verified {len(merged)} forecast times to obs. saved to {out_file}")
- 
-    #graphical_verification(df_model, df_obs, merged)
+    graphical_verification(merged)
 
-def graphical_verification(forecast, observations, merged_CSV): 
-    print(f"Testing graphical verifcation")
-
-    model_difference = pd.to_numeric(forecast["Temperature (F)"]) - pd.to_numeric(observations["tmpf"])
-    time_scale = np.arange(0, merged_CSV['Forecast Hour'].max(), 1)
-
-    plt.plot(time_scale, model_difference[0:merged_CSV['Forecast Hour'].max()], color="red")
-
-    plt.ylabel("Model Error (Temperature - Obs)")
-    plt.xlabel("Forecast Hour (hours)")
-    plt.axhline(y = 0, linestyle="dashed")
+def graphical_verification(merged): 
+    print("Generating graphical verification plots...")
+    merged = merged.sort_values(by='Forecast Hour')
+    x = merged['Forecast Hour']
+    fig, axs = plt.subplots(1, 2, figsize=(14, 10))
+    station = merged['Airport'].iloc[0]
+    init = merged['Init Time (UTC)'].iloc[0]
+    fig.suptitle(f"UGA-WRF Model Error Verification: {station}\nInit: {init} UTC", fontsize=16)
+    axs[0].plot(x, merged['Error_Temp'], color="red", marker="o", markersize=4)
+    axs[0].set_title("Temperature Error")
+    axs[0].set_xlabel("Forecast Hour")
+    axs[0].set_ylabel("Error (°F)")
+    axs[0].axhline(y=0, color='black', linestyle="--")
+    axs[0].grid(True, linestyle=':', alpha=0.7)
+    axs[1].plot(x, merged['Error_MSLP'], color="purple", marker="o", markersize=4)
+    axs[1].set_title("MSLP Error")
+    axs[1].set_xlabel("Forecast Hour")
+    axs[1].set_ylabel("Error (mb)")
+    axs[1].axhline(y=0, color='black', linestyle="--")
+    axs[1].grid(True, linestyle=':', alpha=0.7)
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.92)
     plt.show()
 
 if __name__ == "__main__":

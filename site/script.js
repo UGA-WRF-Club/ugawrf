@@ -13,8 +13,10 @@ const products = {
     "mcape": "Max CAPE",
     "mcin": "Max CIN",
     "helicity": "Helicity",
-    "k_index": "K Index",
+    "k_index": "K-Index",
     "omega_700mb": "Omega (700mb)",
+    "total_totals": "Total Totals",
+    "sweat_index": "Sweat Index",
     "1hr_precip": "1-Hour Precipitation",
     "total_precip": "Total Precipitation",
     "1hr_snowfall": "1-Hour Snowfall",
@@ -23,9 +25,9 @@ const products = {
     "4panel_ptype": "4-Panel Precipitation Type",
     "afwarain": "Accumulated Rainfall",
     "afwasnow": "Accumulated Snowfall (10:1)",
-    "afwasnow_k": "Accumulated Snowfall (Kuchera)",
     "afwafrz": "Accumulated Freezing Rain",
-    "afwaslt": "Accumulated Icefall (Sleet)",
+    "afwaslt": "Accumulated Sleet",
+    "visby": "Visibility",
     "4panel_cloudcover": "4-Panel Cloud Cover",
     "cloudcover": "Cloud Cover",
     "temp_850mb": "Temperature (850mb)",
@@ -88,7 +90,7 @@ const stationElements = Object.fromEntries(
 );
 
 async function loadDirectories(pageToken = '') {
-    const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/';
+    const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/202';
     let directories = [];
     while (true) {
         const response = await fetch(pageToken ? `${baseUrl}&pageToken=${pageToken}` : baseUrl);

@@ -242,19 +242,12 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     #LFC will return nan if there is no LFC, from a meteologoical stand point
     #Marker: shape that will indicate the LCL/LFC, color: circle outline color
     #Markerfacecolor: color of inside the shape, in this case circle
-    skew.plot(lfc_p, lfc_t, marker="o", color="k", markerfacecolor="k", label="lfc")
-    skew.plot(lcl_p, lcl_t, "ko", markerfacecolor="white", label="lcl")
+    skew.plot(lfc_p, lfc_t, marker="o", color="k", markerfacecolor="k", label="lfc", markersize=9)
+    skew.plot(lcl_p, lcl_t, "ko", markerfacecolor="white", label="lcl", markersize=9)
 
-    temp_temp_array = [32, 38]
-    temp_pressure_array = [lcl_p.m, lcl_p.m]
-    
-    skew.plot(temp_pressure_array, temp_temp_array, "black", label="LCL")
-    
-    test= ((2 * (raw_pressure[0].m - lcl_p.m))/np.sqrt(2)) + lcl_t.m
-    #print(f"LCL_p: {lcl_p}.m, sfc_pressure: {raw_pressure[0].m}, LCL_t: {lcl_t.m}")
-    test_2 = 0.006 * test
-    #print(f"test: {test_2}")
-    skew.ax.text(test_2, 0.5, "lcl if it actually worked", weight="bold", fontsize=20)
+    #computes and plots EL
+    el_p, el_t = mpcalc.el(raw_pressure, raw_temperature, raw_dewpoint)
+    skew.plot(el_p, el_t, marker="o", markerfacecolor="red", color="k", label="el", markersize=9)
 
     #Calculate and plot parcel path, need to convert to C!
     parcel_path = mpcalc.parcel_profile(raw_pressure, raw_temperature[0], raw_dewpoint[0]).to('degC')
@@ -305,7 +298,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
 
     #Plots RM, LW, and MW on the hodo
     #Add 0.5 to each coord since the text covers up the actual point, will add a dot at each actual coord to make it clear
-    #Why the ".m"?
+    #".m" stands for magnitude
     hodo.ax.text((RM[0].m + 0.5), (RM[1].m + 0.5), "RM", weight="bold", ha="left", fontsize=10, alpha=0.6, color="red")
     hodo.ax.text((LM[0].m + 0.5), (LM[1].m + 0.5), "LM", weight="bold", ha="left", fontsize=10, alpha=0.6, color="blue")
     hodo.ax.text((MW[0].m + 0.5), (MW[1].m + 0.5), "MW", weight="bold", ha="left", fontsize=10, alpha=0.6, color="black")
@@ -356,7 +349,7 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
     new_lcl_p = np.append(raw_pressure[raw_pressure > lcl_p], lcl_p)
     new_lcl_t = np.append(raw_temperature[raw_pressure > lcl_p], lcl_t)
 
-    #estaimte the lcl height using hypsometric equation
+    #estaimte the lcl height using hypsometric equation used in STP calculation
     lcl_height = mpcalc.thickness_hydrostatic(new_lcl_p, new_lcl_t)
 
     #Compute SRH at 1, 3, and 6km, the depth is the how high in the atmopshere SRH is computed
@@ -383,10 +376,27 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
                                      bshear3).to_base_units()
     SCP = mpcalc.supercell_composite(mucape, total_helicity3, bshear3)
 
-    #plots parameters on the bottom right of the sounding
-    #":0.f" rounds to the nearest whole number
-    # "~P" abbreviates units
-    #Therodynamic parameters
+
+    #plots all the parameters calculated above
+    plot_thermo_parameters(sbcape, sbcin, mlcape, mlcin, mucape, mucin, totals_totals, kindex)
+    #STP and SCP are [0] since calc STP/SCP methods return an array with length one
+    plot_kinematic_parameters(total_helicity1, bshear1, total_helicity3, bshear3, total_helicity6, bshear6, STP[0], SCP[0])
+    
+    skew.ax.legend(loc="upper left")
+    hodo.ax.legend(loc="upper left")
+
+    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {str(valid_time)} UTC - Init: {init_str}", x=0, y=.997, ha="left", va="top", weight="bold", fontsize=16)
+
+    os.makedirs(output_path, exist_ok=True)
+    plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"))
+    plt.close()
+    print(f'-> {airport} skewt hr {f_hour}')
+
+
+ #plots thermo parameters on the bottom right of the sounding
+ #":0.f" rounds to the nearest whole number
+ # "~P" abbreviates units
+def plot_thermo_parameters(sbcape, sbcin, mlcape, mlcin, mucape, mucin, tt, ki):
     plt.figtext(0.58, 0.37, "SBCAPE: ", weight="bold", fontsize=15,
                 color="black", ha="left")
     plt.figtext(0.71, 0.37, f"{sbcape:.0f~P}", weight="bold", fontsize=15,
@@ -413,53 +423,46 @@ def plot_skewt(data, x_y, timestep, airport, output_path, forecast_times, init_d
                 color="lightblue", ha="right")
     plt.figtext(0.58, 0.13, "TT-INDEX: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.71, 0.13, f"{totals_totals:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.71, 0.13, f"{tt:.0f~P}", weight="bold", fontsize=15,
                   color="orangered", ha="right")
     plt.figtext(0.58, 0.10, "K-INDEX: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.71, 0.10, f"{kindex:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.71, 0.10, f"{ki:.0f~P}", weight="bold", fontsize=15,
                 color="orangered", ha="right")
-
-    #Kinematic parameters
+    
+ #plots kinematic parameters on the bottom right of the sounding
+ #":0.f" rounds to the nearest whole number
+ # "~P" abbreviates units
+def plot_kinematic_parameters(TH1, BS1, TH3, BS3, TH6, BS6, STP, SCP):
     plt.figtext(0.73, 0.37, "0-1km SRH: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.37, f"{total_helicity1:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.88, 0.37, f"{TH1:.0f~P}", weight="bold", fontsize=15,
                 color="navy", ha="right")
     plt.figtext(0.73, 0.34, "0-1km Shear: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.34, f"{bshear1:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.88, 0.34, f"{BS1:.0f~P}", weight="bold", fontsize=15,
                 color="navy", ha="right")
     plt.figtext(0.73, 0.29, "0-3km SRH", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.29, f"{total_helicity3:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.88, 0.29, f"{TH3:.0f~P}", weight="bold", fontsize=15,
                 color="navy", ha="right")
     plt.figtext(0.73, 0.26, "0-3km Shear: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.26, f"{bshear3:.0f~P}", weight="bold", fontsize=15, 
+    plt.figtext(0.88, 0.26, f"{BS3:.0f~P}", weight="bold", fontsize=15, 
                 color="navy", ha="right")
     plt.figtext(0.73, 0.21, "0-6km SRH: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.21, f"{total_helicity6:.0f~P}", weight="bold", fontsize=15, 
+    plt.figtext(0.88, 0.21, f"{TH6:.0f~P}", weight="bold", fontsize=15, 
                 color="navy", ha='right')
     plt.figtext(0.73, 0.18, "0-6km SHEAR: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.18, f"{bshear6:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.88, 0.18, f"{BS6:.0f~P}", weight="bold", fontsize=15,
                 color="navy", ha="right")
     plt.figtext(0.73, 0.13, "STP: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.13, f"{STP[0]:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.88, 0.13, f"{STP:.0f~P}", weight="bold", fontsize=15,
                 color="orangered", ha="right")
     plt.figtext(0.73, 0.1, "SCP: ", weight="bold", fontsize=15,
                 color="black", ha="left")
-    plt.figtext(0.88, 0.1, f"{SCP[0]:.0f~P}", weight="bold", fontsize=15,
+    plt.figtext(0.88, 0.1, f"{SCP:.0f~P}", weight="bold", fontsize=15,
                 color="orangered", ha="right")
-    
-    skew.ax.legend(loc="upper left")
-    hodo.ax.legend(loc="upper left")
-
-    fig.suptitle(f"Upper Air Data for {airport.upper()} - Hour {f_hour}\nValid: {str(valid_time)} UTC - Init: {init_str}", x=0, y=.997, ha="left", va="top", weight="bold", fontsize=16)
-
-    os.makedirs(output_path, exist_ok=True)
-    plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"))
-    plt.close()
-    print(f'-> {airport} skewt hr {f_hour}')

@@ -4,7 +4,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import os
 import argparse
 from pathlib import Path
-from netCDF4 import Dataset
+from netCDF4 import Dataset 
 from wrf import extract_times, ll_to_xy
 import numpy as np
 import datetime as dt
@@ -188,7 +188,10 @@ print(f"wrfout: {WRF_FILE}")
 print(f'image output: {BASE_OUTPUT}/{domain}')
 print(f"let's go! processing data for run {run_time}")
 
-times = extract_times(wrf_file, timeidx=None)
+#Added "[]" around the wrf_file since this newer version of netCDF packages
+#it treats individual wrf files are multiple iterables causing an error so here we simply
+# and explicitly states there is one file
+times = extract_times([wrf_file], timeidx=None)
 def convert_time(nc_time):
     return np.datetime64(nc_time).astype('datetime64[s]').astype(dt.datetime)
 forecast_times = [convert_time(t) for t in times]
@@ -290,7 +293,6 @@ elif args.partial and "meteogram" in modules_enabled:
 # upper air plots
 if "skewt" in modules_enabled:
     skewt_plot_time = dt.datetime.now()
-
     for airport, coords in high_prio_airports.items():
         try:
             skewt_time = dt.datetime.now()
@@ -300,9 +302,9 @@ if "skewt" in modules_enabled:
                 skewt.plot_skewt(wrf_file, x_y, t, airport, output_path, forecast_times, init_dt, init_str, file_path)
             print(f"processed {airport} skewt in {dt.datetime.now() - skewt_time}")
         except Exception as e:
-           print(f"error processing {airport} upper air plot: {e}!")
+           print(f"error processing {airport} upper air plot: {e}!")  
     print(f"skewt processed successfully - took {dt.datetime.now() - skewt_plot_time}")
-
+    
 # model stats
 if "modelstats" in modules_enabled and not args.partial:
     modelstats_time = dt.datetime.now()

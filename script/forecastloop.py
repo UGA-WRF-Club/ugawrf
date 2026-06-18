@@ -18,8 +18,11 @@ def main():
         output_path = args.output
     else:
         output_path = args.folder_path
-    images[0].save(f"{output_path}/loop.gif", append_images=images[1:], duration=args.duration, save_all=True, loop=0)
-    print(f"GIF loop saved to {output_path}/loop.gif!")
+    try:
+        images[0].save(f"{output_path}/loop.gif", append_images=images[1:], duration=args.duration, save_all=True, loop=0)
+        print(f"GIF loop saved to {output_path}/loop.gif!")
+    except IndexError:
+        print("Index error! Most likely, there are no images in this directory. Qutting!")
 
 if __name__ == '__main__':
     main()

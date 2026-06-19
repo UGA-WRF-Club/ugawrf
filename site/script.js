@@ -73,6 +73,7 @@ const multiEnabler = document.getElementById("multiEnabler");
 const multiSelector = document.getElementById("multiSelector");
 const multiSubchooser = document.getElementById('multiSubchooser');
 const secondaryImage = document.getElementById('secondaryImage');
+const loopButton = document.getElementById('loop');
 const stationIds = [
     "sahn",
     "scni",
@@ -225,10 +226,12 @@ document.querySelectorAll('.dropdown-content a').forEach(item => {
             console.log("test")
             weatherImage.src = `${outputs}${run}/${domain}/24hr_change/24hr_change.png`;
             slider.disabled = true
+            loopButton.setAttribute('style', 'display: none; ')
         }
         else {
             updateImage(event.target.id);
             slider.disabled = false
+            loopButton.setAttribute('style', 'display: revert;')
         }
     });
 });
@@ -257,6 +260,7 @@ meteogram.addEventListener('click', () => textSelector.focus());
 multiEnabler.addEventListener('click', toggleSecondaryDisplay)
 multiSelector.addEventListener('change', toggleSecondaryDisplay)
 multiSubchooser.addEventListener('change', updateSecondaryDisplay)
+loopButton.addEventListener('click', () => window.open(`${outputs}${runSelector.value}/${domainSelector.value}/${product}/loop.gif`, '_blank'))
 let loopInterval;
 function startLoop() {
     if (timestep === hours) timestep = 0;
@@ -303,7 +307,11 @@ async function checkRunStatus() {
             console.log(data)
             if (data.in_progress === true) {
                 statusElement.textContent = "Model run in-progress/unfinished - not all frames or products will be available";
-            } 
+                loopButton.disabled = true
+            }
+            else {
+                loopButton.disabled = false
+            }
         }
     } catch (error) {
         console.log("no metadata found or fetch error");

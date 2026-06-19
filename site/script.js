@@ -226,12 +226,12 @@ document.querySelectorAll('.dropdown-content a').forEach(item => {
             console.log("test")
             weatherImage.src = `${outputs}${run}/${domain}/24hr_change/24hr_change.png`;
             slider.disabled = true
-            loopButton.disabled = true
+            loopButton.setAttribute('style', 'display: none; ')
         }
         else {
             updateImage(event.target.id);
             slider.disabled = false
-            loopButton.disabled = false
+            loopButton.setAttribute('style', 'display: revert;')
         }
     });
 });

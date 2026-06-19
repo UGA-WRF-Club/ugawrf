@@ -37,7 +37,7 @@ def plot_meteogram(wrf_file, airport, coords, output_path, forecast_times, wrfho
             linewidth=1.5,
             label='Frz (32°F)'
         )
-    ax1.barbs(hours, ax1.get_ylim()[0] * 1.07, u_wind, v_wind, length=6, barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222}) 
+    ax1.barbs(hours, ax1.get_ylim()[0] * 0.95, u_wind, v_wind, length=6, barb_increments={'half': 2.57222, 'full': 5.14444, 'flag': 25.7222}) 
     ax1.set_ylabel('Temperature / Dewpoint (°F)')
     ax1.set_xlabel('Hour (UTC)') 
     ax1.set_xticks(hours)

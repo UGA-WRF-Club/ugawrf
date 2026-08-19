@@ -4,6 +4,8 @@ body {
     font-weight: 400;
     font-style: normal;
     font-size: 130%;
+    margin: 0px;
+    background-color: rgb(218, 217, 217);
 }
 .skewtContainer > img:active {
     width: 600px;
@@ -87,3 +89,19 @@ body {
 .dropdown:hover .dropbtn {background-color: #ad3b1e;}
 
 .locbtn:hover {background-color: #ad3b1e;}
+
+.top-tabs {
+  display: flex;
+  background-color: gray;
+  padding: 0px;
+  height: fit-content;
+  margin-bottom: 0px;
+}
+
+.top-tabs h3 {
+  background-color:blanchedalmond;
+  padding: 10px;
+  border: 3px solid black;
+  border-radius: 10px 0px 0px;
+  margin-bottom: 0;
+}

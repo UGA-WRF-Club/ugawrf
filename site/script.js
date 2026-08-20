@@ -47,7 +47,7 @@ const products = {
     "wind_300mb": "Wind (300mb)",
     "heights_700mb": "Heights (700mb)",
     "heights_500mb": "Heights (500mb)",
-    "stagazing": "Stargazing Index"
+    "stargazing": "Stargazing Index"
 };
 
 const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/";

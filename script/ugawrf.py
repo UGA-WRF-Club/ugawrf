@@ -125,8 +125,6 @@ PRODUCTS = {
     "total_totals": "tc",
     "total_precip": "AFWA_TOTPRECIP",
     "1hr_precip": "AFWA_TOTPRECIP",
-    #"snowfall": "SNOWNC",
-    #"1hr_snowfall": "SNOWNC",
     "cloudcover": "cloudfrac",
     #"echo_tops": "ECHOTOP",
     "apparent_temperature": "T2",
@@ -168,7 +166,6 @@ PRODUCTS = {
     # super special products
     "ptype": "AFWA_SNOW",
     "afwasnow": "AFWA_SNOW",
-    "afwasnow_k": "AFWA_SNOW",
     "afwarain": "AFWA_RAIN",
     "afwafrz": "AFWA_FZRA",
     "afwaslt": "AFWA_ICE",
@@ -266,9 +263,11 @@ if "special" in modules_enabled:
     try:
         output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1])
         if not args.partial:
-            special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours - 1, forecast_times, file_path[0], init_dt, init_str, wrf_file)
+            pass
+            #special.hr24_change(os.path.join(output_path, "24hr_change"), airports, hours - 1, forecast_times, file_path[0], init_dt, init_str, wrf_file)
         elif args.partial:
-            print("warning: partial run detected. 24 hour temp change plot skipped.")
+            pass
+            #print("warning: partial run detected. 24 hour temp change plot skipped.")
         for t in range(hours):
             special.generate_cloud_cover(t, os.path.join(output_path, "4panel_cloudcover"), forecast_times, file_path[0], init_dt, init_str, wrf_file)
             special.plot_4panel_ptype(t, os.path.join(output_path, "4panel_ptype"), forecast_times, file_path[0], init_dt, init_str, wrf_file)

@@ -7,12 +7,8 @@ body {
     margin: 0px;
     background-color: rgb(218, 217, 217);
 }
-.skewtContainer > img:active {
-    width: 600px;
-  }
 .skewtimg{
     border: 1px solid rgb(0, 0, 0);
-    width:600px;
     border: 1px solid rgba(176, 59, 30, 0.3)
   }
 .textContainer {
@@ -28,10 +24,15 @@ body {
     overflow: auto;
   }
 .point-container {
-    display: grid;
-    grid-template-columns: auto auto;
-    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
   }
+.point-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .multi-container {
     display: inline-block;
     margin: auto;

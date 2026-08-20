@@ -180,21 +180,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Blues', min_val=0.2), levels=np.arange(0, 15, 0.25), extend='max')
         plot_title = f"Total Snowfall (in) (10:1 ratio) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Snowfall (in)"
-    elif product == 'afwasnow_k':
-        if not partial_bool and not process_all:
-            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
-            plt.close(fig)
-            return
-        temp = getvar(wrf_file, "tk", timeidx=timestep) - 273.15
-        pressure = getvar(wrf_file, "pressure", timeidx=timestep)
-        snow_ratio = kuchera_ratio(temp, pressure)
-        data_copy = (data_copy / 25.4) * snow_ratio
-        data_copy = np.ma.masked_where(data_copy <= 0.01, data_copy)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap=get_truncated_cmap('Blues', min_val=0.2), levels=np.arange(0, 15, 0.25), extend='max')
-        plot_title = f"Total Snowfall (in) (Kuchera ratio) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        ax.annotate(
-            f'Kuchera ratio is a work in progress and unfinished, with one big caveat:\n The Kuchera ratio for the *entire* total snowfall is recalculated at each step,\nmeaning values may not be fully indicative of actual snowfall.', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=8, color='red', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
-        label = f"Snowfall (in)"
     elif product == 'afwafrz':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')
@@ -237,29 +222,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"1 Hour Precipitation (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f'1 Hour Rainfall (in)'
         ticks = [0.0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 4.0]
-    elif product == 'snowfall':
-        if not partial_bool and not process_all:
-            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
-            plt.close(fig)
-            return
-        data_copy = data_copy / 25.4
-        divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=1, vmax=10)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='Blues', norm=divnorm, extend='max')
-        plot_title = f"Total Accumulated Snowfall (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        label = f"Accumulated Snowfall (in)"
-    elif product == '1hr_snowfall':
-        if partial_bool is True:
-            print(f'-> skipping {product} {timestep} due to partial flag being enabled')
-            plt.close(fig)
-            return
-        snow_now = getvar(wrf_file, "SNOWNC", timeidx=timestep)
-        snow_prev = getvar(wrf_file, "SNOWNC", timeidx=timestep - 1) if timestep > 0 else snow_now * 0
-        snow_1hr = (snow_now - snow_prev) / 25.4
-        data_copy = snow_1hr.copy()
-        divnorm = colors.TwoSlopeNorm(vmin=0, vcenter=0.3, vmax=3)
-        contour = ax.contourf(to_np(lons), to_np(lats), to_np(snow_1hr), cmap='Blues', norm=divnorm, extend='max')
-        plot_title = f"1 Hour Accumulated Snowfall (in) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
-        label = f'Accumulated Snowfall'
     elif product == 'pressure':
         if not partial_bool and not process_all:
             print(f'-> skipping {product} {timestep} due to partial flag being disabled')

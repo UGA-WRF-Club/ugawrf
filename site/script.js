@@ -62,7 +62,6 @@ const productSelector = document.getElementById('productSelector');
 const textSelector = document.getElementById('textSelector');
 const weatherImage = document.getElementById('weatherImage');
 const timeLabel = document.getElementById('timeLabel');
-const hodographOnly = document.getElementById('hodographOnly')
 const meteogram = document.getElementById('meteogram');
 const textForecast = document.getElementById('textForecast');
 const playButton = document.getElementById("playButton");
@@ -74,21 +73,8 @@ const multiSelector = document.getElementById("multiSelector");
 const multiSubchooser = document.getElementById('multiSubchooser');
 const secondaryImage = document.getElementById('secondaryImage');
 const loopButton = document.getElementById('loop');
-const stationIds = [
-    "sahn",
-    "scni",
-    "sffc",
-    "smcn",
-    "scsg",
-    "sbmx",
-    "sgsp",
-    "shun",
-    "stae",
-    "sags"
-  ];
-const stationElements = Object.fromEntries(
-    stationIds.map(id => [id, document.getElementById(id)])
-);
+const skewtImage = document.getElementById('skewtimg');
+const skewtSelector = document.getElementById('skewtSelector');
 
 async function loadDirectories(pageToken = '') {
     const baseUrl = 'https://storage.googleapis.com/storage/v1/b/uga-wrf-website/o?delimiter=/&prefix=outputs/202';
@@ -143,17 +129,7 @@ function updateImage(selectedProduct = product) {
     weatherImage.onerror = () => {
         weatherImage.src = "/Frame_Unavailable.png";
     }
-
-    
-
-    stationIds.forEach(id => {
-        if (hodographOnly.checked == true) {
-            stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hodograph_hour_${timestep}.png`;
-        } 
-        else {
-            stationElements[id].src = `${outputs}${run}/${domain}/skewt/${id.replace('s', '')}/hour_${timestep}.png`;
-        }
-    });
+    skewtImage.src = `${outputs}${run}/${domain}/skewt/${skewtSelector.value}/hour_${timestep}.png`;
     updateSecondaryDisplay()
 }
 function updateSecondaryDisplay() {
@@ -252,9 +228,10 @@ domainSelector.addEventListener('change', () => {
     updateTextForecast();
 });
 textSelector.addEventListener('change', updateTextForecast);
+skewtSelector.addEventListener('change', () => updateImage());
+skewtImage.addEventListener('click', () => slider.focus());
 sizeSelector.addEventListener('change', () => weatherImage.width = sizeSelector.value)
 weatherImage.addEventListener('click', () => slider.focus());
-hodographOnly.addEventListener('click', () => updateImage());
 textForecast.addEventListener('click', () => textSelector.focus());
 meteogram.addEventListener('click', () => textSelector.focus());
 multiEnabler.addEventListener('click', toggleSecondaryDisplay)

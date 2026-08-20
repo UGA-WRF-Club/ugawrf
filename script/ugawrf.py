@@ -109,6 +109,7 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
+    "helicity": "UP_HELI_MAX",
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",

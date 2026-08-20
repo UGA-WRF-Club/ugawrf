@@ -244,10 +244,6 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         plot_title = f"Echo Tops (m) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"Echo Tops (m)"
     elif product == 'helicity':
-        if not partial_bool and not process_all:
-            print(f'-> skipping {product} {timestep} due to partial flag being disabled')
-            plt.close(fig)
-            return
         helicity_sum = 0
         for t in range(timestep + 1):  
             helicity = getvar(wrf_file, "UP_HELI_MAX", timeidx=t)

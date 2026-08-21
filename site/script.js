@@ -99,8 +99,8 @@ async function loadDirectories(pageToken = '') {
         }
     });
     updateImage("temperature");
-    updateTextForecast();
     checkRunStatus();
+    updateTextForecast();
     const run = runSelector.value;
     const domain = domainSelector.value;
     document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
@@ -148,7 +148,7 @@ async function updateTextForecast() {
     const domain = domainSelector.value;
     const textOption = textSelector.value;
     if (in_progress) {
-        textForecast.textContent = "Text forecast failed to load. Text forecasts are not processed until after a run finishes, so please try again later."
+        textForecast.textContent = "Text forecasts are not created until after a run finishes, so please try again later."
         meteogram.src = "/Frame_Unavailable.png";
         return;
     }

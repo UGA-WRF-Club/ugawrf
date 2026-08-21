@@ -284,7 +284,7 @@ async function checkRunStatus() {
             const data = await response.json();
             console.log(data)
             if (data.in_progress === true) {
-                statusElement.textContent = "Model run in-progress/unfinished - not all frames or products will be available\nPoint data, 1-hour change (i.e. 1-hr precip), and some other products may not be available until after the run finishes.";
+                statusElement.textContent = "Model run in-progress/unfinished - not all frames or products will be available. Point data, 1-hour change (i.e. 1-hr precip), and some other products may not be available until after the run finishes.";
                 loopButton.disabled = true
                 in_progress = true
                 textSelector.disabled = true

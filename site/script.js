@@ -99,8 +99,8 @@ async function loadDirectories(pageToken = '') {
         }
     });
     updateImage("temperature");
-    checkRunStatus();
     updateTextForecast();
+    checkRunStatus();
     const run = runSelector.value;
     const domain = domainSelector.value;
     document.getElementById("metadata").href = `${outputs}${run}/${domain}/metadata.json`
@@ -147,23 +147,16 @@ async function updateTextForecast() {
     const run = runSelector.value;
     const domain = domainSelector.value;
     const textOption = textSelector.value;
-    if (in_progress) {
-        textForecast.textContent = "Text forecasts are not created until after a run finishes, so please try again later."
-        meteogram.src = "/Frame_Unavailable.png";
-        return;
+    try {
+        fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
+            .then(response => response.text())
+            .then(data => {
+                textForecast.textContent = data;
+            });
+    } catch (error) {
+        textForecast.textContent = "Text forecast failed to load. Text forecasts are not processed until after a run finishes, so please try again later."
     }
-    else {
-        try {
-            fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
-                .then(response => response.text())
-                .then(data => {
-                    textForecast.textContent = data;
-                });
-        } catch (error) {
-            textForecast.textContent = "Text forecast failed to load. Text forecasts are not processed until after a run finishes, so please try again later."
-        }
-        meteogram.src = `${outputs}${run}/${domain}/meteogram/${textOption}/meteogram.png`;
-    }
+    meteogram.src = `${outputs}${run}/${domain}/meteogram/${textOption}/meteogram.png`;
 }
 function toggleSecondaryDisplay() {
     if (multiEnabler.checked == true) {
@@ -295,11 +288,14 @@ async function checkRunStatus() {
                 loopButton.disabled = true
                 in_progress = true
                 textSelector.disabled = true
+                textForecast.textContent = "Text forecasts are not created until after a run finishes, so please try again later."
+                meteogram.src = "/Frame_Unavailable.png"
             }
             else {
                 loopButton.disabled = false
                 in_progress = false
                 textSelector.disabled = false
+                UpdateTextForecast()
             }
         }
     } catch (error) {

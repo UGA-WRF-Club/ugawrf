@@ -55,6 +55,7 @@ const outputs = "https://storage.googleapis.com/uga-wrf-website/outputs/";
 const hours = 48;
 let timestep = 0;
 let product = "temperature";
+let in_progress = false;
 const slider = document.getElementById('timeSlider');
 const runSelector = document.getElementById('runSelector');
 const domainSelector = document.getElementById('domainSelector');
@@ -146,16 +147,23 @@ async function updateTextForecast() {
     const run = runSelector.value;
     const domain = domainSelector.value;
     const textOption = textSelector.value;
-    try {
-        fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
-            .then(response => response.text())
-            .then(data => {
-                textForecast.textContent = data;
-            });
-    } catch (error) {
+    if (in_progress) {
         textForecast.textContent = "Text forecast failed to load. Text forecasts are not processed until after a run finishes, so please try again later."
+        meteogram.src = "/Frame_Unavailable.png";
+        return;
     }
-    meteogram.src = `${outputs}${run}/${domain}/meteogram/${textOption}/meteogram.png`;
+    else {
+        try {
+            fetch(`${outputs}${run}/${domain}/text/${textOption}/forecast.txt`)
+                .then(response => response.text())
+                .then(data => {
+                    textForecast.textContent = data;
+                });
+        } catch (error) {
+            textForecast.textContent = "Text forecast failed to load. Text forecasts are not processed until after a run finishes, so please try again later."
+        }
+        meteogram.src = `${outputs}${run}/${domain}/meteogram/${textOption}/meteogram.png`;
+    }
 }
 function toggleSecondaryDisplay() {
     if (multiEnabler.checked == true) {
@@ -285,9 +293,13 @@ async function checkRunStatus() {
             if (data.in_progress === true) {
                 statusElement.textContent = "Model run in-progress/unfinished - not all frames or products will be available";
                 loopButton.disabled = true
+                in_progress = true
+                textSelector.disabled = true
             }
             else {
                 loopButton.disabled = false
+                in_progress = false
+                textSelector.disabled = false
             }
         }
     } catch (error) {

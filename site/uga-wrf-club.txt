@@ -4,10 +4,11 @@ The UGA-WRF is made with contributions from:
 Scout Carlson (club coordinator, lead dev, main contact) - scout.carlson@uga.edu
 Joseph Cristea - Joseph.Cristea@uga.edu
 Margaret Needham - margaret.needham@uga.edu
-Gabe Lobdell - gabelobdell@uga.edu
-Jacob Peace - jacob.peace@uga.edu
-Mason Sikes - mason.sikes@uga.edu
 
+Contributions from now-alums:
+Jacob Peace
+Mason Sikes
+Gabe Lobdell
 
 In addition, we also greatly thank these people for helping to lay the foundation of modern day UGA-WRF:
 Kyle Brooks

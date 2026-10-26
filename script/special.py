@@ -60,7 +60,7 @@ def generate_cloud_cover(t, output_path, forecast_times, run_time, init_dt, init
     high_cloud_frac = to_np(cloud_fracs[2]) * 100
     total_cloud_frac = low_cloud_frac + mid_cloud_frac + high_cloud_frac
     lats, lons = latlon_coords(cloud_fracs)
-    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
+    fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()}, constrained_layout=True)
     cloud_data = [total_cloud_frac, low_cloud_frac, mid_cloud_frac, high_cloud_frac]
     titles = ["Total Cloud Cover (%)", "Low (%)", "Mid (%)", "High (%)"]
     for ax, data, title in zip(axes.flat, cloud_data, titles):
@@ -69,9 +69,8 @@ def generate_cloud_cover(t, output_path, forecast_times, run_time, init_dt, init
         ax.add_feature(cfeature.BORDERS, linewidth=0.5)
         ax.add_feature(cfeature.STATES, linewidth=0.5)
         cf = ax.pcolormesh(to_np(lons), to_np(lats), data, cmap="Blues_r", norm=plt.Normalize(0, 100), transform=ccrs.PlateCarree())
-    cbar = plt.colorbar(cf, ax=axes[:,:], orientation='vertical', fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
+    cbar = plt.colorbar(cf, ax=axes[:,:], orientation='horizontal', fraction=0.035, pad=0.0, shrink=0.95, aspect=25)
     plt.suptitle(f"Cloud Cover - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}", fontweight='bold', fontsize=14)
-    plt.annotate(f"UGA-WRF Run {run_time}", xy=(0.01, 0.01), xycoords='figure fraction', fontsize=8, color='black')
     os.makedirs(output_path, exist_ok=True)
     plt.savefig(os.path.join(output_path, f"hour_{f_hour}.png"))
     plt.close(fig)
@@ -82,14 +81,14 @@ def plot_4panel_ptype(t, output_path, forecast_times, run_time, init_dt, init_st
     valid_time_str = valid_time.strftime("%Y-%m-%d %H:%M UTC")
     temp = getvar(wrf_file, "tk", timeidx=t) - 273.15
     pressure = getvar(wrf_file, "pressure", timeidx=t)
-    snow = (getvar(wrf_file, "AFWA_SNOW", timeidx=t) / 25.4) * kuchera_ratio(temp, pressure)
+    snow = (getvar(wrf_file, "AFWA_SNOW", timeidx=t) / 25.4)
     rain = getvar(wrf_file, "AFWA_RAIN", timeidx=t) / 25.4
     fzra = getvar(wrf_file, "AFWA_FZRA", timeidx=t) / 25.4
     ice = getvar(wrf_file, "AFWA_ICE", timeidx=t) / 25.4
     lats, lons = latlon_coords(snow)
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
     ptype_data = [to_np(rain), to_np(snow), to_np(fzra), to_np(ice)]
-    titles = ["Rain Total (in)", "Snowfall Total (in, Kuchera)", "Freezing Rain Total (in)", "Ice Fall Total (in, liquid equiv.)"]
+    titles = ["Rain Total (in)", "Snowfall Total (in)", "Freezing Rain Total (in)", "Ice Fall Total (in, liquid equiv.)"]
     cmaps = ['Greens', 'Blues', 'RdPu', 'Oranges']
     levels_list = [np.arange(0, 5.5, 0.25), np.arange(0, 15.25, 0.25), np.arange(0, 3.1, 0.1), np.arange(0, 3.1, 0.1)]
     for ax, data, title, cmap, levels in zip(axes.flat, ptype_data, titles, cmaps, levels_list):

@@ -529,14 +529,45 @@ def plot_variable(product, variable, timestep, output_path, forecast_times, airp
         cbar = fig.colorbar(mesh, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25, ticks=[0, 1, 2, 3, 4])
         cbar.ax.set_yticks([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5, 11.5, 12.5], labels=['None', '--', 'Snow', '+', '--', 'Ice', '+', '--', 'FzRa', '+', '--', 'Rain', '+'])
         ax.annotate(f'P-TYPE IS A WORK IN PROGRESS!\nIntensity Breakpoints (Liquid Eq.):\nHeavy - 7.6mm/hr\nModerate - 2.5mm/hr\nLight - <2.5mm/hr', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=8, color='red', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
+    elif product == 'ffpi':
+            if partial_bool is True:
+                print(f'-> skipping {product} {timestep} due to partial flag being enabled')
+                plt.close(fig)
+                return
+            if timestep > 0:
+                runoff_now = getvar(wrf_file, "SFROFF", timeidx=timestep)
+                runoff_prev = getvar(wrf_file, "SFROFF", timeidx=timestep - 1)
+                runoff_change_1hr = (runoff_now - runoff_prev)
+    
+                precip_now = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep)
+                precip_prev = getvar(wrf_file, "AFWA_TOTPRECIP", timeidx=timestep - 1)
+                precip_change_1hr = (precip_now - precip_prev)
+            else:
+                runoff_change_1hr = data_copy * 0
+                precip_change_1hr = data_copy * 0
+            # FFPI = (wP * P) + (wR * R), where wP = precipitation weight, P =
+            #short-term rainfall intensity (mm/h), wR = surface runoff weight, and R
+            #= short-term surface runoff (mm/h)
+            # From McLeod and Shepherd, "Assessing the role of urbanization on flashiness: case study analyses for Atlanta, Georgia" 
+            wp = 0.5
+            wr = 0.5
+            ffpi = (wp * to_np(precip_change_1hr)) + (wr * to_np(runoff_change_1hr))
+            data_copy = ffpi.copy()
+            contour = ax.contourf(to_np(lons), to_np(lats), to_np(ffpi), cmap='hot_r', levels=np.arange(0, 100, 1), extend='max')
+            plot_title = f"Flash Flood Potential Index (FFPI) - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
+            label = f'FFPI'
+            ax.annotate(f'FFPI values represent the potential for flash flooding based on precipitation and surface runoff.', xy=(0.01, 0.1), xycoords='axes fraction', fontsize=8, color='red', bbox=dict(facecolor='white', alpha=0.6, edgecolor='none'))
     else:
         contour = ax.contourf(to_np(lons), to_np(lats), to_np(data_copy), cmap='coolwarm')
         plot_title = f"Unconfigured product: {data.description} - Hour {f_hour}\nValid: {valid_time_str}\nInit: {init_str}"
         label = f"{data.description}"
     if product != ("ptype"):
-        cbar = fig.colorbar(contour, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
-        if product == 'total_precip' or product == '1hr_precip':
-            cbar.ax.set_yticks(ticks, labels=ticks)
+        try:
+            cbar = fig.colorbar(contour, ax=ax, location="right", fraction=0.035, pad=0.02, shrink=0.85, aspect=25)
+            if product == 'total_precip' or product == '1hr_precip':
+                cbar.ax.set_yticks(ticks, labels=ticks)
+        except:
+            pass
     gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True, linewidth=0.5, color='gray', alpha=0.5, linestyle='--')
     gl.top_labels = False; gl.right_labels = False
     ax.coastlines()

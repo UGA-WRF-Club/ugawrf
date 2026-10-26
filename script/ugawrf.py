@@ -109,6 +109,8 @@ other_airports = {
 #^^^ temporarily disabling this due to our new small domain. will rewrite to handle empty extents later
 
 PRODUCTS = {
+    "ffpi": "AFWA_TOTPRECIP",
+
     "temperature": "T2",
     "1hr_temp_c": "T2",
     "dewp": "td2",
@@ -238,7 +240,7 @@ elif args.partial and "textgen" in modules_enabled:
 if "weathermaps" in modules_enabled:
     map_time = dt.datetime.now()
     for product, variable in PRODUCTS.items():
-        try:
+        #try:
             times_elapsed = []
             product_time = dt.datetime.now()
             output_path = os.path.join(BASE_OUTPUT, file_path[0], file_path[1], product)
@@ -253,8 +255,8 @@ if "weathermaps" in modules_enabled:
                 times_elapsed.append(dt.datetime.now() - t_time)
             avg_time = sum(times_elapsed, dt.timedelta()) / len(times_elapsed)
             print(f"processed {product} in {dt.datetime.now() - product_time} - avg time per timestep: {avg_time}")
-        except Exception as e:
-            print(f"error processing {product}: {e}! last timestep: {t}")
+        #except Exception as e:
+            #print(f"error processing {product}: {e}! last timestep: {t}")
     print(f"graphics processed successfully - took {dt.datetime.now() - map_time}")
 
 # special plots

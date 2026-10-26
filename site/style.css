@@ -109,3 +109,10 @@ img {
   border-radius: 10px 0px 0px;
   margin-bottom: 0;
 }
+
+.runselector {
+  position: sticky;
+  top: 0;
+  background-color: rgb(161, 156, 156);
+  font-size: 150%;
+}
